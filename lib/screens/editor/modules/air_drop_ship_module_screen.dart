@@ -170,7 +170,7 @@ class _AirDropShipModuleScreenState extends State<AirDropShipModuleScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  l10n?.airDropShipModuleAppearWaves ?? 'Appear waves',
+                  l10n?.airDropShipModuleAppearances ?? 'Appearances',
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: theme.colorScheme.onSurface,
@@ -209,7 +209,7 @@ class _AirDropShipModuleScreenState extends State<AirDropShipModuleScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                '${l10n?.waveLabel ?? "W"} ${w.wave}',
+                                '${l10n?.appearanceLabel ?? "Appearance"} ${idx + 1}',
                                 style: theme.textTheme.labelLarge?.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -256,7 +256,7 @@ class _AirDropShipModuleScreenState extends State<AirDropShipModuleScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '${l10n?.waveLabel ?? "Wave"} ${selectedWave.wave} - ${l10n?.airDropShipModuleDropArea ?? "Drop area"}',
+                            '${l10n?.appearanceLabel ?? "Appearance"} ${_selectedIndex + 1} - ${l10n?.airDropShipModuleDropArea ?? "Drop area"}',
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
@@ -268,9 +268,9 @@ class _AirDropShipModuleScreenState extends State<AirDropShipModuleScreen> {
                                 child: TextFormField(
                                   initialValue: '${selectedWave.wave}',
                                   decoration: InputDecoration(
-                                    labelText: l10n?.waveLabel ?? 'Wave',
-                                    helperText:
-                                        l10n?.moduleWaveIndexZeroBasedHint,
+                                    labelText:
+                                        l10n?.moduleWaveFieldZeroBased ??
+                                        'Wave (0 = wave 1, 1 = wave 2, ...)',
                                     border: const OutlineInputBorder(),
                                   ),
                                   keyboardType: TextInputType.number,
@@ -557,9 +557,9 @@ class _AirDropShipModuleScreenState extends State<AirDropShipModuleScreen> {
       title: Text(l10n?.removeItem ?? 'Remove item'),
       content: Text(
         l10n?.removeItemConfirm(
-              '${l10n.waveLabel ?? "Wave"} ${item.wave + 1}',
+              '${l10n.appearanceLabel} ${_data.appearWaves.indexOf(item) + 1}',
             ) ??
-            'Remove wave ${item.wave + 1}?',
+            'Remove appearance ${_data.appearWaves.indexOf(item) + 1}?',
       ),
       actions: [
         TextButton(
