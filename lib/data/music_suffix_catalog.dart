@@ -29,15 +29,10 @@ class MusicSuffixCatalog {
     'BGMa',
     'BGMc',
     'BGMd',
-    'Roman',
-    'ZCorp',
     'Uncharted',
-    'rift',
     'retro',
     'SilkRoad',
-    'BGMe',
     'mausoleum',
-    'circus',
     'ghostdom',
   ];
 
@@ -90,23 +85,16 @@ class MusicSuffixCatalog {
         return 'SteamStage';
       case 'Twister':
         return 'TwisterStage';
-      case 'ZCorp':
-        return 'ZCorpStage';
       case 'Uncharted':
         return 'UnchartedAnniversaryStage';
-      case 'rift':
-        return 'RiftStage';
       case 'SilkRoad':
         return 'JourneyToTheWestStage';
       case 'BGMb':
       case 'BGMa':
       case 'BGMc':
       case 'BGMd':
-      case 'BGMe':
         return 'ModernStage';
-      case 'Roman':
       case 'retro':
-      case 'circus':
         return null;
       default:
         return null;
