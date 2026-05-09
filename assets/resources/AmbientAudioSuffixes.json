@@ -1,0 +1,10 @@
+{
+  "entries": [
+    { "codename": "", "resourceGroups": [] },
+    { "codename": "Amb_Tutorial_Garden_BG_LP", "resourceGroups": ["AudioTutorial"] },
+    { "codename": "Egypt_Wind_BG", "resourceGroups": ["AudioEgypt"] },
+    { "codename": "PVZ_Pirate_BG_WaterBubble_LP_02", "resourceGroups": ["AudioPirate"] },
+    { "codename": "WildWest_Wind", "resourceGroups": ["AudioCowboy"] },
+    { "codename": "Atlantis_Currents_BG", "resourceGroups": ["AudioAtlantics"] }
+  ]
+}
