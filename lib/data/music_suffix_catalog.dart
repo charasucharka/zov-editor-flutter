@@ -25,15 +25,20 @@ class MusicSuffixCatalog {
     'SkyCity',
     'Steam',
     'Twister',
-    'BGMb',
-    'BGMa',
-    'BGMc',
-    'BGMd',
     'Uncharted',
+    'BGMa',
+    'BGMb',
+    'BGMd',
+    'BGMc',
     'retro',
     'SilkRoad',
     'mausoleum',
     'ghostdom',
+    'Roman',
+    'ZCorp',
+    'rift',
+    'BGMe',
+    'circus',
   ];
 
   static String resourceKey(String code) =>
@@ -95,6 +100,11 @@ class MusicSuffixCatalog {
       case 'BGMd':
         return 'ModernStage';
       case 'retro':
+      case 'Roman':
+      case 'ZCorp':
+      case 'rift':
+      case 'BGMe':
+      case 'circus':
         return null;
       default:
         return null;
