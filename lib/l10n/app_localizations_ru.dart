@@ -507,6 +507,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get zombieTagRoman => 'Рим';
 
   @override
+  String get zombieTagCustom => 'Готовые кастомные';
+
+  @override
   String get zombieTagPet => 'Питомец';
 
   @override
@@ -4774,6 +4777,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get appearanceLabel => 'Появление';
 
   @override
+  String get airDropShipGroupLabel => 'Группа';
+
+  @override
   String get moduleTitle_RenaiModuleProperties => 'Ренессанс';
 
   @override
@@ -4869,7 +4875,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get airDropShipModuleAppearWaves => 'Волны появления';
 
   @override
-  String get airDropShipModuleAppearances => 'Появления';
+  String get airDropShipModuleAppearances => 'Группы сброса';
 
   @override
   String get airDropShipModuleExtraImpCount => 'Доп. количество импов';

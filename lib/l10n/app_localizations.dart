@@ -1030,6 +1030,12 @@ abstract class AppLocalizations {
   /// **'Ancient Rome'**
   String get zombieTagRoman;
 
+  /// No description provided for @zombieTagCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Pre-made custom'**
+  String get zombieTagCustom;
+
   /// No description provided for @zombieTagPet.
   ///
   /// In en, this message translates to:
@@ -8683,8 +8689,14 @@ abstract class AppLocalizations {
   /// No description provided for @appearanceLabel.
   ///
   /// In en, this message translates to:
-  /// **'Batch'**
+  /// **'Appearance'**
   String get appearanceLabel;
+
+  /// No description provided for @airDropShipGroupLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Group'**
+  String get airDropShipGroupLabel;
 
   /// No description provided for @moduleTitle_RenaiModuleProperties.
   ///
@@ -8863,7 +8875,7 @@ abstract class AppLocalizations {
   /// No description provided for @airDropShipModuleAppearances.
   ///
   /// In en, this message translates to:
-  /// **'Assault Batches'**
+  /// **'Assault Groups'**
   String get airDropShipModuleAppearances;
 
   /// No description provided for @airDropShipModuleExtraImpCount.

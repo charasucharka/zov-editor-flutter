@@ -497,6 +497,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get zombieTagRoman => '罗马世界';
 
   @override
+  String get zombieTagCustom => '预置创意';
+
+  @override
   String get zombieTagPet => '宠物';
 
   @override
@@ -4589,7 +4592,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get moduleWaveFieldZeroBased => '波次 (从0开始计数)';
 
   @override
-  String get appearanceLabel => '批次';
+  String get appearanceLabel => '出场';
+
+  @override
+  String get airDropShipGroupLabel => '组';
 
   @override
   String get moduleTitle_RenaiModuleProperties => '复兴时代模块';
@@ -4683,7 +4689,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get airDropShipModuleAppearWaves => '出现波次（Wave, 从0开始计数）';
 
   @override
-  String get airDropShipModuleAppearances => '投放批次';
+  String get airDropShipModuleAppearances => '投放组';
 
   @override
   String get airDropShipModuleExtraImpCount => '额外小鬼数量 (Imp)';

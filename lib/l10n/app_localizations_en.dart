@@ -505,6 +505,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get zombieTagRoman => 'Ancient Rome';
 
   @override
+  String get zombieTagCustom => 'Pre-made custom';
+
+  @override
   String get zombieTagPet => 'Pet';
 
   @override
@@ -4837,7 +4840,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get moduleWaveFieldZeroBased => 'Wave (0 = Wave 1, 1 = Wave 2, ...)';
 
   @override
-  String get appearanceLabel => 'Batch';
+  String get appearanceLabel => 'Appearance';
+
+  @override
+  String get airDropShipGroupLabel => 'Group';
 
   @override
   String get moduleTitle_RenaiModuleProperties => 'Renaissance Module';
@@ -4936,7 +4942,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Appear waves (Wave; starts from 0)';
 
   @override
-  String get airDropShipModuleAppearances => 'Assault Batches';
+  String get airDropShipModuleAppearances => 'Assault Groups';
 
   @override
   String get airDropShipModuleExtraImpCount => 'Extra imp count (Imp)';
