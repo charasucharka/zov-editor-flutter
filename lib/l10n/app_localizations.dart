@@ -8680,6 +8680,114 @@ abstract class AppLocalizations {
   /// **'Remove tunnel placements that fall outside the 5×9 lawn grid.'**
   String get gulliverTunnelDeleteOutsideConfirmMessage;
 
+  /// No description provided for @moduleTitle_RiftThemeDemoModuleProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'Rift Themes'**
+  String get moduleTitle_RiftThemeDemoModuleProperties;
+
+  /// No description provided for @moduleDesc_RiftThemeDemoModuleProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'Applies custom Penny Pursuit / Memory Lane theme modifiers to the level'**
+  String get moduleDesc_RiftThemeDemoModuleProperties;
+
+  /// No description provided for @riftThemeModuleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rift themes'**
+  String get riftThemeModuleTitle;
+
+  /// No description provided for @riftThemeHelpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rift theme module'**
+  String get riftThemeHelpTitle;
+
+  /// No description provided for @riftThemeHelpOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Defines a custom list of rift themes for the level, similar to Penny Pursuit and Memory Lane themed stages. See the creator reference for full theme details.'**
+  String get riftThemeHelpOverview;
+
+  /// No description provided for @riftThemeHelpUsage.
+  ///
+  /// In en, this message translates to:
+  /// **'Usage'**
+  String get riftThemeHelpUsage;
+
+  /// No description provided for @riftThemeHelpUsageBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the button to open the theme picker. Tap themes to select or deselect them, then confirm with the check button. Themes are applied in list order.'**
+  String get riftThemeHelpUsageBody;
+
+  /// No description provided for @riftThemeHelpUnique.
+  ///
+  /// In en, this message translates to:
+  /// **'Unique themes'**
+  String get riftThemeHelpUnique;
+
+  /// No description provided for @riftThemeHelpUniqueBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Each theme can only appear once in the list.'**
+  String get riftThemeHelpUniqueBody;
+
+  /// No description provided for @riftThemeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No themes selected. Tap the button below to choose themes.'**
+  String get riftThemeEmpty;
+
+  /// No description provided for @riftThemeAddTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Add rift theme'**
+  String get riftThemeAddTheme;
+
+  /// No description provided for @riftThemeSelectThemes.
+  ///
+  /// In en, this message translates to:
+  /// **'Select themes'**
+  String get riftThemeSelectThemes;
+
+  /// No description provided for @riftThemeSelectTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get riftThemeSelectTheme;
+
+  /// No description provided for @riftThemeSearchPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Search theme name or id'**
+  String get riftThemeSearchPlaceholder;
+
+  /// No description provided for @riftThemeAlreadyAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Already added'**
+  String get riftThemeAlreadyAdded;
+
+  /// No description provided for @riftThemeNoSearchResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching themes'**
+  String get riftThemeNoSearchResults;
+
+  /// No description provided for @riftThemeAllUsedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'All themes added'**
+  String get riftThemeAllUsedTitle;
+
+  /// No description provided for @riftThemeAllUsedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Every rift theme is already in the list. Each theme can only be added once.'**
+  String get riftThemeAllUsedMessage;
+
   /// No description provided for @moduleTitle_ZombieRushModuleProperties.
   ///
   /// In en, this message translates to:

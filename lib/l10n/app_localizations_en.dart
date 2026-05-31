@@ -4827,6 +4827,66 @@ class AppLocalizationsEn extends AppLocalizations {
       'Remove tunnel placements that fall outside the 5×9 lawn grid.';
 
   @override
+  String get moduleTitle_RiftThemeDemoModuleProperties => 'Rift Themes';
+
+  @override
+  String get moduleDesc_RiftThemeDemoModuleProperties =>
+      'Applies custom Penny Pursuit / Memory Lane theme modifiers to the level';
+
+  @override
+  String get riftThemeModuleTitle => 'Rift themes';
+
+  @override
+  String get riftThemeHelpTitle => 'Rift theme module';
+
+  @override
+  String get riftThemeHelpOverview =>
+      'Defines a custom list of rift themes for the level, similar to Penny Pursuit and Memory Lane themed stages. See the creator reference for full theme details.';
+
+  @override
+  String get riftThemeHelpUsage => 'Usage';
+
+  @override
+  String get riftThemeHelpUsageBody =>
+      'Tap the button to open the theme picker. Tap themes to select or deselect them, then confirm with the check button. Themes are applied in list order.';
+
+  @override
+  String get riftThemeHelpUnique => 'Unique themes';
+
+  @override
+  String get riftThemeHelpUniqueBody =>
+      'Each theme can only appear once in the list.';
+
+  @override
+  String get riftThemeEmpty =>
+      'No themes selected. Tap the button below to choose themes.';
+
+  @override
+  String get riftThemeAddTheme => 'Add rift theme';
+
+  @override
+  String get riftThemeSelectThemes => 'Select themes';
+
+  @override
+  String get riftThemeSelectTheme => 'Theme';
+
+  @override
+  String get riftThemeSearchPlaceholder => 'Search theme name or id';
+
+  @override
+  String get riftThemeAlreadyAdded => 'Already added';
+
+  @override
+  String get riftThemeNoSearchResults => 'No matching themes';
+
+  @override
+  String get riftThemeAllUsedTitle => 'All themes added';
+
+  @override
+  String get riftThemeAllUsedMessage =>
+      'Every rift theme is already in the list. Each theme can only be added once.';
+
+  @override
   String get moduleTitle_ZombieRushModuleProperties => 'Level Timer';
 
   @override

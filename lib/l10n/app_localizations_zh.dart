@@ -4578,6 +4578,62 @@ class AppLocalizationsZh extends AppLocalizations {
       '移除位于 5×9 场地网格之外的隧道放置。';
 
   @override
+  String get moduleTitle_RiftThemeDemoModuleProperties => '追击主题';
+
+  @override
+  String get moduleDesc_RiftThemeDemoModuleProperties => '为关卡配置自定义追击、回忆等主题效果';
+
+  @override
+  String get riftThemeModuleTitle => '追击主题';
+
+  @override
+  String get riftThemeHelpTitle => '追击主题模块';
+
+  @override
+  String get riftThemeHelpOverview =>
+      '为关卡定义自定义追击主题列表，用法与追击、回忆等主题关卡相同。详细主题说明请参阅创辅文件。';
+
+  @override
+  String get riftThemeHelpUsage => '用法';
+
+  @override
+  String get riftThemeHelpUsageBody =>
+      '点击按钮打开主题选择界面。点击主题可勾选或取消，完成后点击确认按钮。主题按列表顺序生效。';
+
+  @override
+  String get riftThemeHelpUnique => '唯一主题';
+
+  @override
+  String get riftThemeHelpUniqueBody => '每个主题在列表中只能出现一次。';
+
+  @override
+  String get riftThemeEmpty => '尚未选择主题。点击下方按钮选择主题。';
+
+  @override
+  String get riftThemeAddTheme => '添加主题';
+
+  @override
+  String get riftThemeSelectThemes => '选择主题';
+
+  @override
+  String get riftThemeSelectTheme => '主题';
+
+  @override
+  String get riftThemeSearchPlaceholder => '搜索主题名称或代号';
+
+  @override
+  String get riftThemeAlreadyAdded => '已添加';
+
+  @override
+  String get riftThemeNoSearchResults => '没有匹配的主题';
+
+  @override
+  String get riftThemeAllUsedTitle => '已添加全部主题';
+
+  @override
+  String get riftThemeAllUsedMessage => '所有追击主题均已添加。每个主题只能添加一次。';
+
+  @override
   String get moduleTitle_ZombieRushModuleProperties => '关卡倒计时';
 
   @override

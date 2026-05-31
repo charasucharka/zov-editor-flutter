@@ -4759,6 +4759,66 @@ class AppLocalizationsRu extends AppLocalizations {
       'Удалить размещения тоннелей за пределами сетки 5×9.';
 
   @override
+  String get moduleTitle_RiftThemeDemoModuleProperties => 'Темы Rift';
+
+  @override
+  String get moduleDesc_RiftThemeDemoModuleProperties =>
+      'Задаёт пользовательские темы уровня (Penny Pursuit / Memory Lane)';
+
+  @override
+  String get riftThemeModuleTitle => 'Темы Rift';
+
+  @override
+  String get riftThemeHelpTitle => 'Модуль тем Rift';
+
+  @override
+  String get riftThemeHelpOverview =>
+      'Задаёт пользовательский список тем rift для уровня — как в уровнях Penny Pursuit и Memory Lane. Подробности тем см. в справочнике.';
+
+  @override
+  String get riftThemeHelpUsage => 'Использование';
+
+  @override
+  String get riftThemeHelpUsageBody =>
+      'Нажмите кнопку, чтобы открыть выбор тем. Нажимайте темы, чтобы включить или снять выбор, затем подтвердите галочкой. Темы применяются в порядке списка.';
+
+  @override
+  String get riftThemeHelpUnique => 'Уникальные темы';
+
+  @override
+  String get riftThemeHelpUniqueBody =>
+      'Каждая тема может встречаться в списке только один раз.';
+
+  @override
+  String get riftThemeEmpty =>
+      'Темы не выбраны. Нажмите кнопку ниже, чтобы выбрать темы.';
+
+  @override
+  String get riftThemeAddTheme => 'Добавить тему';
+
+  @override
+  String get riftThemeSelectThemes => 'Выбрать темы';
+
+  @override
+  String get riftThemeSelectTheme => 'Тема';
+
+  @override
+  String get riftThemeSearchPlaceholder => 'Поиск по названию или id';
+
+  @override
+  String get riftThemeAlreadyAdded => 'Уже добавлена';
+
+  @override
+  String get riftThemeNoSearchResults => 'Темы не найдены';
+
+  @override
+  String get riftThemeAllUsedTitle => 'Все темы добавлены';
+
+  @override
+  String get riftThemeAllUsedMessage =>
+      'Все темы rift уже в списке. Каждую тему можно добавить только один раз.';
+
+  @override
   String get moduleTitle_ZombieRushModuleProperties => 'Таймер Zombie Rush';
 
   @override
