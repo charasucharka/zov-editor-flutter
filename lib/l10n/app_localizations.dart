@@ -3424,6 +3424,18 @@ abstract class AppLocalizations {
   /// **'Spawns atlantis seashells at set positions'**
   String get eventDesc_ZombieAtlantisShellActionProps;
 
+  /// No description provided for @eventTitle_PumpkinHouseActionProps.
+  ///
+  /// In en, this message translates to:
+  /// **'Pumpkin House Spawn'**
+  String get eventTitle_PumpkinHouseActionProps;
+
+  /// No description provided for @eventDesc_PumpkinHouseActionProps.
+  ///
+  /// In en, this message translates to:
+  /// **'Spawns pumpkin houses on the lawn at set positions'**
+  String get eventDesc_PumpkinHouseActionProps;
+
   /// No description provided for @eventTitle_SpawnGravestonesWaveActionProps.
   ///
   /// In en, this message translates to:
@@ -3531,6 +3543,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Spawns barrels with different abilities in set lanes'**
   String get eventDesc_BarrelWaveActionProps;
+
+  /// No description provided for @eventTitle_SchoolBusWaveActionProps.
+  ///
+  /// In en, this message translates to:
+  /// **'Ice Cream Truck Spawn'**
+  String get eventTitle_SchoolBusWaveActionProps;
+
+  /// No description provided for @eventDesc_SchoolBusWaveActionProps.
+  ///
+  /// In en, this message translates to:
+  /// **'Spawns an ice cream truck in a lane with configurable zombies inside'**
+  String get eventDesc_SchoolBusWaveActionProps;
 
   /// No description provided for @eventTitle_BungeeWaveActionProps.
   ///
@@ -5308,6 +5332,18 @@ abstract class AppLocalizations {
   /// **'Select a tile, then tap \"+\" to place a seashell. Lawn size varies by level: 6 rows × 10 columns in Underwater World, and 5 rows × 9 columns in other levels.'**
   String get eventHelpShellUsage;
 
+  /// No description provided for @eventHelpPumpkinHouseBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Spawns pumpkin house grid items at specified positions during the wave.'**
+  String get eventHelpPumpkinHouseBody;
+
+  /// No description provided for @eventHelpPumpkinHouseUsage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a tile, then tap \"+\" to place a pumpkin house. Lawn size varies by level: 6 rows × 10 columns in Underwater World, and 5 rows × 9 columns in other levels.'**
+  String get eventHelpPumpkinHouseUsage;
+
   /// No description provided for @eventHelpFairyFogBody.
   ///
   /// In en, this message translates to:
@@ -5397,6 +5433,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Rows are 1-based: Row 1 = top lane, Row 5/6 = bottom lane. Standard lawns: 5 rows. Underwater World lawns: 6 rows.'**
   String get eventHelpBarrelWaveRows;
+
+  /// No description provided for @eventHelpSchoolBusBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Spawns a special ice cream truck (schoolbus_special) that rolls in from the right on the selected lane. When destroyed, it releases the configured zombies.'**
+  String get eventHelpSchoolBusBody;
+
+  /// No description provided for @schoolBusHelpRows.
+  ///
+  /// In en, this message translates to:
+  /// **'Row'**
+  String get schoolBusHelpRows;
+
+  /// No description provided for @eventHelpSchoolBusRows.
+  ///
+  /// In en, this message translates to:
+  /// **'Rows are 1-based: Row 1 = top lane, Row 5/6 = bottom lane. Standard lawns: 5 rows. Underwater World lawns: 6 rows. The truck type is fixed to schoolbus_special.'**
+  String get eventHelpSchoolBusRows;
+
+  /// No description provided for @schoolBusHelpZombies.
+  ///
+  /// In en, this message translates to:
+  /// **'Zombies'**
+  String get schoolBusHelpZombies;
+
+  /// No description provided for @eventHelpSchoolBusZombies.
+  ///
+  /// In en, this message translates to:
+  /// **'Zombies released when the truck is destroyed. Level ranges from 0 to 10 (0 = no level bonus).'**
+  String get eventHelpSchoolBusZombies;
+
+  /// No description provided for @schoolBusRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Row'**
+  String get schoolBusRow;
+
+  /// No description provided for @schoolBusType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get schoolBusType;
+
+  /// No description provided for @schoolBusHitPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Truck health (SchoolBusHitPoints)'**
+  String get schoolBusHitPoints;
+
+  /// No description provided for @schoolBusSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Truck speed (SchoolBusSpeed)'**
+  String get schoolBusSpeed;
+
+  /// No description provided for @schoolBusZombies.
+  ///
+  /// In en, this message translates to:
+  /// **'Contained zombies (Zombies)'**
+  String get schoolBusZombies;
+
+  /// No description provided for @schoolBusZombieLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Zombie level (Level)'**
+  String get schoolBusZombieLevel;
+
+  /// No description provided for @schoolBusAddZombie.
+  ///
+  /// In en, this message translates to:
+  /// **'Add zombie'**
+  String get schoolBusAddZombie;
+
+  /// No description provided for @schoolBusRowsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Rows are 1-based: Row 1 = top lane, Row 5/6 = bottom lane.'**
+  String get schoolBusRowsHint;
 
   /// No description provided for @eventHelpThunderWaveBody.
   ///
@@ -5961,6 +6075,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Event: Seashell spawn'**
   String get eventShellSpawn;
+
+  /// No description provided for @eventPumpkinHouseSpawn.
+  ///
+  /// In en, this message translates to:
+  /// **'Event: Pumpkin house spawn'**
+  String get eventPumpkinHouseSpawn;
+
+  /// No description provided for @eventSchoolBusSpawn.
+  ///
+  /// In en, this message translates to:
+  /// **'Event: Ice cream truck spawn'**
+  String get eventSchoolBusSpawn;
 
   /// No description provided for @warMist.
   ///
@@ -8403,6 +8529,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Configures pathways and tile styles for Underground Palace secret realm levels'**
   String get moduleDesc_TunnelDefendModuleProperties;
+
+  /// No description provided for @moduleTitle_WitchModuleProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'Pumpkin Witch'**
+  String get moduleTitle_WitchModuleProperties;
+
+  /// No description provided for @moduleDesc_WitchModuleProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'Configures the pumpkin witch intro animation and spawn timing'**
+  String get moduleDesc_WitchModuleProperties;
+
+  /// No description provided for @moduleTitle_InitialGridItemGulliverTunnelProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'Gulliver Tunnels'**
+  String get moduleTitle_InitialGridItemGulliverTunnelProperties;
+
+  /// No description provided for @moduleDesc_InitialGridItemGulliverTunnelProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'Places pre-set Gulliver tunnels on the lawn'**
+  String get moduleDesc_InitialGridItemGulliverTunnelProperties;
+
+  /// No description provided for @witchModuleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pumpkin Witch'**
+  String get witchModuleTitle;
+
+  /// No description provided for @witchModuleHelpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pumpkin Witch module'**
+  String get witchModuleHelpTitle;
+
+  /// No description provided for @witchModuleHelpIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Adds the pumpkin witch appearance animation and subtitles. By default uses the built-in LevelModules definition named WitchModule.'**
+  String get witchModuleHelpIntro;
+
+  /// No description provided for @witchModuleHelpParams.
+  ///
+  /// In en, this message translates to:
+  /// **'Parameter configuration'**
+  String get witchModuleHelpParams;
+
+  /// No description provided for @witchModuleHelpParamsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable custom local parameters to override WitchSpawnInterval. When disabled, the game uses the LevelModules default.'**
+  String get witchModuleHelpParamsBody;
+
+  /// No description provided for @witchModuleSpawnInterval.
+  ///
+  /// In en, this message translates to:
+  /// **'Witch spawn interval (WitchSpawnInterval, seconds)'**
+  String get witchModuleSpawnInterval;
+
+  /// No description provided for @gulliverTunnelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Gulliver tunnels'**
+  String get gulliverTunnelTitle;
+
+  /// No description provided for @gulliverTunnelHelpOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Place Gulliver tunnel grid items on the lawn before the level starts.'**
+  String get gulliverTunnelHelpOverview;
+
+  /// No description provided for @gulliverTunnelHelpUsage.
+  ///
+  /// In en, this message translates to:
+  /// **'Usage'**
+  String get gulliverTunnelHelpUsage;
+
+  /// No description provided for @gulliverTunnelHelpUsageBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an orientation below, then tap the grid to place. Tap the same cell again to remove. Tap with a different orientation selected to replace.'**
+  String get gulliverTunnelHelpUsageBody;
+
+  /// No description provided for @gulliverTunnelOrientationBigOnLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Big opening on left'**
+  String get gulliverTunnelOrientationBigOnLeft;
+
+  /// No description provided for @gulliverTunnelOrientationBigOnRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Big opening on right'**
+  String get gulliverTunnelOrientationBigOnRight;
+
+  /// No description provided for @gulliverTunnelPlacedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Placed'**
+  String get gulliverTunnelPlacedCount;
+
+  /// No description provided for @gulliverTunnelClearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get gulliverTunnelClearAll;
+
+  /// No description provided for @gulliverTunnelClearConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all Gulliver tunnels?'**
+  String get gulliverTunnelClearConfirmTitle;
+
+  /// No description provided for @gulliverTunnelClearConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove all placed Gulliver tunnels from the grid. This cannot be undone.'**
+  String get gulliverTunnelClearConfirmMessage;
+
+  /// No description provided for @gulliverTunnelSelectOrientation.
+  ///
+  /// In en, this message translates to:
+  /// **'Select orientation'**
+  String get gulliverTunnelSelectOrientation;
+
+  /// No description provided for @gulliverTunnelOutsideLawn.
+  ///
+  /// In en, this message translates to:
+  /// **'Outside lawn'**
+  String get gulliverTunnelOutsideLawn;
+
+  /// No description provided for @gulliverTunnelDeleteOutside.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete outside lawn'**
+  String get gulliverTunnelDeleteOutside;
+
+  /// No description provided for @gulliverTunnelDeleteOutsideConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete tunnels outside lawn?'**
+  String get gulliverTunnelDeleteOutsideConfirmTitle;
+
+  /// No description provided for @gulliverTunnelDeleteOutsideConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove tunnel placements that fall outside the 5×9 lawn grid.'**
+  String get gulliverTunnelDeleteOutsideConfirmMessage;
 
   /// No description provided for @moduleTitle_ZombieRushModuleProperties.
   ///

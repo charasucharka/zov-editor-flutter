@@ -1867,6 +1867,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Spawns atlantis seashells at set positions';
 
   @override
+  String get eventTitle_PumpkinHouseActionProps => 'Pumpkin House Spawn';
+
+  @override
+  String get eventDesc_PumpkinHouseActionProps =>
+      'Spawns pumpkin houses on the lawn at set positions';
+
+  @override
   String get eventTitle_SpawnGravestonesWaveActionProps => 'Grid Item Spawn';
 
   @override
@@ -1929,6 +1936,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get eventDesc_BarrelWaveActionProps =>
       'Spawns barrels with different abilities in set lanes';
+
+  @override
+  String get eventTitle_SchoolBusWaveActionProps => 'Ice Cream Truck Spawn';
+
+  @override
+  String get eventDesc_SchoolBusWaveActionProps =>
+      'Spawns an ice cream truck in a lane with configurable zombies inside';
 
   @override
   String get eventTitle_BungeeWaveActionProps => 'Bungee Drop';
@@ -2929,6 +2943,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Select a tile, then tap \"+\" to place a seashell. Lawn size varies by level: 6 rows × 10 columns in Underwater World, and 5 rows × 9 columns in other levels.';
 
   @override
+  String get eventHelpPumpkinHouseBody =>
+      'Spawns pumpkin house grid items at specified positions during the wave.';
+
+  @override
+  String get eventHelpPumpkinHouseUsage =>
+      'Select a tile, then tap \"+\" to place a pumpkin house. Lawn size varies by level: 6 rows × 10 columns in Underwater World, and 5 rows × 9 columns in other levels.';
+
+  @override
   String get eventHelpFairyFogBody =>
       'Creates magic fog that covers the lawn and grants shields to zombies. Commonly used in Fairytale Forest levels. Can only be cleared by the Fairtyale Breeze event.\nHigher-tier fog grants stronger shields and increased control immunity to zombies. Tiers, from lowest to highest, are White, Blue, and Purple.';
 
@@ -2984,6 +3006,49 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get eventHelpBarrelWaveRows =>
       'Rows are 1-based: Row 1 = top lane, Row 5/6 = bottom lane. Standard lawns: 5 rows. Underwater World lawns: 6 rows.';
+
+  @override
+  String get eventHelpSchoolBusBody =>
+      'Spawns a special ice cream truck (schoolbus_special) that rolls in from the right on the selected lane. When destroyed, it releases the configured zombies.';
+
+  @override
+  String get schoolBusHelpRows => 'Row';
+
+  @override
+  String get eventHelpSchoolBusRows =>
+      'Rows are 1-based: Row 1 = top lane, Row 5/6 = bottom lane. Standard lawns: 5 rows. Underwater World lawns: 6 rows. The truck type is fixed to schoolbus_special.';
+
+  @override
+  String get schoolBusHelpZombies => 'Zombies';
+
+  @override
+  String get eventHelpSchoolBusZombies =>
+      'Zombies released when the truck is destroyed. Level ranges from 0 to 10 (0 = no level bonus).';
+
+  @override
+  String get schoolBusRow => 'Row';
+
+  @override
+  String get schoolBusType => 'Type';
+
+  @override
+  String get schoolBusHitPoints => 'Truck health (SchoolBusHitPoints)';
+
+  @override
+  String get schoolBusSpeed => 'Truck speed (SchoolBusSpeed)';
+
+  @override
+  String get schoolBusZombies => 'Contained zombies (Zombies)';
+
+  @override
+  String get schoolBusZombieLevel => 'Zombie level (Level)';
+
+  @override
+  String get schoolBusAddZombie => 'Add zombie';
+
+  @override
+  String get schoolBusRowsHint =>
+      'Rows are 1-based: Row 1 = top lane, Row 5/6 = bottom lane.';
 
   @override
   String get eventHelpThunderWaveBody =>
@@ -3295,6 +3360,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get eventShellSpawn => 'Event: Seashell spawn';
+
+  @override
+  String get eventPumpkinHouseSpawn => 'Event: Pumpkin house spawn';
+
+  @override
+  String get eventSchoolBusSpawn => 'Event: Ice cream truck spawn';
 
   @override
   String get warMist => 'Fog System module';
@@ -4668,6 +4739,92 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get moduleDesc_TunnelDefendModuleProperties =>
       'Configures pathways and tile styles for Underground Palace secret realm levels';
+
+  @override
+  String get moduleTitle_WitchModuleProperties => 'Pumpkin Witch';
+
+  @override
+  String get moduleDesc_WitchModuleProperties =>
+      'Configures the pumpkin witch intro animation and spawn timing';
+
+  @override
+  String get moduleTitle_InitialGridItemGulliverTunnelProperties =>
+      'Gulliver Tunnels';
+
+  @override
+  String get moduleDesc_InitialGridItemGulliverTunnelProperties =>
+      'Places pre-set Gulliver tunnels on the lawn';
+
+  @override
+  String get witchModuleTitle => 'Pumpkin Witch';
+
+  @override
+  String get witchModuleHelpTitle => 'Pumpkin Witch module';
+
+  @override
+  String get witchModuleHelpIntro =>
+      'Adds the pumpkin witch appearance animation and subtitles. By default uses the built-in LevelModules definition named WitchModule.';
+
+  @override
+  String get witchModuleHelpParams => 'Parameter configuration';
+
+  @override
+  String get witchModuleHelpParamsBody =>
+      'Enable custom local parameters to override WitchSpawnInterval. When disabled, the game uses the LevelModules default.';
+
+  @override
+  String get witchModuleSpawnInterval =>
+      'Witch spawn interval (WitchSpawnInterval, seconds)';
+
+  @override
+  String get gulliverTunnelTitle => 'Gulliver tunnels';
+
+  @override
+  String get gulliverTunnelHelpOverview =>
+      'Place Gulliver tunnel grid items on the lawn before the level starts.';
+
+  @override
+  String get gulliverTunnelHelpUsage => 'Usage';
+
+  @override
+  String get gulliverTunnelHelpUsageBody =>
+      'Choose an orientation below, then tap the grid to place. Tap the same cell again to remove. Tap with a different orientation selected to replace.';
+
+  @override
+  String get gulliverTunnelOrientationBigOnLeft => 'Big opening on left';
+
+  @override
+  String get gulliverTunnelOrientationBigOnRight => 'Big opening on right';
+
+  @override
+  String get gulliverTunnelPlacedCount => 'Placed';
+
+  @override
+  String get gulliverTunnelClearAll => 'Clear all';
+
+  @override
+  String get gulliverTunnelClearConfirmTitle => 'Clear all Gulliver tunnels?';
+
+  @override
+  String get gulliverTunnelClearConfirmMessage =>
+      'Remove all placed Gulliver tunnels from the grid. This cannot be undone.';
+
+  @override
+  String get gulliverTunnelSelectOrientation => 'Select orientation';
+
+  @override
+  String get gulliverTunnelOutsideLawn => 'Outside lawn';
+
+  @override
+  String get gulliverTunnelDeleteOutside => 'Delete outside lawn';
+
+  @override
+  String get gulliverTunnelDeleteOutsideConfirmTitle =>
+      'Delete tunnels outside lawn?';
+
+  @override
+  String get gulliverTunnelDeleteOutsideConfirmMessage =>
+      'Remove tunnel placements that fall outside the 5×9 lawn grid.';
 
   @override
   String get moduleTitle_ZombieRushModuleProperties => 'Level Timer';

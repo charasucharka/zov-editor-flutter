@@ -1753,6 +1753,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get eventDesc_ZombieAtlantisShellActionProps => '在指定位置生成海底贝壳';
 
   @override
+  String get eventTitle_PumpkinHouseActionProps => '南瓜屋生成';
+
+  @override
+  String get eventDesc_PumpkinHouseActionProps => '在指定位置生成南瓜屋';
+
+  @override
   String get eventTitle_SpawnGravestonesWaveActionProps => '障碍物生成';
 
   @override
@@ -1805,6 +1811,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get eventDesc_BarrelWaveActionProps => '在指定行生成具有不同能力的滚桶';
+
+  @override
+  String get eventTitle_SchoolBusWaveActionProps => '冰淇淋车生成';
+
+  @override
+  String get eventDesc_SchoolBusWaveActionProps => '在指定行生成冰淇淋车，可配置车内僵尸';
 
   @override
   String get eventTitle_BungeeWaveActionProps => '蹦极投放';
@@ -2764,6 +2776,13 @@ class AppLocalizationsZh extends AppLocalizations {
       '选中格子后，点击“+”放置贝壳。场地大小因关卡地图而异，共有5×9和6×10两种规格。';
 
   @override
+  String get eventHelpPumpkinHouseBody => '此事件可在指定位置生成南瓜屋障碍物。';
+
+  @override
+  String get eventHelpPumpkinHouseUsage =>
+      '选中格子后，点击“+”放置南瓜屋。场地大小因关卡地图而异，共有5×9和6×10两种规格。';
+
+  @override
   String get eventHelpFairyFogBody =>
       '本事件用于生成覆盖场地、给僵尸提供护盾的魔力迷雾，常用于童话森林关卡，只有微风事件才能吹散。\n迷雾等级越高，僵尸获得的护盾及免控效果越强。等级从低到高依次为白色、蓝色、紫色。';
 
@@ -2816,6 +2835,48 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get eventHelpBarrelWaveRows =>
       '行数从1开始计，地图最上面一行为1，最下面一行为5（或6）。标准地图共有5行，海底世界地图共有6行。';
+
+  @override
+  String get eventHelpSchoolBusBody =>
+      '在指定行生成特殊冰淇淋车（schoolbus_special），从右侧驶入。被击破后会释放配置的僵尸。';
+
+  @override
+  String get schoolBusHelpRows => '行数说明';
+
+  @override
+  String get eventHelpSchoolBusRows =>
+      '行数从1开始计，地图最上面一行为1，最下面一行为5（或6）。标准地图共有5行，海底世界地图共有6行。类型固定为 schoolbus_special，不可修改。';
+
+  @override
+  String get schoolBusHelpZombies => '僵尸';
+
+  @override
+  String get eventHelpSchoolBusZombies =>
+      '冰淇淋车被击破后释放的僵尸。等级范围为 0–10（0 表示无等级加成）。';
+
+  @override
+  String get schoolBusRow => '行';
+
+  @override
+  String get schoolBusType => '类型';
+
+  @override
+  String get schoolBusHitPoints => '车辆血量 (SchoolBusHitPoints)';
+
+  @override
+  String get schoolBusSpeed => '车辆速度 (SchoolBusSpeed)';
+
+  @override
+  String get schoolBusZombies => '车内僵尸 (Zombies)';
+
+  @override
+  String get schoolBusZombieLevel => '僵尸等级 (Level)';
+
+  @override
+  String get schoolBusAddZombie => '添加僵尸';
+
+  @override
+  String get schoolBusRowsHint => '行数从1开始计，地图最上面一行为1，最下面一行为5（或6）。';
 
   @override
   String get eventHelpThunderWaveBody =>
@@ -3120,6 +3181,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get eventShellSpawn => '事件类型：贝壳生成';
+
+  @override
+  String get eventPumpkinHouseSpawn => '事件类型：南瓜屋生成';
+
+  @override
+  String get eventSchoolBusSpawn => '事件类型：冰淇淋车生成';
 
   @override
   String get warMist => '迷雾系统模块';
@@ -4430,6 +4497,85 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get moduleDesc_TunnelDefendModuleProperties => '设置地宫秘境的坑道及地砖样式';
+
+  @override
+  String get moduleTitle_WitchModuleProperties => '南瓜女巫';
+
+  @override
+  String get moduleDesc_WitchModuleProperties => '配置南瓜女巫登场动画与出现间隔';
+
+  @override
+  String get moduleTitle_InitialGridItemGulliverTunnelProperties => '格列弗隧道';
+
+  @override
+  String get moduleDesc_InitialGridItemGulliverTunnelProperties => '在场地预置格列弗隧道';
+
+  @override
+  String get witchModuleTitle => '南瓜女巫';
+
+  @override
+  String get witchModuleHelpTitle => '南瓜女巫模块';
+
+  @override
+  String get witchModuleHelpIntro =>
+      '添加南瓜女巫登场动画与字幕。默认使用 LevelModules 中名为 WitchModule 的内置配置。';
+
+  @override
+  String get witchModuleHelpParams => '参数配置';
+
+  @override
+  String get witchModuleHelpParamsBody =>
+      '启用自定义本地参数可覆盖 WitchSpawnInterval。关闭时使用 LevelModules 默认值。';
+
+  @override
+  String get witchModuleSpawnInterval => '女巫出现间隔 (WitchSpawnInterval，单位：秒)';
+
+  @override
+  String get gulliverTunnelTitle => '格列弗隧道';
+
+  @override
+  String get gulliverTunnelHelpOverview => '在关卡开始前于场地放置格列弗隧道。';
+
+  @override
+  String get gulliverTunnelHelpUsage => '使用方法';
+
+  @override
+  String get gulliverTunnelHelpUsageBody =>
+      '在下方选择朝向，然后点击网格放置。再次点击同一格可移除；选择不同朝向后点击可替换。';
+
+  @override
+  String get gulliverTunnelOrientationBigOnLeft => '大口朝左';
+
+  @override
+  String get gulliverTunnelOrientationBigOnRight => '大口朝右';
+
+  @override
+  String get gulliverTunnelPlacedCount => '已放置';
+
+  @override
+  String get gulliverTunnelClearAll => '全部清除';
+
+  @override
+  String get gulliverTunnelClearConfirmTitle => '清除全部格列弗隧道？';
+
+  @override
+  String get gulliverTunnelClearConfirmMessage => '将移除网格上所有已放置的格列弗隧道，此操作不可撤销。';
+
+  @override
+  String get gulliverTunnelSelectOrientation => '选择朝向';
+
+  @override
+  String get gulliverTunnelOutsideLawn => '场地外';
+
+  @override
+  String get gulliverTunnelDeleteOutside => '删除场地外隧道';
+
+  @override
+  String get gulliverTunnelDeleteOutsideConfirmTitle => '删除场地外的隧道？';
+
+  @override
+  String get gulliverTunnelDeleteOutsideConfirmMessage =>
+      '移除位于 5×9 场地网格之外的隧道放置。';
 
   @override
   String get moduleTitle_ZombieRushModuleProperties => '关卡倒计时';

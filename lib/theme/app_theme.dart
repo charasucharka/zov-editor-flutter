@@ -33,6 +33,10 @@ const Color pvzPurpleDark = Color(0xFF8F76BB);
 const Color pvzBrownLight = Color(0xFF795548);
 const Color pvzBrownDark = Color(0xFF6E5E57);
 
+/// Pink for Gulliver tunnel module
+const Color pvzPinkLight = Color(0xFFE91E63);
+const Color pvzPinkDark = Color(0xFFAD1457);
+
 /// Light orange for Max Sun module (matches Kotlin PvzLightOrangeLight/Dark)
 const Color pvzLightOrangeLight = Color(0xFFFF9800);
 const Color pvzLightOrangeDark = Color(0xFFFFC97A);

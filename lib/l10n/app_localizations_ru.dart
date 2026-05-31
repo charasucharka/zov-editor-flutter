@@ -1848,6 +1848,14 @@ class AppLocalizationsRu extends AppLocalizations {
       'Появление атлантических ракушек на сетке';
 
   @override
+  String get eventTitle_PumpkinHouseActionProps =>
+      'Появление тыквенных домиков';
+
+  @override
+  String get eventDesc_PumpkinHouseActionProps =>
+      'Размещает тыквенные домики в указанных клетках';
+
+  @override
   String get eventTitle_SpawnGravestonesWaveActionProps => 'Спавн надгробий';
 
   @override
@@ -1907,6 +1915,13 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get eventDesc_BarrelWaveActionProps =>
       'Катящиеся бочки по рядам (пустые, зомби, взрывные)';
+
+  @override
+  String get eventTitle_SchoolBusWaveActionProps => 'Фургон с мороженым';
+
+  @override
+  String get eventDesc_SchoolBusWaveActionProps =>
+      'Фургон с мороженым в ряду с настраиваемыми зомби внутри';
 
   @override
   String get eventTitle_BungeeWaveActionProps => 'Прыжок с парашютом';
@@ -2885,6 +2900,14 @@ class AppLocalizationsRu extends AppLocalizations {
       'Выберите клетку, нажмите добавить для размещения ракушки (5×9 или 6×10 в зависимости от этапа).';
 
   @override
+  String get eventHelpPumpkinHouseBody =>
+      'Размещает тыквенные домики в указанных клетках во время волны.';
+
+  @override
+  String get eventHelpPumpkinHouseUsage =>
+      'Выберите клетку и нажмите «+», чтобы разместить тыквенный домик (5×9 или 6×10 в зависимости от этапа).';
+
+  @override
   String get eventHelpFairyFogBody =>
       'Создаёт туман, дающий зомби щиты. Только ветер развеивает.';
 
@@ -2939,6 +2962,48 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get eventHelpBarrelWaveRows =>
       'Ряды с 1: ряд 1 = сверху, 5/6 = снизу. Стандарт: 5 рядов. Глубокое море: 6 рядов.';
+
+  @override
+  String get eventHelpSchoolBusBody =>
+      'Спавнит специальный фургон с мороженым (schoolbus_special), который выезжает справа в выбранном ряду. При уничтожении выпускает настроенных зомби.';
+
+  @override
+  String get schoolBusHelpRows => 'Ряд';
+
+  @override
+  String get eventHelpSchoolBusRows =>
+      'Ряды с 1: ряд 1 = сверху, 5/6 = снизу. Стандарт: 5 рядов. Глубокое море: 6 рядов. Тип фиксирован: schoolbus_special.';
+
+  @override
+  String get schoolBusHelpZombies => 'Зомби';
+
+  @override
+  String get eventHelpSchoolBusZombies =>
+      'Зомби, выпускаемые при уничтожении фургона. Уровень от 0 до 10 (0 = без бонуса уровня).';
+
+  @override
+  String get schoolBusRow => 'Ряд';
+
+  @override
+  String get schoolBusType => 'Тип';
+
+  @override
+  String get schoolBusHitPoints => 'Здоровье фургона (SchoolBusHitPoints)';
+
+  @override
+  String get schoolBusSpeed => 'Скорость фургона (SchoolBusSpeed)';
+
+  @override
+  String get schoolBusZombies => 'Зомби внутри (Zombies)';
+
+  @override
+  String get schoolBusZombieLevel => 'Уровень зомби (Level)';
+
+  @override
+  String get schoolBusAddZombie => 'Добавить зомби';
+
+  @override
+  String get schoolBusRowsHint => 'Ряды с 1: ряд 1 = сверху, 5/6 = снизу.';
 
   @override
   String get eventHelpThunderWaveBody =>
@@ -3244,6 +3309,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get eventShellSpawn => 'Событие спавна ракушек';
+
+  @override
+  String get eventPumpkinHouseSpawn => 'Событие: тыквенные домики';
+
+  @override
+  String get eventSchoolBusSpawn => 'Событие: фургон с мороженым';
 
   @override
   String get warMist => 'Военный туман';
@@ -4599,6 +4670,93 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get moduleDesc_TunnelDefendModuleProperties =>
       'Размещение тоннелей мавзолея';
+
+  @override
+  String get moduleTitle_WitchModuleProperties => 'Тыквенная ведьма';
+
+  @override
+  String get moduleDesc_WitchModuleProperties =>
+      'Анимация появления тыквенной ведьмы и интервал';
+
+  @override
+  String get moduleTitle_InitialGridItemGulliverTunnelProperties =>
+      'Тоннели Gulliver';
+
+  @override
+  String get moduleDesc_InitialGridItemGulliverTunnelProperties =>
+      'Предустановленные тоннели Gulliver на газоне';
+
+  @override
+  String get witchModuleTitle => 'Тыквенная ведьма';
+
+  @override
+  String get witchModuleHelpTitle => 'Модуль тыквенной ведьмы';
+
+  @override
+  String get witchModuleHelpIntro =>
+      'Добавляет анимацию и субтитры появления тыквенной ведьмы. По умолчанию используется WitchModule из LevelModules.';
+
+  @override
+  String get witchModuleHelpParams => 'Параметры';
+
+  @override
+  String get witchModuleHelpParamsBody =>
+      'Включите локальные параметры, чтобы изменить WitchSpawnInterval. Иначе используются значения LevelModules.';
+
+  @override
+  String get witchModuleSpawnInterval =>
+      'Интервал появления ведьмы (WitchSpawnInterval, сек.)';
+
+  @override
+  String get gulliverTunnelTitle => 'Тоннели Gulliver';
+
+  @override
+  String get gulliverTunnelHelpOverview =>
+      'Размещение тоннелей Gulliver на газоне до начала уровня.';
+
+  @override
+  String get gulliverTunnelHelpUsage => 'Использование';
+
+  @override
+  String get gulliverTunnelHelpUsageBody =>
+      'Выберите ориентацию и нажмите на сетку для размещения. Повторное нажатие удаляет тоннель; другая ориентация заменяет существующую.';
+
+  @override
+  String get gulliverTunnelOrientationBigOnLeft => 'Большой проход слева';
+
+  @override
+  String get gulliverTunnelOrientationBigOnRight => 'Большой проход справа';
+
+  @override
+  String get gulliverTunnelPlacedCount => 'Размещено';
+
+  @override
+  String get gulliverTunnelClearAll => 'Очистить всё';
+
+  @override
+  String get gulliverTunnelClearConfirmTitle =>
+      'Очистить все тоннели Gulliver?';
+
+  @override
+  String get gulliverTunnelClearConfirmMessage =>
+      'Удалить все размещённые тоннели Gulliver с сетки.';
+
+  @override
+  String get gulliverTunnelSelectOrientation => 'Выберите ориентацию';
+
+  @override
+  String get gulliverTunnelOutsideLawn => 'Вне газона';
+
+  @override
+  String get gulliverTunnelDeleteOutside => 'Удалить вне газона';
+
+  @override
+  String get gulliverTunnelDeleteOutsideConfirmTitle =>
+      'Удалить тоннели вне газона?';
+
+  @override
+  String get gulliverTunnelDeleteOutsideConfirmMessage =>
+      'Удалить размещения тоннелей за пределами сетки 5×9.';
 
   @override
   String get moduleTitle_ZombieRushModuleProperties => 'Таймер Zombie Rush';
