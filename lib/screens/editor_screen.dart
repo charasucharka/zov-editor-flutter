@@ -27,6 +27,7 @@ import 'package:z_editor/screens/editor/modules/seed_rain_properties_screen.dart
 import 'package:z_editor/screens/editor/modules/conveyor_seedbank_properties_screen.dart';
 import 'package:z_editor/screens/editor/modules/seed_bank_properties_screen.dart';
 import 'package:z_editor/screens/editor/modules/sun_dropper_properties_screen.dart';
+import 'package:z_editor/screens/editor/modules/witch_module_properties_screen.dart';
 import 'package:z_editor/screens/editor/modules/starting_plantfood_module_screen.dart';
 import 'package:z_editor/screens/editor/modules/tide_properties_screen.dart';
 import 'package:z_editor/screens/editor/modules/zombie_move_fast_module_screen.dart';
@@ -57,6 +58,7 @@ import 'package:z_editor/screens/editor/modules/manhole_pipeline_module_screen.d
 import 'package:z_editor/screens/editor/modules/wave_manager_module_screen.dart';
 import 'package:z_editor/screens/editor/modules/lawn_mower_properties_screen.dart';
 import 'package:z_editor/screens/editor/modules/tunnel_defend_module_screen.dart';
+import 'package:z_editor/screens/editor/modules/gulliver_tunnel_module_screen.dart';
 import 'package:z_editor/screens/editor/modules/zombie_rush_module_screen.dart';
 import 'package:z_editor/screens/editor/modules/pvz1_copycats_module_screen.dart';
 import 'package:z_editor/screens/editor/modules/pvz1_passage_module_screen.dart';
@@ -82,6 +84,7 @@ import 'package:z_editor/screens/editor/events/modern_portals_event_screen.dart'
 import 'package:z_editor/screens/editor/events/parachute_rain_event_screen.dart';
 import 'package:z_editor/screens/editor/events/raiding_party_event_screen.dart';
 import 'package:z_editor/screens/editor/events/barrel_wave_event_screen.dart';
+import 'package:z_editor/screens/editor/events/school_bus_event_screen.dart';
 import 'package:z_editor/screens/editor/events/bungee_wave_event_screen.dart';
 import 'package:z_editor/screens/editor/events/thunder_wave_event_screen.dart';
 import 'package:z_editor/screens/editor/events/tide_wave_event_screen.dart';
@@ -91,6 +94,7 @@ import 'package:z_editor/screens/editor/events/storm_event_screen.dart';
 import 'package:z_editor/screens/editor/events/tidal_change_event_screen.dart';
 import 'package:z_editor/screens/editor/events/zombie_potion_event_screen.dart';
 import 'package:z_editor/screens/editor/events/shell_event_screen.dart';
+import 'package:z_editor/screens/editor/events/pumpkin_house_event_screen.dart';
 import 'package:z_editor/screens/editor/events/jittered_event_screen.dart';
 import 'package:z_editor/screens/editor/events/ground_spawn_event_screen.dart';
 import 'package:z_editor/screens/select/event_selection_screen.dart';
@@ -636,6 +640,41 @@ class _EditorScreenState extends State<EditorScreen> {
         context,
         MaterialPageRoute(
           builder: (context) => BarrelWaveEventScreen(
+            rtid: rtid,
+            levelFile: _ec.state.levelFile!,
+            onChanged: _markDirty,
+            onBack: () {
+              _setActiveTab(EditorTabType.timeline);
+              Navigator.pop(context);
+            },
+            onRequestZombieSelection: (onSelected) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ZombieSelectionScreen(
+                    editorCubit: _ec,
+                    multiSelect: false,
+                    onZombieSelected: (id) {
+                      Navigator.pop(context);
+                      onSelected(id);
+                    },
+                    onMultiZombieSelected: (_) {},
+                    onBack: () => Navigator.pop(context),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+      return;
+    }
+
+    if (objClass == 'SchoolBusWaveActionProps') {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SchoolBusEventScreen(
             rtid: rtid,
             levelFile: _ec.state.levelFile!,
             onChanged: _markDirty,
@@ -1293,6 +1332,21 @@ class _EditorScreenState extends State<EditorScreen> {
         context,
         MaterialPageRoute(
           builder: (context) => ShellEventScreen(
+            rtid: rtid,
+            levelFile: _ec.state.levelFile!,
+            onChanged: _markDirty,
+            onBack: () => Navigator.pop(context),
+          ),
+        ),
+      );
+      return;
+    }
+
+    if (objClass == 'PumpkinHouseActionProps') {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PumpkinHouseEventScreen(
             rtid: rtid,
             levelFile: _ec.state.levelFile!,
             onChanged: _markDirty,
@@ -2012,6 +2066,31 @@ class _EditorScreenState extends State<EditorScreen> {
       openSunDropper(rtid);
       return;
     }
+    if (objClass == 'WitchModuleProperties' &&
+        _ec.state.parsedData?.levelDef != null) {
+      void openWitchModule(String rt) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WitchModulePropertiesScreen(
+              rtid: rt,
+              levelFile: _ec.state.levelFile!,
+              levelDef: _ec.state.parsedData!.levelDef!,
+              onChanged: _markDirty,
+              onBack: () => Navigator.pop(context),
+              onModeToggled: (newRtid) {
+                _markDirty();
+                Navigator.pop(context);
+                openWitchModule(newRtid);
+              },
+            ),
+          ),
+        );
+      }
+
+      openWitchModule(rtid);
+      return;
+    }
     if (info.source == 'CurrentLevel' && objClass == 'PiratePlankProperties') {
       if (_ec.state.parsedData!.levelDef != null) {
         Navigator.push(
@@ -2488,6 +2567,21 @@ class _EditorScreenState extends State<EditorScreen> {
         context,
         MaterialPageRoute(
           builder: (context) => TunnelDefendModuleScreen(
+            rtid: rtid,
+            levelFile: _ec.state.levelFile!,
+            onChanged: _markDirty,
+            onBack: () => Navigator.pop(context),
+          ),
+        ),
+      );
+      return;
+    }
+    if (info.source == 'CurrentLevel' &&
+        objClass == 'InitialGridItemGulliverTunnelProperties') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => GulliverTunnelModuleScreen(
             rtid: rtid,
             levelFile: _ec.state.levelFile!,
             onChanged: _markDirty,

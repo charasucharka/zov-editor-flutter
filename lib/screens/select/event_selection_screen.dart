@@ -141,6 +141,8 @@ class EventSelectionScreen extends StatelessWidget {
           return isTitle ? l10n.eventTitle_ZombiePotionActionProps : l10n.eventDesc_ZombiePotionActionProps;
         case 'ZombieAtlantisShellActionProps':
           return isTitle ? l10n.eventTitle_ZombieAtlantisShellActionProps : l10n.eventDesc_ZombieAtlantisShellActionProps;
+        case 'PumpkinHouseActionProps':
+          return isTitle ? l10n.eventTitle_PumpkinHouseActionProps : l10n.eventDesc_PumpkinHouseActionProps;
         case 'SpawnGravestonesWaveActionProps':
           return isTitle ? l10n.eventTitle_SpawnGravestonesWaveActionProps : l10n.eventDesc_SpawnGravestonesWaveActionProps;
         case 'SpawnZombiesFromGridItemSpawnerProps':
@@ -159,6 +161,8 @@ class EventSelectionScreen extends StatelessWidget {
           return isTitle ? l10n.eventTitle_BlackHoleWaveActionProps : l10n.eventDesc_BlackHoleWaveActionProps;
         case 'BarrelWaveActionProps':
           return isTitle ? l10n.eventTitle_BarrelWaveActionProps : l10n.eventDesc_BarrelWaveActionProps;
+        case 'SchoolBusWaveActionProps':
+          return isTitle ? l10n.eventTitle_SchoolBusWaveActionProps : l10n.eventDesc_SchoolBusWaveActionProps;
         case 'BungeeWaveActionProps':
           return isTitle ? l10n.eventTitle_BungeeWaveActionProps : l10n.eventDesc_BungeeWaveActionProps;
         case 'ThunderWaveActionProps':

@@ -217,6 +217,26 @@ class EventRegistry {
         }
       },
     ),
+    'PumpkinHouseActionProps': EventMetadata(
+      titleKey: 'eventTitle_PumpkinHouseActionProps',
+      descriptionKey: 'eventDesc_PumpkinHouseActionProps',
+      icon: Icons.holiday_village,
+      color: const Color(0xFFE65100),
+      darkColor: const Color(0xFFFFAB91),
+      defaultAlias: 'PumpkinHouseEvent',
+      defaultObjClass: 'PumpkinHouseActionProps',
+      initialDataFactory: () => PumpkinHouseActionPropsData(),
+      summaryProvider: (obj) {
+        try {
+          final data = PumpkinHouseActionPropsData.fromJson(
+            obj.objData as Map<String, dynamic>,
+          );
+          return '${data.tiles.length}';
+        } catch (_) {
+          return '';
+        }
+      },
+    ),
     'SpawnGravestonesWaveActionProps': EventMetadata(
       titleKey: 'eventTitle_SpawnGravestonesWaveActionProps',
       descriptionKey: 'eventDesc_SpawnGravestonesWaveActionProps',
@@ -352,6 +372,27 @@ class EventRegistry {
             obj.objData as Map<String, dynamic>,
           );
           return '${data.barrels.length}';
+        } catch (_) {
+          return '';
+        }
+      },
+    ),
+    'SchoolBusWaveActionProps': EventMetadata(
+      titleKey: 'eventTitle_SchoolBusWaveActionProps',
+      descriptionKey: 'eventDesc_SchoolBusWaveActionProps',
+      icon: Icons.icecream,
+      color: const Color(0xFFFFC107),
+      darkColor: const Color(0xFFFFECB3),
+      defaultAlias: 'SchoolBusEvent',
+      defaultObjClass: 'SchoolBusWaveActionProps',
+      initialDataFactory: () => SchoolBusWaveActionPropsData(),
+      summaryProvider: (obj) {
+        try {
+          final data = SchoolBusWaveActionPropsData.fromJson(
+            obj.objData as Map<String, dynamic>,
+          );
+          final zCount = data.des.params.zombies.length;
+          return zCount > 0 ? 'R${data.des.row} · $zCount' : 'R${data.des.row}';
         } catch (_) {
           return '';
         }

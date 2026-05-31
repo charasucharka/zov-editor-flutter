@@ -189,6 +189,10 @@ class ModuleRegistry {
         return l10n.moduleTitle_DropShipProperties;
       case 'moduleTitle_HeianWindModuleProperties':
         return l10n.moduleTitle_HeianWindModuleProperties;
+      case 'moduleTitle_WitchModuleProperties':
+        return l10n.moduleTitle_WitchModuleProperties;
+      case 'moduleTitle_InitialGridItemGulliverTunnelProperties':
+        return l10n.moduleTitle_InitialGridItemGulliverTunnelProperties;
       case 'moduleTitle_RocketZombieFlickModuleProperties':
         return l10n.moduleTitle_RocketZombieFlickModuleProperties;
       case 'moduleTitle_PVZ1PassageModuleProperties':
@@ -317,6 +321,10 @@ class ModuleRegistry {
         return l10n.moduleDesc_DropShipProperties;
       case 'moduleDesc_HeianWindModuleProperties':
         return l10n.moduleDesc_HeianWindModuleProperties;
+      case 'moduleDesc_WitchModuleProperties':
+        return l10n.moduleDesc_WitchModuleProperties;
+      case 'moduleDesc_InitialGridItemGulliverTunnelProperties':
+        return l10n.moduleDesc_InitialGridItemGulliverTunnelProperties;
       case 'moduleDesc_RocketZombieFlickModuleProperties':
         return l10n.moduleDesc_RocketZombieFlickModuleProperties;
       case 'moduleDesc_PVZ1PassageModuleProperties':
@@ -917,6 +925,28 @@ class ModuleRegistry {
       defaultAlias: 'HeianWindModule',
       initialDataFactory: () => HeianWindModulePropertiesData(),
       routeId: 'HeianWindModule',
+    ),
+    'WitchModuleProperties': const ModuleMetadata(
+      titleKey: 'moduleTitle_WitchModuleProperties',
+      descriptionKey: 'moduleDesc_WitchModuleProperties',
+      icon: Icons.auto_fix_high,
+      isCore: true,
+      allowMultiple: false,
+      category: ModuleCategory.gimmick,
+      defaultAlias: 'WitchModule',
+      defaultSource: 'LevelModules',
+      routeId: 'WitchModule',
+    ),
+    'InitialGridItemGulliverTunnelProperties': ModuleMetadata(
+      titleKey: 'moduleTitle_InitialGridItemGulliverTunnelProperties',
+      descriptionKey: 'moduleDesc_InitialGridItemGulliverTunnelProperties',
+      icon: Icons.circle_outlined,
+      isCore: true,
+      allowMultiple: false,
+      category: ModuleCategory.scene,
+      defaultAlias: 'TunnelPlacement',
+      initialDataFactory: () => InitialGridItemGulliverTunnelPropertiesData(),
+      routeId: 'GulliverTunnelModule',
     ),
     'SpermWhaleModuleProperties': ModuleMetadata(
       titleKey: 'moduleTitle_SpermWhaleModuleProperties',
