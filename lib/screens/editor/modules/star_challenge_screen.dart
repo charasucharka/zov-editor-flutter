@@ -131,9 +131,13 @@ class _StarChallengeModuleScreenState extends State<StarChallengeModuleScreen> {
       return;
     }
 
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final themeColor = isDark ? pvzOrangeDark : pvzOrangeLight;
     showChallengeEditorDialog(
       context,
       object: obj,
+      accentColor: themeColor,
       onChanged: () {
         setState(() {
           _saveData();
@@ -296,8 +300,12 @@ class _StarChallengeModuleScreenState extends State<StarChallengeModuleScreen> {
               }
 
               final meta = ChallengeRepository.getInfo(objClass ?? '');
-              final title = meta?.title ?? objClass ?? 'Unknown Challenge';
-              final description = meta?.description ?? '';
+              final title = objClass != null && objClass.isNotEmpty
+                  ? ChallengeRepository.localizedTitle(context, objClass)
+                  : (l10n?.unknownChallengeType ?? 'Unknown Challenge');
+              final description = objClass != null && objClass.isNotEmpty
+                  ? ChallengeRepository.localizedDescription(context, objClass)
+                  : '';
               final icon = meta?.icon ?? Icons.star_border;
 
               return Card(
