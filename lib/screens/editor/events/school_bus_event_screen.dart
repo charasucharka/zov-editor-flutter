@@ -145,6 +145,9 @@ class _SchoolBusEventScreenState extends State<SchoolBusEventScreen> {
     final alias = info?.alias ?? '';
     final des = _data.des;
     final params = des.params;
+    final busType = des.type == schoolBusNormalType
+        ? schoolBusNormalType
+        : schoolBusSpecialType;
 
     return Scaffold(
       appBar: AppBar(
@@ -177,6 +180,10 @@ class _SchoolBusEventScreenState extends State<SchoolBusEventScreen> {
                 HelpSectionData(
                   title: l10n?.schoolBusHelpRows ?? 'Row',
                   body: l10n?.eventHelpSchoolBusRows ?? '',
+                ),
+                HelpSectionData(
+                  title: l10n?.schoolBusType ?? 'Type',
+                  body: l10n?.eventHelpSchoolBusType ?? '',
                 ),
                 HelpSectionData(
                   title: l10n?.schoolBusHelpZombies ?? 'Zombies',
@@ -223,6 +230,40 @@ class _SchoolBusEventScreenState extends State<SchoolBusEventScreen> {
                         },
                         decoration: InputDecoration(
                           labelText: l10n?.schoolBusRow ?? 'Row',
+                          border: const OutlineInputBorder(),
+                          isDense: true,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      DropdownButtonFormField<String>(
+                        initialValue: busType,
+                        items: [
+                          DropdownMenuItem(
+                            value: schoolBusNormalType,
+                            child: Text(
+                              l10n?.schoolBusTypeNormal ?? 'Normal',
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: schoolBusSpecialType,
+                            child: Text(
+                              l10n?.schoolBusTypeSpecial ?? 'Special',
+                            ),
+                          ),
+                        ],
+                        onChanged: (v) {
+                          if (v != null) {
+                            _updateDes(
+                              SchoolBusDesData(
+                                row: des.row,
+                                type: v,
+                                params: params,
+                              ),
+                            );
+                          }
+                        },
+                        decoration: InputDecoration(
+                          labelText: l10n?.schoolBusType ?? 'Type',
                           border: const OutlineInputBorder(),
                           isDense: true,
                         ),

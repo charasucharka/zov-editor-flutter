@@ -2,6 +2,7 @@ import 'package:z_editor/data/pvz_models/PvzModel.dart';
 
 import 'package:z_editor/data/pvz_models/SchoolBusParamsData.dart';
 
+const schoolBusNormalType = 'schoolbus_normal';
 const schoolBusSpecialType = 'schoolbus_special';
 
 class SchoolBusDesData extends PvzModel {
@@ -14,7 +15,7 @@ class SchoolBusDesData extends PvzModel {
   /// 1-based row (1–5 standard, 1–6 Deep Sea).
   int row;
 
-  /// Fixed grid item type; always written as [schoolBusSpecialType].
+  /// Grid item type: [schoolBusNormalType] or [schoolBusSpecialType].
   String type;
   SchoolBusParamsData params;
 
@@ -29,10 +30,11 @@ class SchoolBusDesData extends PvzModel {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'Row': row,
-      'Type': schoolBusSpecialType,
+      'Type': type,
       'Params': params.toJson(),
     };
   }
