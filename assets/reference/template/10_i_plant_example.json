@@ -4,7 +4,7 @@
       "objclass": "LevelDefinition",
       "objdata": {
         "Description": "本关为我是植物示例关",
-        "LevelNumber": 9,
+        "LevelNumber": 10,
         "DisablePeavine": true,
         "IsArtifactDisabled": true,
         "Loot": "RTID(DefaultLoot@LevelModules)",
