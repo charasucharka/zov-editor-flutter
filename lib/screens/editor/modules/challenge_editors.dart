@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:z_editor/data/challenge_resource_l10n.dart';
 import 'package:z_editor/data/pvz_models.dart';
 import 'package:z_editor/data/repository/challenge_repository.dart';
 import 'package:z_editor/l10n/app_localizations.dart';
+import 'package:z_editor/screens/editor/modules/star_challenge_property_editors.dart';
 import 'package:z_editor/theme/app_theme.dart';
 
 /// Shows challenge editor in an alert dialog instead of a separate screen.
@@ -10,6 +12,7 @@ Future<void> showChallengeEditorDialog(
   required PvzObject object,
   required VoidCallback onChanged,
   Color? accentColor,
+  PvzLevelFile? levelFile,
 }) async {
   final l10n = AppLocalizations.of(context);
   final theme = Theme.of(context);
@@ -17,14 +20,36 @@ Future<void> showChallengeEditorDialog(
   final accent = accentColor ?? (isDark ? pvzOrangeDark : pvzOrangeLight);
   final onAccent = theme.colorScheme.onPrimary;
   final title = _friendlyTitleFor(context, object.objClass, l10n);
+  final dialogTheme = theme.copyWith(
+    colorScheme: theme.colorScheme.copyWith(primary: accent),
+    inputDecorationTheme: theme.inputDecorationTheme.copyWith(
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: accent, width: 2),
+      ),
+      floatingLabelStyle: WidgetStateTextStyle.resolveWith((states) {
+        if (states.contains(WidgetState.focused)) {
+          return TextStyle(color: accent);
+        }
+        return TextStyle(color: theme.colorScheme.onSurface);
+      }),
+      focusColor: accent,
+    ),
+  );
   await showDialog<void>(
     context: context,
-    builder: (ctx) => AlertDialog(
+    builder: (ctx) => Theme(
+      data: dialogTheme,
+      child: AlertDialog(
       title: Text(title),
       content: SizedBox(
         width: double.maxFinite,
         child: SingleChildScrollView(
-          child: ChallengeEditorContent(object: object, onChanged: onChanged, l10n: l10n),
+          child: ChallengeEditorContent(
+            object: object,
+            onChanged: onChanged,
+            l10n: l10n,
+            levelFile: levelFile,
+          ),
         ),
       ),
       actions: [
@@ -42,6 +67,7 @@ Future<void> showChallengeEditorDialog(
           child: Text(l10n?.save ?? 'Save'),
         ),
       ],
+    ),
     ),
   );
 }
@@ -79,11 +105,13 @@ class ChallengeEditorContent extends StatelessWidget {
     required this.object,
     required this.onChanged,
     this.l10n,
+    this.levelFile,
   });
 
   final PvzObject object;
   final VoidCallback onChanged;
   final AppLocalizations? l10n;
+  final PvzLevelFile? levelFile;
 
   @override
   Widget build(BuildContext context) {
@@ -100,35 +128,36 @@ class ChallengeEditorContent extends StatelessWidget {
         return _SimpleCountEditor(
           object: object,
           field: 'Count',
-          label: l10n?.count ?? 'Count',
           onChanged: onChanged,
         );
       case 'StarChallengeZombieDistanceProps':
         return _SimpleDoubleEditor(
           object: object,
           field: 'TargetDistance',
-          label: l10n?.targetDistance ?? 'Target Distance',
+          label: ChallengeResourceL10n.property(
+            context,
+            object.objClass,
+            'TargetDistance',
+            l10n?.targetDistance,
+          ),
           onChanged: onChanged,
         );
       case 'StarChallengeSunProducedProps':
         return _SimpleCountEditor(
           object: object,
           field: 'TargetSun',
-          label: l10n?.targetSun ?? 'Target Sun',
           onChanged: onChanged,
         );
       case 'StarChallengeSunUsedProps':
         return _SimpleCountEditor(
           object: object,
           field: 'MaximumSun',
-          label: l10n?.maximumSun ?? 'Maximum Sun',
           onChanged: onChanged,
         );
       case 'StarChallengeSpendSunHoldoutProps':
         return _SimpleCountEditor(
           object: object,
           field: 'HoldoutSeconds',
-          label: l10n?.holdoutSeconds ?? 'Holdout Seconds',
           onChanged: onChanged,
         );
       case 'StarChallengeKillZombiesInTimeProps':
@@ -137,50 +166,142 @@ class ChallengeEditorContent extends StatelessWidget {
         return _SimpleDoubleEditor(
           object: object,
           field: 'SpeedModifier',
-          label: l10n?.speedModifier ?? 'Speed Modifier',
+          label: ChallengeResourceL10n.property(
+            context,
+            object.objClass,
+            'SpeedModifier',
+            l10n?.speedModifier,
+          ),
           onChanged: onChanged,
         );
       case 'StarChallengeSunReducedProps':
         return _SimpleDoubleEditor(
           object: object,
           field: 'sunModifier',
-          label: l10n?.sunModifier ?? 'Sun Modifier',
+          label: ChallengeResourceL10n.property(
+            context,
+            object.objClass,
+            'sunModifier',
+            l10n?.sunModifier,
+          ),
           onChanged: onChanged,
         );
       case 'StarChallengePlantsLostProps':
         return _SimpleCountEditor(
           object: object,
           field: 'MaximumPlantsLost',
-          label: l10n?.maximumPlantsLost ?? 'Maximum Plants Lost',
           onChanged: onChanged,
         );
       case 'StarChallengeSimultaneousPlantsProps':
         return _SimpleCountEditor(
           object: object,
           field: 'MaximumPlants',
-          label: l10n?.maximumPlants ?? 'Maximum Plants',
           onChanged: onChanged,
         );
       case 'StarChallengeUnfreezePlantsProps':
         return _SimpleCountEditor(
           object: object,
           field: 'Count',
-          label: l10n?.count ?? 'Count',
           onChanged: onChanged,
         );
       case 'StarChallengeBlowZombieProps':
         return _SimpleCountEditor(
           object: object,
           field: 'Count',
-          label: l10n?.count ?? 'Count',
           onChanged: onChanged,
         );
       case 'StarChallengeTargetScoreProps':
         return _SimpleCountEditor(
           object: object,
           field: 'TargetScore',
-          label: l10n?.targetScore ?? 'Target Score',
           onChanged: onChanged,
+        );
+      case 'ApplyZombieConditionsChallengeProps':
+        return ApplyZombieConditionsChallengeEditor(
+          object: object,
+          onChanged: onChanged,
+        );
+      case 'PlantDefeatZombieChallengeProps':
+        return PlantDefeatZombieChallengeEditor(
+          object: object,
+          onChanged: onChanged,
+          levelFile: levelFile,
+        );
+      case 'DefeatZombiesOfTypeChallengeProps':
+        return DefeatZombiesOfTypeChallengeEditor(
+          object: object,
+          onChanged: onChanged,
+        );
+      case 'DestroyGridItemsChallengeProps':
+        return DestroyGridItemsChallengeEditor(
+          object: object,
+          onChanged: onChanged,
+        );
+      case 'StarChallengeDisablePlantProps':
+        return StarChallengeDisablePlantEditor(
+          object: object,
+          onChanged: onChanged,
+        );
+      case 'StarChallengeSandstormZombieKillProps':
+      case 'StarChallengeTentZombieKillProps':
+      case 'StarChallengeBufferTileZombieKillProps':
+      case 'StarChallengePotionZombieKillProps':
+      case 'StarChallengeBarrelPowderZombieKillProps':
+      case 'StarChallengeBlowBarrelZombieProps':
+      case 'StarChallengeFirecrackerZombieKillProps':
+      case 'StarChallengeFireworksZombieKillProps':
+        return StarChallengeCountFieldEditor(
+          object: object,
+          onChanged: onChanged,
+          field: 'Count',
+        );
+      case 'ZombiePerfumerChallengeProps':
+        return StarChallengeCountFieldEditor(
+          object: object,
+          onChanged: onChanged,
+          field: 'PoisonToClean',
+          defaultValue: 3,
+        );
+      case 'BalletSlipChallengeProps':
+        return StarChallengeCountFieldEditor(
+          object: object,
+          onChanged: onChanged,
+          field: 'BalletToSlip',
+        );
+      case 'ZombieExplodenutChallengeProps':
+        return StarChallengeCountFieldEditor(
+          object: object,
+          onChanged: onChanged,
+          field: 'MaximumExplode',
+          defaultValue: 5,
+        );
+      case 'ZombieJalapenoChallengeProps':
+        return StarChallengeCountFieldEditor(
+          object: object,
+          onChanged: onChanged,
+          field: 'MaximumJalapeno',
+          defaultValue: 5,
+        );
+      case 'RenaiRollerChallengeProps':
+        return StarChallengeCountFieldEditor(
+          object: object,
+          onChanged: onChanged,
+          field: 'MaximumPlantsDied',
+          defaultValue: 5,
+        );
+      case 'ZombiePeaChallengeProps':
+        return StarChallengeCountFieldEditor(
+          object: object,
+          onChanged: onChanged,
+          field: 'MaximumPlantsHitted',
+          defaultValue: 80,
+        );
+      case 'SteamManholeChallengeProps':
+        return StarChallengeCountFieldEditor(
+          object: object,
+          onChanged: onChanged,
+          field: 'MaximumManholeEntered',
+          defaultValue: 5,
         );
       case 'ProtectThePlantChallengeProperties':
         return _ProtectThePlantEditor(l10n: l10n, object: object, onChanged: onChanged);
@@ -253,20 +374,30 @@ class _BeatTheLevelEditor extends StatefulWidget {
 }
 
 class _BeatTheLevelEditorState extends State<_BeatTheLevelEditor> {
-  late TextEditingController _descController;
   late TextEditingController _nameController;
+
+  Map<String, dynamic> get _data =>
+      widget.object.objData as Map<String, dynamic>;
+
+  String get _objClass => widget.object.objClass;
 
   @override
   void initState() {
     super.initState();
-    final data = widget.object.objData as Map<String, dynamic>;
-    _descController = TextEditingController(text: data['Description'] as String? ?? '');
-    _nameController = TextEditingController(text: data['DescriptiveName'] as String? ?? '');
+    _data.putIfAbsent('Description', () => '');
+    _data.putIfAbsent('DescriptiveName', () => '');
+    _nameController = TextEditingController(
+      text: _data['DescriptiveName'] as String? ?? '',
+    );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
   }
 
   void _save() {
-    widget.object.objData['Description'] = _descController.text;
-    widget.object.objData['DescriptiveName'] = _nameController.text;
     widget.onChanged();
   }
 
@@ -276,23 +407,36 @@ class _BeatTheLevelEditorState extends State<_BeatTheLevelEditor> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        TextField(
-          controller: _descController,
-          decoration: InputDecoration(
-            labelText: l10n?.hintTextDisplay ?? 'Text display (Description)',
-            border: const OutlineInputBorder(),
+        StarChallengeDescriptionField(
+          label: ChallengeResourceL10n.property(
+            context,
+            _objClass,
+            'Description',
           ),
-          maxLines: 3,
-          onChanged: (_) => _save(),
+          value: _data['Description'] as String? ?? '',
+          onChanged: (v) {
+            setState(() {
+              _data['Description'] = v;
+              _save();
+            });
+          },
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _nameController,
           decoration: InputDecoration(
-            labelText: l10n?.descriptiveName ?? 'Descriptive Name',
+            labelText: ChallengeResourceL10n.property(
+              context,
+              _objClass,
+              'DescriptiveName',
+              l10n?.descriptiveName,
+            ),
             border: const OutlineInputBorder(),
           ),
-          onChanged: (_) => _save(),
+          onChanged: (v) {
+            _data['DescriptiveName'] = v;
+            _save();
+          },
         ),
       ],
     );
@@ -303,13 +447,11 @@ class _SimpleCountEditor extends StatelessWidget {
   const _SimpleCountEditor({
     required this.object,
     required this.field,
-    required this.label,
     required this.onChanged,
   });
 
   final PvzObject object;
   final String field;
-  final String label;
   final VoidCallback onChanged;
 
   @override
@@ -318,7 +460,11 @@ class _SimpleCountEditor extends StatelessWidget {
     return TextFormField(
       initialValue: (data[field] ?? 0).toString(),
       decoration: InputDecoration(
-        labelText: label,
+        labelText: ChallengeResourceL10n.property(
+          context,
+          object.objClass,
+          field,
+        ),
         border: const OutlineInputBorder(),
       ),
       keyboardType: TextInputType.number,

@@ -116,6 +116,7 @@ class _StarChallengeModuleScreenState extends State<StarChallengeModuleScreen> {
   static const _noConfigChallenges = {
     'StarChallengeSaveMowersProps',
     'StarChallengePlantFoodNonuseProps',
+    'StarChallengeSaveBombsProps',
   };
 
   void _editChallenge(String challengeRtid) {
@@ -138,6 +139,7 @@ class _StarChallengeModuleScreenState extends State<StarChallengeModuleScreen> {
       context,
       object: obj,
       accentColor: themeColor,
+      levelFile: widget.levelFile,
       onChanged: () {
         setState(() {
           _saveData();
@@ -206,7 +208,9 @@ class _StarChallengeModuleScreenState extends State<StarChallengeModuleScreen> {
 
       Map<String, dynamic> objDataMap = {};
       final objData = info.initialDataFactory?.call();
-      if (objData != null) {
+      if (objData is Map<String, dynamic>) {
+        objDataMap = Map<String, dynamic>.from(objData);
+      } else if (objData != null) {
         try {
           objDataMap = (objData as dynamic).toJson() as Map<String, dynamic>;
         } catch (_) {

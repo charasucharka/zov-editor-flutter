@@ -1,29 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:z_editor/data/pvz_models.dart';
-import 'package:z_editor/l10n/resource_names.dart';
+import 'package:z_editor/data/challenge_resource_l10n.dart';
 
 /// Challenge type metadata. Ported from Z-Editor-master ChallengeRepository.kt
 class ChallengeTypeInfo {
   const ChallengeTypeInfo({
-    required this.title,
     required this.objClass,
     required this.defaultAlias,
-    required this.description,
     required this.icon,
     this.initialDataFactory,
   });
 
-  final String title;
   final String objClass;
   final String defaultAlias;
-  final String description;
   final IconData icon;
   final Object? Function()? initialDataFactory;
-
-  static String _titleKey(String objClass) =>
-      'starChallenge_${objClass}_title';
-
-  static String _descKey(String objClass) => 'starChallenge_${objClass}_desc';
 
   String localizedTitle(BuildContext context) =>
       ChallengeRepository.localizedTitle(context, objClass);
@@ -38,150 +29,258 @@ class ChallengeRepository {
 
   static final List<ChallengeTypeInfo> allChallenges = [
     ChallengeTypeInfo(
-      title: 'Level hint text',
       objClass: 'StarChallengeBeatTheLevelProps',
       defaultAlias: 'BeatTheLevel',
-      description: 'Show hint text popup at level start',
       icon: Icons.campaign,
       initialDataFactory: () => StarChallengeBeatTheLevelData(),
     ),
     ChallengeTypeInfo(
-      title: 'Don\'t lose mowers',
       objClass: 'StarChallengeSaveMowersProps',
       defaultAlias: 'SaveMowers',
-      description: 'Do not lose lawn mowers',
       icon: Icons.cleaning_services,
       initialDataFactory: () => StarChallengeSaveMowerData(),
     ),
     ChallengeTypeInfo(
-      title: 'Don\'t use plant food',
       objClass: 'StarChallengePlantFoodNonuseProps',
       defaultAlias: 'PlantfoodNonuse',
-      description: 'Do not use plant food',
       icon: Icons.eco,
       initialDataFactory: () => StarChallengePlantFoodNonuseData(),
     ),
     ChallengeTypeInfo(
-      title: 'Plants survive',
       objClass: 'StarChallengePlantsSurviveProps',
       defaultAlias: 'PlantsSurive',
-      description: 'Specified plants must survive',
       icon: Icons.security,
       initialDataFactory: () => StarChallengePlantSurviveData(),
     ),
     ChallengeTypeInfo(
-      title: 'Zombie distance',
       objClass: 'StarChallengeZombieDistanceProps',
       defaultAlias: 'ZombieDistance',
-      description: 'Zombies must not step on flowers',
       icon: Icons.do_not_step,
       initialDataFactory: () => StarChallengeZombieDistanceData(),
     ),
     ChallengeTypeInfo(
-      title: 'Sun produced',
       objClass: 'StarChallengeSunProducedProps',
       defaultAlias: 'SunProduced',
-      description: 'Produce a certain amount of sun',
       icon: Icons.wb_sunny,
       initialDataFactory: () => StarChallengeSunProducedData(),
     ),
     ChallengeTypeInfo(
-      title: 'Sun used',
       objClass: 'StarChallengeSunUsedProps',
       defaultAlias: 'SunUsed',
-      description: 'Limit sun usage',
       icon: Icons.savings,
       initialDataFactory: () => StarChallengeSunUsedData(),
     ),
     ChallengeTypeInfo(
-      title: 'Spend sun holdout',
       objClass: 'StarChallengeSpendSunHoldoutProps',
       defaultAlias: 'SpendSunHoldout',
-      description: 'Survive while spending sun',
       icon: Icons.hourglass_empty,
       initialDataFactory: () => StarChallengeSpendSunHoldoutData(),
     ),
     ChallengeTypeInfo(
-      title: 'Kill zombies in time',
       objClass: 'StarChallengeKillZombiesInTimeProps',
       defaultAlias: 'KillZombies',
-      description: 'Kill X zombies within Y seconds',
       icon: Icons.pest_control,
       initialDataFactory: () => StarChallengeKillZombiesInTimeData(),
     ),
     ChallengeTypeInfo(
-      title: 'Zombie speed',
       objClass: 'StarChallengeZombieSpeedProps',
       defaultAlias: 'ZombieSpeed',
-      description: 'Increase zombie speed',
       icon: Icons.speed,
       initialDataFactory: () => StarChallengeZombieSpeedData(),
     ),
     ChallengeTypeInfo(
-      title: 'Sun reduced',
       objClass: 'StarChallengeSunReducedProps',
       defaultAlias: 'SunReduced',
-      description: 'Sun decays over time',
       icon: Icons.brightness_low,
       initialDataFactory: () => StarChallengeSunReducedData(),
     ),
     ChallengeTypeInfo(
-      title: 'Plants lost',
       objClass: 'StarChallengePlantsLostProps',
       defaultAlias: 'PlantsLost',
-      description: 'Do not lose more than X plants',
       icon: Icons.heart_broken,
       initialDataFactory: () => StarChallengePlantsLostData(),
     ),
     ChallengeTypeInfo(
-      title: 'Simultaneous plants',
       objClass: 'StarChallengeSimultaneousPlantsProps',
       defaultAlias: 'SimultaneousPlants',
-      description: 'Limit plants on field',
       icon: Icons.forest,
       initialDataFactory: () => StarChallengeSimultaneousPlantsData(),
     ),
     ChallengeTypeInfo(
-      title: 'Unfreeze plants',
       objClass: 'StarChallengeUnfreezePlantsProps',
       defaultAlias: 'UnfreezePlants',
-      description: 'Unfreeze X plants',
       icon: Icons.ac_unit,
       initialDataFactory: () => StarChallengeUnfreezePlantsData(),
     ),
     ChallengeTypeInfo(
-      title: 'Blow zombie',
       objClass: 'StarChallengeBlowZombieProps',
       defaultAlias: 'BlowZombie',
-      description: 'Blow away X zombies',
       icon: Icons.air,
       initialDataFactory: () => StarChallengeBlowZombieData(),
     ),
     ChallengeTypeInfo(
-      title: 'Target score',
       objClass: 'StarChallengeTargetScoreProps',
       defaultAlias: 'ReachTheScore',
-      description: 'Reach target score',
       icon: Icons.scoreboard,
       initialDataFactory: () => StarChallengeTargetScoreData(),
     ),
+    ChallengeTypeInfo(
+      objClass: 'ApplyZombieConditionsChallengeProps',
+      defaultAlias: 'ApplyZombieConditionsChallenge',
+      icon: Icons.coronavirus,
+      initialDataFactory: () => {
+        'ConditionToInflict': ['hypnotized'],
+        'IncludeBurnedToAsh': true,
+        'IncludeElectrified': true,
+        'NumZombieConditionsToApply': 5,
+      },
+    ),
+    ChallengeTypeInfo(
+      objClass: 'PlantDefeatZombieChallengeProps',
+      defaultAlias: 'DefeatZombie',
+      icon: Icons.pest_control,
+      initialDataFactory: () => {
+        'Description': '',
+        'NumZombiesToKill': 12,
+        'PlantTypeName': 'peashooter',
+      },
+    ),
+    ChallengeTypeInfo(
+      objClass: 'DefeatZombiesOfTypeChallengeProps',
+      defaultAlias: 'DefeatZombiesOfType',
+      icon: Icons.filter_list,
+      initialDataFactory: () => {
+        'Description': '',
+        'NumZombiesToKill': 30,
+        'TypesToKill': {
+          'List': <String>[],
+          'ListType': 'whitelist',
+        },
+      },
+    ),
+    ChallengeTypeInfo(
+      objClass: 'DestroyGridItemsChallengeProps',
+      defaultAlias: 'DestroyGridItems',
+      icon: Icons.delete_forever,
+      initialDataFactory: () => {
+        'GridItemType': 'gravestone',
+        'GridItemsToDestroy': 10,
+        'ChallengeDescription': '',
+      },
+    ),
+    ChallengeTypeInfo(
+      objClass: 'StarChallengeDisablePlantProps',
+      defaultAlias: 'DisablePlant',
+      icon: Icons.block,
+      initialDataFactory: () => {'Profession': 'warrior'},
+    ),
+    ChallengeTypeInfo(
+      objClass: 'StarChallengeSandstormZombieKillProps',
+      defaultAlias: 'SandstormZombieKill',
+      icon: Icons.thunderstorm,
+      initialDataFactory: () => {'Count': 8},
+    ),
+    ChallengeTypeInfo(
+      objClass: 'StarChallengeTentZombieKillProps',
+      defaultAlias: 'TentZombieKill',
+      icon: Icons.festival,
+      initialDataFactory: () => {'Count': 8},
+    ),
+    ChallengeTypeInfo(
+      objClass: 'StarChallengeBufferTileZombieKillProps',
+      defaultAlias: 'BufferTileZombieKill',
+      icon: Icons.grid_on,
+      initialDataFactory: () => {'Count': 8},
+    ),
+    ChallengeTypeInfo(
+      objClass: 'StarChallengePotionZombieKillProps',
+      defaultAlias: 'PotionZombieKill',
+      icon: Icons.science,
+      initialDataFactory: () => {'Count': 8},
+    ),
+    ChallengeTypeInfo(
+      objClass: 'StarChallengeBarrelPowderZombieKillProps',
+      defaultAlias: 'BarrelPowderZombieKill',
+      icon: Icons.whatshot,
+      initialDataFactory: () => {'Count': 8},
+    ),
+    ChallengeTypeInfo(
+      objClass: 'StarChallengeBlowBarrelZombieProps',
+      defaultAlias: 'BlowBarrelZombieKill',
+      icon: Icons.air,
+      initialDataFactory: () => {'Count': 8},
+    ),
+    ChallengeTypeInfo(
+      objClass: 'StarChallengeFirecrackerZombieKillProps',
+      defaultAlias: 'FirecrackerZombieKill',
+      icon: Icons.celebration,
+      initialDataFactory: () => {'Count': 8},
+    ),
+    ChallengeTypeInfo(
+      objClass: 'StarChallengeFireworksZombieKillProps',
+      defaultAlias: 'FireworksZombieKill',
+      icon: Icons.auto_awesome,
+      initialDataFactory: () => {'Count': 8},
+    ),
+    ChallengeTypeInfo(
+      objClass: 'ZombiePerfumerChallengeProps',
+      defaultAlias: 'CleanPoison',
+      icon: Icons.cloud_off,
+      initialDataFactory: () => {'PoisonToClean': 3},
+    ),
+    ChallengeTypeInfo(
+      objClass: 'BalletSlipChallengeProps',
+      defaultAlias: 'BalletSlip',
+      icon: Icons.ice_skating,
+      initialDataFactory: () => {'BalletToSlip': 8},
+    ),
+    ChallengeTypeInfo(
+      objClass: 'ZombieExplodenutChallengeProps',
+      defaultAlias: 'ZombieExplodenut',
+      icon: Icons.warning,
+      initialDataFactory: () => {'MaximumExplode': 5},
+    ),
+    ChallengeTypeInfo(
+      objClass: 'ZombieJalapenoChallengeProps',
+      defaultAlias: 'ZombieJalapeno',
+      icon: Icons.local_fire_department,
+      initialDataFactory: () => {'MaximumJalapeno': 5},
+    ),
+    ChallengeTypeInfo(
+      objClass: 'RenaiRollerChallengeProps',
+      defaultAlias: 'RenaiRoller',
+      icon: Icons.attractions,
+      initialDataFactory: () => {'MaximumPlantsDied': 5},
+    ),
+    ChallengeTypeInfo(
+      objClass: 'ZombiePeaChallengeProps',
+      defaultAlias: 'ZombiePea',
+      icon: Icons.grass,
+      initialDataFactory: () => {'MaximumPlantsHitted': 80},
+    ),
+    ChallengeTypeInfo(
+      objClass: 'SteamManholeChallengeProps',
+      defaultAlias: 'SteamManhole',
+      icon: Icons.plumbing,
+      initialDataFactory: () => {'MaximumManholeEntered': 5},
+    ),
+    ChallengeTypeInfo(
+      objClass: 'StarChallengeSaveBombsProps',
+      defaultAlias: 'SaveBombs',
+      icon: Icons.lock,
+      initialDataFactory: () => <String, dynamic>{},
+    ),
   ];
 
-  static List<ChallengeTypeInfo> search(String query, [BuildContext? context]) {
+  static List<ChallengeTypeInfo> search(String query, BuildContext context) {
     if (query.trim().isEmpty) return allChallenges;
     final lower = query.toLowerCase();
     return allChallenges
         .where((c) {
-          final title = context != null
-              ? c.localizedTitle(context)
-              : c.title;
-          final description = context != null
-              ? c.localizedDescription(context)
-              : c.description;
+          final title = c.localizedTitle(context);
+          final description = c.localizedDescription(context);
           return title.toLowerCase().contains(lower) ||
               description.toLowerCase().contains(lower) ||
-              c.title.toLowerCase().contains(lower) ||
-              c.description.toLowerCase().contains(lower) ||
               c.objClass.toLowerCase().contains(lower) ||
               c.defaultAlias.toLowerCase().contains(lower);
         })
@@ -189,17 +288,15 @@ class ChallengeRepository {
   }
 
   static String localizedTitle(BuildContext context, String objClass) {
-    final key = ChallengeTypeInfo._titleKey(objClass);
-    final localized = ResourceNames.lookup(context, key);
-    if (localized != key) return localized;
-    return getInfo(objClass)?.title ?? objClass;
+    return ChallengeResourceL10n.title(
+      context,
+      objClass,
+      fallback: getInfo(objClass)?.defaultAlias,
+    );
   }
 
   static String localizedDescription(BuildContext context, String objClass) {
-    final key = ChallengeTypeInfo._descKey(objClass);
-    final localized = ResourceNames.lookup(context, key);
-    if (localized != key) return localized;
-    return getInfo(objClass)?.description ?? '';
+    return ChallengeResourceL10n.description(context, objClass);
   }
 
   static ChallengeTypeInfo? getInfo(String objClass) {
