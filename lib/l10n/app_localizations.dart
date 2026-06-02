@@ -4597,8 +4597,26 @@ abstract class AppLocalizations {
   /// No description provided for @bowlingFoulLine.
   ///
   /// In en, this message translates to:
-  /// **'No-planting line (BowlingFoulLine)'**
+  /// **'No-planting line'**
   String get bowlingFoulLine;
+
+  /// No description provided for @bowlingMinigameParams.
+  ///
+  /// In en, this message translates to:
+  /// **'Parameters'**
+  String get bowlingMinigameParams;
+
+  /// No description provided for @bowlingMinigameHelpOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Sets the column index of the no-planting line for bulb bowling levels. Plants cannot be placed at or beyond this column.'**
+  String get bowlingMinigameHelpOverview;
+
+  /// No description provided for @bowlingMinigameHelpFoulLine.
+  ///
+  /// In en, this message translates to:
+  /// **'BowlingFoulLine is a 0-based column index from the left edge of the lawn. Zombies and bowling bulbs interact with plants to the right of this line.'**
+  String get bowlingMinigameHelpFoulLine;
 
   /// No description provided for @stopColumn.
   ///
@@ -4645,20 +4663,44 @@ abstract class AppLocalizations {
   /// No description provided for @dinoType.
   ///
   /// In en, this message translates to:
-  /// **'Dinosaur Type (DinoType)'**
+  /// **'Dinosaur type'**
   String get dinoType;
+
+  /// No description provided for @dinoRowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Row'**
+  String get dinoRowTitle;
 
   /// No description provided for @dinoRow.
   ///
   /// In en, this message translates to:
-  /// **'Row (DinoRow): {n}'**
+  /// **'Row: {n}'**
   String dinoRow(int n);
 
   /// No description provided for @dinoWaveDuration.
   ///
   /// In en, this message translates to:
-  /// **'Duration (DinoWaveDuration)'**
+  /// **'Stay duration (waves)'**
   String get dinoWaveDuration;
+
+  /// No description provided for @eventHelpDinoType.
+  ///
+  /// In en, this message translates to:
+  /// **'Which dinosaur enters the lawn. Each species has different behavior when assisting zombies.'**
+  String get eventHelpDinoType;
+
+  /// No description provided for @eventHelpDinoRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Row where the dinosaur appears, counted from the top (0-based). On deep-sea lawns, row 5 is also available.'**
+  String get eventHelpDinoRow;
+
+  /// No description provided for @eventHelpDinoWaveDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'How many waves the dinosaur stays on the lawn before leaving.'**
+  String get eventHelpDinoWaveDuration;
 
   /// No description provided for @unknownModuleTitle.
   ///
@@ -10323,6 +10365,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Special'**
   String get zombossMechActionCategorySpecial;
+
+  /// No description provided for @zombossMechActionCategorySpawn.
+  ///
+  /// In en, this message translates to:
+  /// **'Spawn'**
+  String get zombossMechActionCategorySpawn;
+
+  /// No description provided for @zombossMechActionCategoryRetreat.
+  ///
+  /// In en, this message translates to:
+  /// **'Retreat'**
+  String get zombossMechActionCategoryRetreat;
 
   /// No description provided for @zombossMechNoActionsFound.
   ///

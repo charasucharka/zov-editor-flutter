@@ -2484,7 +2484,18 @@ class AppLocalizationsRu extends AppLocalizations {
   String get startingPlantFood => 'Начальный растительный корм';
 
   @override
-  String get bowlingFoulLine => 'Линия фола (BowlingFoulLine)';
+  String get bowlingFoulLine => 'Линия запрета посадки';
+
+  @override
+  String get bowlingMinigameParams => 'Параметры';
+
+  @override
+  String get bowlingMinigameHelpOverview =>
+      'Задаёт столбец линии, за которой нельзя сажать растения в режиме боулинга с луковицей.';
+
+  @override
+  String get bowlingMinigameHelpFoulLine =>
+      'BowlingFoulLine — индекс столбца слева (с 0). Растения нельзя ставить на этой линии и правее неё.';
 
   @override
   String get stopColumn => 'Стоп-колонка (StopColumn)';
@@ -2513,12 +2524,27 @@ class AppLocalizationsRu extends AppLocalizations {
   String get dinoType => 'Тип динозавра';
 
   @override
+  String get dinoRowTitle => 'Ряд';
+
+  @override
   String dinoRow(int n) {
-    return 'Ряд (DinoRow): $n';
+    return 'Ряд: $n';
   }
 
   @override
-  String get dinoWaveDuration => 'Длительность (DinoWaveDuration)';
+  String get dinoWaveDuration => 'Время на поле (волны)';
+
+  @override
+  String get eventHelpDinoType =>
+      'Какой динозавр появится на поле. У каждого вида своё поведение при помощи зомби.';
+
+  @override
+  String get eventHelpDinoRow =>
+      'Ряд появления динозавра (с 0). На картах глубокого моря доступен ряд 5.';
+
+  @override
+  String get eventHelpDinoWaveDuration =>
+      'Сколько волн динозавр остаётся на поле перед уходом.';
 
   @override
   String get unknownModuleTitle => 'Редактор модуля в разработке';
@@ -5688,6 +5714,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get zombossMechActionCategorySpecial => 'Особые';
+
+  @override
+  String get zombossMechActionCategorySpawn => 'Призыв';
+
+  @override
+  String get zombossMechActionCategoryRetreat => 'Отступление';
 
   @override
   String get zombossMechNoActionsFound => 'Действия не найдены';

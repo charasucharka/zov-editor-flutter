@@ -2370,7 +2370,17 @@ class AppLocalizationsZh extends AppLocalizations {
   String get startingPlantFood => '初始能量豆';
 
   @override
-  String get bowlingFoulLine => '禁种线 (BowlingFoulLine)';
+  String get bowlingFoulLine => '禁种线';
+
+  @override
+  String get bowlingMinigameParams => '参数';
+
+  @override
+  String get bowlingMinigameHelpOverview => '设置沙滩保龄球模式中禁止种植植物的列位置。';
+
+  @override
+  String get bowlingMinigameHelpFoulLine =>
+      'BowlingFoulLine 为从左起算的列索引（从 0 开始）。该列及其右侧不可种植植物。';
 
   @override
   String get stopColumn => '停止列 (StopColumn，范围0-9或0-10)';
@@ -2394,15 +2404,27 @@ class AppLocalizationsZh extends AppLocalizations {
   String get bloverEffectInterval => '三叶草吹散后恢复秒数';
 
   @override
-  String get dinoType => '恐龙种类 (DinoType)';
+  String get dinoType => '恐龙种类';
+
+  @override
+  String get dinoRowTitle => '所在行';
 
   @override
   String dinoRow(int n) {
-    return '所在行 (DinoRow)：$n';
+    return '所在行：$n';
   }
 
   @override
-  String get dinoWaveDuration => '持续波次数 (DinoWaveDuration)';
+  String get dinoWaveDuration => '停留波次';
+
+  @override
+  String get eventHelpDinoType => '选择进入场地的恐龙种类，不同恐龙协助僵尸的方式不同。';
+
+  @override
+  String get eventHelpDinoRow => '恐龙出现的行（从 0 开始）。海底地图可使用第 5 行。';
+
+  @override
+  String get eventHelpDinoWaveDuration => '恐龙在场上停留的波次数，结束后离开。';
 
   @override
   String get unknownModuleTitle => '模块编辑器开发中';
@@ -5456,6 +5478,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get zombossMechActionCategorySpecial => '特殊';
+
+  @override
+  String get zombossMechActionCategorySpawn => '召唤';
+
+  @override
+  String get zombossMechActionCategoryRetreat => '撤退';
 
   @override
   String get zombossMechNoActionsFound => '未找到动作';

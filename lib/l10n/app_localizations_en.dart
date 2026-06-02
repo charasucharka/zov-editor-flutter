@@ -2517,7 +2517,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get startingPlantFood => 'Starting Plant Food';
 
   @override
-  String get bowlingFoulLine => 'No-planting line (BowlingFoulLine)';
+  String get bowlingFoulLine => 'No-planting line';
+
+  @override
+  String get bowlingMinigameParams => 'Parameters';
+
+  @override
+  String get bowlingMinigameHelpOverview =>
+      'Sets the column index of the no-planting line for bulb bowling levels. Plants cannot be placed at or beyond this column.';
+
+  @override
+  String get bowlingMinigameHelpFoulLine =>
+      'BowlingFoulLine is a 0-based column index from the left edge of the lawn. Zombies and bowling bulbs interact with plants to the right of this line.';
 
   @override
   String get stopColumn => 'Stop column (StopColumn, range: 0-9 or 0-10)';
@@ -2543,15 +2554,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bloverEffectInterval => 'Blover effect interval (seconds)';
 
   @override
-  String get dinoType => 'Dinosaur Type (DinoType)';
+  String get dinoType => 'Dinosaur type';
+
+  @override
+  String get dinoRowTitle => 'Row';
 
   @override
   String dinoRow(int n) {
-    return 'Row (DinoRow): $n';
+    return 'Row: $n';
   }
 
   @override
-  String get dinoWaveDuration => 'Duration (DinoWaveDuration)';
+  String get dinoWaveDuration => 'Stay duration (waves)';
+
+  @override
+  String get eventHelpDinoType =>
+      'Which dinosaur enters the lawn. Each species has different behavior when assisting zombies.';
+
+  @override
+  String get eventHelpDinoRow =>
+      'Row where the dinosaur appears, counted from the top (0-based). On deep-sea lawns, row 5 is also available.';
+
+  @override
+  String get eventHelpDinoWaveDuration =>
+      'How many waves the dinosaur stays on the lawn before leaving.';
 
   @override
   String get unknownModuleTitle => 'Module editor in development';
@@ -5759,6 +5785,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get zombossMechActionCategorySpecial => 'Special';
+
+  @override
+  String get zombossMechActionCategorySpawn => 'Spawn';
+
+  @override
+  String get zombossMechActionCategoryRetreat => 'Retreat';
 
   @override
   String get zombossMechNoActionsFound => 'No actions found';
