@@ -231,7 +231,7 @@ class _ModifyConveyorEventScreenState extends State<ModifyConveyorEventScreen> {
 
   String _addEntryTitle(ModifyConveyorPlantData p, AppLocalizations? l10n) {
     if (p.isToolEntry) {
-      return ToolRepository.get(p.type)?.name ?? p.type;
+      return ToolRepository.localizedName(context, p.type);
     }
     final plantId = _unwrapRtid(p.type);
     return ResourceNames.lookup(
@@ -253,7 +253,7 @@ class _ModifyConveyorEventScreenState extends State<ModifyConveyorEventScreen> {
 
   String _removeEntryTitle(ModifyConveyorRemoveData r, AppLocalizations? l10n) {
     if (r.isToolEntry) {
-      return ToolRepository.get(r.type)?.name ?? r.type;
+      return ToolRepository.localizedName(context, r.type);
     }
     final plantId = _unwrapRtid(r.type);
     return ResourceNames.lookup(
