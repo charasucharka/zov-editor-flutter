@@ -1474,6 +1474,8 @@
   "seedBankCourtyardSlotsHint": "庭院模式忽略卡槽数量。选卡模式固定 8 个卡槽。",
   "seedBankAddGridItemsTitle": "添加网格物品",
   "seedBankAddGridItemsSubtitle": "将冰冻小游戏网格物品加入预选种子库。",
+  "starChallengeSelectConditions": "选择状态",
+  "starChallengeEditConditions": "编辑状态",
   "selectToolCard": "选择工具卡",
   "searchGridItems": "搜索障碍物",
   "searchStatues": "搜索复兴雕像或原石像",

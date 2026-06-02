@@ -1445,6 +1445,8 @@
   "seedBankCourtyardSlotsHint": "Courtyard mode ignores slot count. Chooser locks 8 slots.",
   "seedBankAddGridItemsTitle": "Add grid items",
   "seedBankAddGridItemsSubtitle": "Adds frozen mini-game grid items to the preset seed bank.",
+  "starChallengeSelectConditions": "Select conditions",
+  "starChallengeEditConditions": "Edit conditions",
   "selectToolCard": "Select tool packets",
   "searchGridItems": "Search grid items",
   "searchStatues": "Search renaissance statues or marble mounds",

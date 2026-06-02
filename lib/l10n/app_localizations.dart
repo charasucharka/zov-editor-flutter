@@ -8368,6 +8368,18 @@ abstract class AppLocalizations {
   /// **'Adds frozen mini-game grid items to the preset seed bank.'**
   String get seedBankAddGridItemsSubtitle;
 
+  /// No description provided for @starChallengeSelectConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Select conditions'**
+  String get starChallengeSelectConditions;
+
+  /// No description provided for @starChallengeEditConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit conditions'**
+  String get starChallengeEditConditions;
+
   /// No description provided for @selectToolCard.
   ///
   /// In en, this message translates to:

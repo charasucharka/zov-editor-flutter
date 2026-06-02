@@ -4593,6 +4593,12 @@ class AppLocalizationsRu extends AppLocalizations {
       'Добавляет мини-игровые предметы сетки в предустановленный банк семян.';
 
   @override
+  String get starChallengeSelectConditions => 'Выбор состояний';
+
+  @override
+  String get starChallengeEditConditions => 'Изменить состояния';
+
+  @override
   String get selectToolCard => 'Выбрать карту инструмента';
 
   @override

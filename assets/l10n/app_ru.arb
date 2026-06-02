@@ -1474,6 +1474,8 @@
   "seedBankCourtyardSlotsHint": "В режиме двора число слотов не учитывается. При выборе фиксируется 8 слотов.",
   "seedBankAddGridItemsTitle": "Добавить предметы сетки",
   "seedBankAddGridItemsSubtitle": "Добавляет мини-игровые предметы сетки в предустановленный банк семян.",
+  "starChallengeSelectConditions": "Выбор состояний",
+  "starChallengeEditConditions": "Изменить состояния",
   "selectToolCard": "Выбрать карту инструмента",
   "searchGridItems": "Поиск объектов сетки",
   "searchStatues": "Поиск статуй",

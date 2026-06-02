@@ -4656,6 +4656,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Adds frozen mini-game grid items to the preset seed bank.';
 
   @override
+  String get starChallengeSelectConditions => 'Select conditions';
+
+  @override
+  String get starChallengeEditConditions => 'Edit conditions';
+
+  @override
   String get selectToolCard => 'Select tool packets';
 
   @override

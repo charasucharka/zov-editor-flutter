@@ -4414,6 +4414,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get seedBankAddGridItemsSubtitle => '将冰冻小游戏网格物品加入预选种子库。';
 
   @override
+  String get starChallengeSelectConditions => '选择状态';
+
+  @override
+  String get starChallengeEditConditions => '编辑状态';
+
+  @override
   String get selectToolCard => '选择工具卡';
 
   @override
