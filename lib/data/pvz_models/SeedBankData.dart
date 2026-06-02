@@ -10,6 +10,7 @@ class SeedBankData extends PvzModel {
     this.overrideSeedSlotsCount = 8,
     this.zombieMode,
     this.seedPacketType,
+    this.gridItemMode,
   });
 
   List<String> presetPlantList;
@@ -20,6 +21,7 @@ class SeedBankData extends PvzModel {
   int? overrideSeedSlotsCount;
   bool? zombieMode;
   String? seedPacketType;
+  bool? gridItemMode;
 
   factory SeedBankData.fromJson(Map<String, dynamic> json) {
     return SeedBankData(
@@ -34,6 +36,7 @@ class SeedBankData extends PvzModel {
       overrideSeedSlotsCount: json['OverrideSeedSlotsCount'] as int? ?? 8,
       zombieMode: json['ZombieMode'] as bool?,
       seedPacketType: json['SeedPacketType'] as String?,
+      gridItemMode: json['GridItemMode'] as bool?,
     );
   }
 
@@ -47,7 +50,15 @@ class SeedBankData extends PvzModel {
       'OverrideSeedSlotsCount': overrideSeedSlotsCount,
     if (zombieMode != null) 'ZombieMode': zombieMode,
     if (seedPacketType != null) 'SeedPacketType': seedPacketType,
+    if (gridItemMode == true) 'GridItemMode': true,
   };
 }
+
+/// Grid items offered when [SeedBankData.gridItemMode] is enabled.
+const kSeedBankGridItemIds = [
+  'FrozenChillyPepper',
+  'FrozenIcebloom',
+  'BesiegeBox',
+];
 
 

@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:z_editor/data/repository/grid_item_repository.dart';
 import 'package:z_editor/data/repository/plant_repository.dart';
 import 'package:z_editor/data/pvz_models.dart';
 import 'package:z_editor/data/rtid_parser.dart';
@@ -29,6 +30,8 @@ class SeedBankPropertiesScreen extends StatefulWidget {
   final void Function(
     void Function(List<String>) onSelected, {
     List<String>? excludeIds,
+    bool blockRealmExclusiveInChooser,
+    bool allowDuplicateSelection,
   }) onRequestPlantSelection;
   final void Function(void Function(List<String>) onSelected)
       onRequestZombieSelection;
@@ -80,7 +83,49 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
       overrideSeedSlotsCount: _data.overrideSeedSlotsCount,
       zombieMode: _data.zombieMode,
       seedPacketType: _data.seedPacketType,
+      gridItemMode: _data.gridItemMode,
     );
+    _syncGridItemModeFromPreset();
+  }
+
+  /// Legacy levels may have grid items in preset without GridItemMode flag.
+  void _syncGridItemModeFromPreset() {
+    if (_data.gridItemMode == true) return;
+    if (_data.presetPlantList.any(kSeedBankGridItemIds.contains)) {
+      _data.gridItemMode = true;
+    }
+  }
+
+  /// Indices in [SeedBankData.presetPlantList] for chips (excludes grid items).
+  List<int> get _presetPlantDisplayIndices {
+    final indices = <int>[];
+    for (var i = 0; i < _data.presetPlantList.length; i++) {
+      if (!kSeedBankGridItemIds.contains(_data.presetPlantList[i])) {
+        indices.add(i);
+      }
+    }
+    return indices;
+  }
+
+  List<String> get _presetPlantsExcludingGridItems => [
+        for (final i in _presetPlantDisplayIndices) _data.presetPlantList[i],
+      ];
+
+  bool _isGridItemSelected(String id) => _data.presetPlantList.contains(id);
+
+  void _removeGridItemsFromPreset() {
+    _data.presetPlantList
+        .removeWhere((id) => kSeedBankGridItemIds.contains(id));
+  }
+
+  void _setGridItemSelected(String id, bool selected) {
+    if (selected) {
+      if (!_data.presetPlantList.contains(id)) {
+        _data.presetPlantList.add(id);
+      }
+    } else {
+      _data.presetPlantList.remove(id);
+    }
   }
 
   void _sync() {
@@ -91,12 +136,16 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
 
   void _addToPresetPlants() {
     // Preset: allow duplicates and blacklisted plants
-    widget.onRequestPlantSelection((ids) {
-      setState(() {
-        _data.presetPlantList.addAll(ids);
-        _sync();
-      });
-    });
+    widget.onRequestPlantSelection(
+      (ids) {
+        setState(() {
+          _data.presetPlantList.addAll(ids);
+          _sync();
+        });
+      },
+      blockRealmExclusiveInChooser: false,
+      allowDuplicateSelection: true,
+    );
   }
 
   void _addToWhiteList() {
@@ -104,13 +153,17 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
       ..._data.plantWhiteList,
       ..._data.plantBlackList,
     ];
-    widget.onRequestPlantSelection((ids) {
-      setState(() {
-        final toAdd = ids.where((id) => !_data.plantWhiteList.contains(id));
-        _data.plantWhiteList.addAll(toAdd);
-        _sync();
-      });
-    }, excludeIds: exclude);
+    widget.onRequestPlantSelection(
+      (ids) {
+        setState(() {
+          final toAdd = ids.where((id) => !_data.plantWhiteList.contains(id));
+          _data.plantWhiteList.addAll(toAdd);
+          _sync();
+        });
+      },
+      excludeIds: exclude,
+      blockRealmExclusiveInChooser: _data.selectionMethod == 'chooser',
+    );
   }
 
   void _addToBlackList() {
@@ -118,51 +171,43 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
       ..._data.plantWhiteList,
       ..._data.plantBlackList,
     ];
-    widget.onRequestPlantSelection((ids) {
-      setState(() {
-        final toAdd = ids.where((id) => !_data.plantBlackList.contains(id));
-        _data.plantBlackList.addAll(toAdd);
-        _sync();
-      });
-    }, excludeIds: exclude);
+    widget.onRequestPlantSelection(
+      (ids) {
+        setState(() {
+          final toAdd = ids.where((id) => !_data.plantBlackList.contains(id));
+          _data.plantBlackList.addAll(toAdd);
+          _sync();
+        });
+      },
+      excludeIds: exclude,
+      blockRealmExclusiveInChooser: _data.selectionMethod == 'chooser',
+    );
   }
 
-  void _addToZombieList() {
-    showDialog(
-      context: context,
-      builder: (ctx) => SimpleDialog(
-        title: Text(AppLocalizations.of(context)?.addType ?? 'Add type'),
-        children: [
-          SimpleDialogOption(
-            onPressed: () {
-              Navigator.pop(ctx);
-              widget.onRequestZombieSelection((ids) {
-                setState(() {
-                  for (final id in ids) {
-                    _data.presetPlantList
-                        .add(ZombieRepository().buildZombieAliases(id));
-                  }
-                  _sync();
-                });
-              });
-            },
-            child: Text(AppLocalizations.of(context)?.zombie ?? 'Zombie'),
-          ),
-          SimpleDialogOption(
-            onPressed: () {
-              Navigator.pop(ctx);
-              widget.onRequestPlantSelection((ids) {
-                setState(() {
-                  _data.presetPlantList.addAll(ids);
-                  _sync();
-                });
-              });
-            },
-            child: Text(AppLocalizations.of(context)?.plantFunExperimental ?? 'Plant (Fun/Experimental)'),
-          ),
-        ],
-      ),
-    );
+  void _addToZombies() {
+    widget.onRequestZombieSelection((ids) {
+      setState(() {
+        for (final id in ids) {
+          _data.presetPlantList
+              .add(ZombieRepository().buildZombieAliases(id));
+        }
+        _sync();
+      });
+    });
+  }
+
+  void _clearSeedBankLists() {
+    _data.presetPlantList.clear();
+    _data.plantWhiteList.clear();
+    _data.plantBlackList.clear();
+    _data.gridItemMode = false;
+  }
+
+  void _removePresetPlantAt(int index) {
+    setState(() {
+      _data.presetPlantList.removeAt(_presetPlantDisplayIndices[index]);
+      _sync();
+    });
   }
 
   void _removeFromList(List<String> list, int index) {
@@ -219,18 +264,18 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
                   items: _data.presetPlantList,
                   accentColor: izombieColor,
                   isZombie: true,
-                  onAdd: _addToZombieList,
+                  onAdd: _addToZombies,
                   onRemove: (i) => _removeFromList(_data.presetPlantList, i),
                 )
               else ...[
                 _ResourceListEditor(
                   title: l10n?.presetPlants ?? 'Preset plants (PresetPlantList)',
                   description: l10n?.plantsAvailableAtStart ?? 'Plants available at start',
-                  items: _data.presetPlantList,
+                  items: _presetPlantsExcludingGridItems,
                   accentColor: theme.colorScheme.secondary,
                   isZombie: false,
                   onAdd: _addToPresetPlants,
-                  onRemove: (i) => _removeFromList(_data.presetPlantList, i),
+                  onRemove: _removePresetPlantAt,
                 ),
                 const SizedBox(height: 16),
                 _ResourceListEditor(
@@ -252,6 +297,8 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
                   onAdd: _addToBlackList,
                   onRemove: (i) => _removeFromList(_data.plantBlackList, i),
                 ),
+                const SizedBox(height: 16),
+                _buildGridItemsCard(context, l10n),
               ],
               if (isZombieMode)
                 Card(
@@ -358,7 +405,8 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Preset mode enters game immediately regardless of card count.',
+              l10n?.seedBankPresetModeHint ??
+                  'Preset mode enters game immediately regardless of card count.',
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
@@ -371,9 +419,10 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
                   Expanded(
                     child: TextFormField(
                       initialValue: '${_data.globalLevel ?? 0}',
-                      decoration: const InputDecoration(
-                        labelText: 'Plant level (0-5)',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: l10n?.seedBankPlantLevelLabel ??
+                            'Plant level (0-5)',
+                        border: const OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.number,
                       onChanged: (s) {
@@ -389,9 +438,10 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
                   Expanded(
                     child: TextFormField(
                       initialValue: '${_data.overrideSeedSlotsCount ?? 0}',
-                      decoration: const InputDecoration(
-                        labelText: 'Slot count (0-9)',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: l10n?.seedBankSlotCountLabel ??
+                            'Slot count (0-9)',
+                        border: const OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.number,
                       onChanged: (s) {
@@ -406,7 +456,8 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Courtyard mode ignores slot count. Chooser locks 8 slots.',
+              l10n?.seedBankCourtyardSlotsHint ??
+                  'Courtyard mode ignores slot count. Chooser locks 8 slots.',
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
@@ -414,6 +465,65 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildGridItemsCard(BuildContext context, AppLocalizations? l10n) {
+    final gridMode = _data.gridItemMode == true;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Card(
+          child: SwitchListTile(
+            title: Text(
+              l10n?.seedBankAddGridItemsTitle ?? 'Add grid items',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(
+              l10n?.seedBankAddGridItemsSubtitle ??
+                  'Adds frozen mini-game grid items to the preset seed bank.',
+            ),
+            value: gridMode,
+            onChanged: (enabled) {
+              setState(() {
+                _data.gridItemMode = enabled;
+                if (!enabled) {
+                  _removeGridItemsFromPreset();
+                }
+                _sync();
+              });
+            },
+          ),
+        ),
+        if (gridMode) ...[
+          const SizedBox(height: 16),
+          Card(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (var i = 0; i < kSeedBankGridItemIds.length; i++) ...[
+                  if (i > 0)
+                    Divider(
+                      height: 1,
+                      color: Theme.of(context).dividerColor,
+                    ),
+                  _SeedBankGridItemRow(
+                    typeName: kSeedBankGridItemIds[i],
+                    selected: _isGridItemSelected(kSeedBankGridItemIds[i]),
+                    onChanged: (selected) {
+                      setState(() {
+                        _setGridItemSelected(kSeedBankGridItemIds[i], selected);
+                        _sync();
+                      });
+                    },
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ],
     );
   }
 
@@ -446,6 +556,9 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
           value: isZombieMode,
           onChanged: (v) {
           setState(() {
+            if (_data.zombieMode != v) {
+              _clearSeedBankLists();
+            }
             _data.zombieMode = v;
             if (v) {
               _data.selectionMethod = 'preset';
@@ -532,17 +645,69 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
   }
 }
 
-/// For plant list: use plant name if known, else zombie name if known, else id as-is (no plant_ prefix).
-/// Resolves zombie by type name (alias -> typeName via ZombiePropertiesRepository) so custom zombies show correct base type.
-String _plantOrZombieDisplayName(BuildContext context, String id) {
+class _SeedBankGridItemRow extends StatelessWidget {
+  const _SeedBankGridItemRow({
+    required this.typeName,
+    required this.selected,
+    required this.onChanged,
+  });
+
+  final String typeName;
+  final bool selected;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    const iconBoxSize = 56.0;
+    final iconPath = GridItemRepository.getIconPath(typeName);
+    final key = 'griditem_$typeName';
+    final localized = ResourceNames.lookup(context, key);
+    final name = localized != key ? localized : typeName;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: Row(
+        children: [
+          SizedBox(
+            width: iconBoxSize,
+            height: iconBoxSize,
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: AssetImageWidget(
+                assetPath: iconPath,
+                width: iconBoxSize - 8,
+                height: iconBoxSize - 8,
+                fit: BoxFit.contain,
+                altCandidates: imageAltCandidates(iconPath),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              name,
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          Checkbox(
+            value: selected,
+            onChanged: (v) => onChanged(v ?? false),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+String _plantDisplayName(BuildContext context, String id) {
   final plant = PlantRepository().getPlantInfoById(id);
   if (plant != null) {
     return ResourceNames.lookup(context, plant.name);
-  }
-  final zombieTypeName = ZombiePropertiesRepository.getTypeNameByAlias(id);
-  final zombie = ZombieRepository().getZombieById(zombieTypeName);
-  if (zombie != null) {
-    return _zombieDisplayName(context, zombieTypeName);
   }
   return id;
 }
@@ -644,7 +809,7 @@ class _ResourceListEditor extends StatelessWidget {
                   final zombieTypeName = isZombie ? ZombiePropertiesRepository.getTypeNameByAlias(id) : null;
                   final name = isZombie
                       ? _zombieDisplayName(context, zombieTypeName!)
-                      : _plantOrZombieDisplayName(context, id);
+                      : _plantDisplayName(context, id);
                   final zombie = isZombie ? ZombieRepository().getZombieById(zombieTypeName!) : null;
                   final plant = !isZombie ? PlantRepository().getPlantInfoById(id) : null;
                   final iconPath = isZombie
