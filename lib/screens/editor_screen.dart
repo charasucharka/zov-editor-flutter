@@ -52,6 +52,7 @@ import 'package:z_editor/screens/editor/modules/war_mist_properties_screen.dart'
 import 'package:z_editor/screens/editor/modules/zombie_potion_module_screen.dart';
 import 'package:z_editor/screens/editor/modules/air_drop_ship_module_screen.dart';
 import 'package:z_editor/screens/editor/modules/sperm_whale_module_screen.dart';
+import 'package:z_editor/screens/editor/modules/glacier_module_screen.dart';
 import 'package:z_editor/screens/editor/modules/heian_wind_module_screen.dart';
 import 'package:z_editor/screens/editor/modules/renai_module_screen.dart';
 import 'package:z_editor/screens/editor/modules/penny_classroom_module_screen.dart';
@@ -67,6 +68,7 @@ import 'package:z_editor/screens/editor/tabs/izombie_tab.dart';
 import 'package:z_editor/screens/editor/tabs/level_settings_tab.dart';
 import 'package:z_editor/screens/editor/tabs/vase_breaker_tab.dart';
 import 'package:z_editor/screens/editor/tabs/zomboss_battle_tab.dart';
+import 'package:z_editor/screens/editor/tabs/zomboss_mech_battle_tab.dart';
 import 'package:z_editor/screens/editor/tabs/wave_timeline_tab.dart';
 import 'package:z_editor/data/registry/event_registry.dart';
 import 'package:z_editor/screens/editor/events/invalid_event_screen.dart';
@@ -309,9 +311,11 @@ class _EditorScreenState extends State<EditorScreen> {
         existingClasses.contains('VaseBreakerPresetProperties') ||
         existingClasses.contains('VaseBreakerArcadeModuleProperties') ||
         existingClasses.contains('VaseBreakerFlowModuleProperties');
-    final isZombossBattle =
+    final isZombossMechBattle =
         existingClasses.contains('ZombossBattleModuleProperties') ||
         existingClasses.contains('ZombossBattleIntroProperties');
+    final isZombossBattle = existingClasses
+        .contains('ZombossLastStandMinigameProperties');
     final isLastStand = existingClasses.contains('LastStandMinigameProperties');
     final isEvilDave = existingClasses.contains('EvilDaveProperties');
 
@@ -324,12 +328,15 @@ class _EditorScreenState extends State<EditorScreen> {
     }
     if (!existingClasses.contains('ZombiesDeadWinConProperties') &&
         !existingClasses.contains('BronzeDeadWinConProperties')) {
-      if (!isEvilDave && !isZombossBattle) {
+      if (!isEvilDave && !isZombossMechBattle && !isZombossBattle) {
         missingList.add('ZombiesDeadWinConProperties');
       }
     }
     if (!existingClasses.contains('StandardLevelIntroProperties')) {
-      if (!isVaseBreaker && !isLastStand && !isZombossBattle) {
+      if (!isVaseBreaker &&
+          !isLastStand &&
+          !isZombossMechBattle &&
+          !isZombossBattle) {
         missingList.add('StandardLevelIntroProperties');
       }
     }
@@ -352,12 +359,17 @@ class _EditorScreenState extends State<EditorScreen> {
         missingList.add('SeedBankProperties');
       }
     }
-    if (isZombossBattle) {
+    if (isZombossMechBattle) {
       if (!existingClasses.contains('ZombossBattleModuleProperties')) {
         missingList.add('ZombossBattleModuleProperties');
       }
       if (!existingClasses.contains('ZombossBattleIntroProperties')) {
         missingList.add('ZombossBattleIntroProperties');
+      }
+    }
+    if (isZombossBattle) {
+      if (!existingClasses.contains('ZombossLastStandMinigameProperties')) {
+        missingList.add('ZombossLastStandMinigameProperties');
       }
     }
     if (isLastStand) {
@@ -373,6 +385,76 @@ class _EditorScreenState extends State<EditorScreen> {
         })
         .toList();
     return metas;
+  }
+
+  bool _showGlacierModuleCompatibilityWarning() {
+    final file = _ec.state.levelFile;
+    if (file == null) return false;
+    return GlacierModulePropertiesData.shouldShowCompatibilityWarning(
+      levelFile: file,
+      moduleObjClasses: _levelModuleObjClasses(),
+    );
+  }
+
+  void _openGlacierModuleSettings() {
+    final levelFile = _ec.state.levelFile;
+    final parsed = _ec.state.parsedData;
+    if (levelFile == null || parsed?.levelDef == null) return;
+
+    const objClass = 'GlacierModuleProperties';
+
+    String? findGlacierRtid() {
+      final def = parsed!.levelDef!;
+      for (final moduleRtid in def.modules) {
+        final info = RtidParser.parse(moduleRtid);
+        if (info == null) continue;
+        final obj = info.source == 'CurrentLevel'
+            ? levelFile.objects.firstWhereOrNull(
+                (o) => o.aliases?.contains(info.alias) == true,
+              )
+            : parsed.objectMap[info.alias];
+        if (obj?.objClass == objClass) return moduleRtid;
+      }
+      return null;
+    }
+
+    var rtid = findGlacierRtid();
+    if (rtid == null) {
+      _addModule(ModuleRegistry.getMetadata(objClass));
+      _ec.recalculateTabs();
+      rtid = findGlacierRtid();
+    }
+    if (rtid == null || !mounted) return;
+    final glacierRtid = rtid;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GlacierModuleScreen(
+          rtid: glacierRtid,
+          levelFile: levelFile,
+          onChanged: _markDirty,
+          onBack: () => Navigator.pop(context),
+          onRequestZombieSelection: (onSelected) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ZombieSelectionScreen(
+                  editorCubit: _ec,
+                  multiSelect: false,
+                  onZombieSelected: (id) {
+                    Navigator.pop(context);
+                    onSelected(id);
+                  },
+                  onMultiZombieSelected: (_) {},
+                  onBack: () => Navigator.pop(context),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 
   Future<void> _save() async {
@@ -2428,6 +2510,38 @@ class _EditorScreenState extends State<EditorScreen> {
       return;
     }
     if (info.source == 'CurrentLevel' &&
+        objClass == 'GlacierModuleProperties') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => GlacierModuleScreen(
+            rtid: rtid,
+            levelFile: _ec.state.levelFile!,
+            onChanged: _markDirty,
+            onBack: () => Navigator.pop(context),
+            onRequestZombieSelection: (onSelected) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ZombieSelectionScreen(
+                    editorCubit: _ec,
+                    multiSelect: false,
+                    onZombieSelected: (id) {
+                      Navigator.pop(context);
+                      onSelected(id);
+                    },
+                    onMultiZombieSelected: (_) {},
+                    onBack: () => Navigator.pop(context),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+      return;
+    }
+    if (info.source == 'CurrentLevel' &&
         objClass == 'HeianWindModuleProperties') {
       Navigator.push(
         context,
@@ -2468,6 +2582,16 @@ class _EditorScreenState extends State<EditorScreen> {
           ),
         ),
       );
+      return;
+    }
+    if (info.source == 'CurrentLevel' &&
+        objClass == 'ZombossBattleModuleProperties') {
+      _setActiveTab(EditorTabType.zombossMech);
+      return;
+    }
+    if (info.source == 'CurrentLevel' &&
+        objClass == 'ZombossLastStandMinigameProperties') {
+      _setActiveTab(EditorTabType.zombossBattle);
       return;
     }
     if (info.source == 'CurrentLevel' &&
@@ -2790,9 +2914,13 @@ class _EditorScreenState extends State<EditorScreen> {
                                   icon = Icons.inventory_2;
                                   label = l10n?.vaseBreaker ?? 'Vase breaker';
                                   break;
-                                case EditorTabType.zomboss:
+                                case EditorTabType.zombossMech:
                                   icon = Icons.warning_amber;
-                                  label = l10n?.zomboss ?? 'Zomboss';
+                                  label = l10n?.zombossMech ?? 'ZombossMech Battle';
+                                  break;
+                                case EditorTabType.zombossBattle:
+                                  icon = Icons.castle;
+                                  label = l10n?.zombossBattle ?? 'Zomboss Battle';
                                   break;
                               }
                               return Tab(text: label, icon: Icon(icon));
@@ -2813,6 +2941,8 @@ class _EditorScreenState extends State<EditorScreen> {
                                           _calculateMissingModules(),
                                       missingModuleWarnings:
                                           _getMissingModuleWarnings(),
+                                      showGlacierModuleCompatibilityWarning:
+                                          _showGlacierModuleCompatibilityWarning(),
                                       onEditBasicInfo: _handleEditBasicInfo,
                                       onEditModule: _handleEditModule,
                                       onRemoveModule: _handleRemoveModule,
@@ -2855,7 +2985,14 @@ class _EditorScreenState extends State<EditorScreen> {
                                         );
                                       },
                                     );
-                                  case EditorTabType.zomboss:
+                                  case EditorTabType.zombossMech:
+                                    return ZombossMechBattleTab(
+                                      levelFile: _ec.state.levelFile!,
+                                      onChanged: _markDirty,
+                                      onOpenGlacierModule:
+                                          _openGlacierModuleSettings,
+                                    );
+                                  case EditorTabType.zombossBattle:
                                     return ZombossBattleTab(
                                       levelFile: _ec.state.levelFile!,
                                       onChanged: _markDirty,

@@ -39,9 +39,10 @@ abstract class LevelRepositoryBase {
     '4_last_stand_example.json',
     '5_i_zombie_example.json',
     '6_vase_breaker_example.json',
-    '7_zomboss_example.json',
-    '8_custom_zombie_example.json',
-    '9_i_plant_example.json',
+    '7_zombossmech_battle_example.json',
+    '8_zomboss_battle_example.json',
+    '9_custom_zombie_example.json',
+    '10_i_plant_example.json',
   ];
 
   Future<String?> getSavedFolderPath();

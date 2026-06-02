@@ -100,7 +100,10 @@ class EditorCubit extends Cubit<EditorState> {
       tabs.add(EditorTabType.vaseBreaker);
     }
     if (classes.contains('ZombossBattleModuleProperties')) {
-      tabs.add(EditorTabType.zomboss);
+      tabs.add(EditorTabType.zombossMech);
+    }
+    if (classes.contains('ZombossLastStandMinigameProperties')) {
+      tabs.add(EditorTabType.zombossBattle);
     }
     return tabs;
   }

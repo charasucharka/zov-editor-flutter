@@ -470,11 +470,13 @@ class _LevelListScreenState extends State<LevelListScreen> {
         return l10n.templateIZombieExample;
       case '6_vase_breaker_example.json':
         return l10n.templateVaseBreakerExample;
-      case '7_zomboss_example.json':
-        return l10n.templateZombossExample;
-      case '8_custom_zombie_example.json':
+      case '7_zombossmech_battle_example.json':
+        return l10n.templateZombossMechExample;
+      case '8_zomboss_battle_example.json':
+        return l10n.templateZombossBattleExample;
+      case '9_custom_zombie_example.json':
         return l10n.templateCustomZombieExample;
-      case '9_i_plant_example.json':
+      case '10_i_plant_example.json':
         return l10n.templateIPlantExample;
       default:
         return filename.replaceFirst(RegExp(r'\.json$'), '');

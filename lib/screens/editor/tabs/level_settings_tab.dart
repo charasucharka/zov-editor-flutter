@@ -49,6 +49,7 @@ class LevelSettingsTab extends StatefulWidget {
     required this.objectMap,
     required this.missingModules,
     this.missingModuleWarnings,
+    this.showGlacierModuleCompatibilityWarning = false,
     required this.onEditBasicInfo,
     required this.onEditModule,
     required this.onRemoveModule,
@@ -60,6 +61,7 @@ class LevelSettingsTab extends StatefulWidget {
   final List<ModuleMetadata> missingModules;
   /// Module objClass -> list of plant IDs that need this module but it's missing (parallel plants warning).
   final Map<String, List<String>>? missingModuleWarnings;
+  final bool showGlacierModuleCompatibilityWarning;
   final VoidCallback onEditBasicInfo;
   final ValueChanged<String> onEditModule;
   final ValueChanged<String> onRemoveModule;
@@ -393,6 +395,53 @@ class _LevelSettingsTabState extends State<LevelSettingsTab> {
                   );
                 },
               ),
+
+            if (widget.showGlacierModuleCompatibilityWarning) ...[
+              const SizedBox(height: 12),
+              Card(
+                color: Theme.of(context).colorScheme.errorContainer,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.warning_amber_rounded,
+                            color: Theme.of(context).colorScheme.onErrorContainer,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              ModuleRegistry.getMetadata('GlacierModuleProperties')
+                                  .getTitle(context),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onErrorContainer,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        l10n?.glacierModuleCompatibilityWarning ??
+                            'This module only works with the Zomboss Battle module '
+                                'and an Ice Age Zomboss Mech (zombossmech_iceage). '
+                                'Add or fix those settings so glacier blocks can spawn zombies.',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onErrorContainer,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
 
             if (showTunnelDefendRecommendation) ...[
               const SizedBox(height: 12),

@@ -129,6 +129,8 @@ class ModuleRegistry {
         return l10n.moduleTitle_ZombossBattleModuleProperties;
       case 'moduleTitle_ZombossBattleIntroProperties':
         return l10n.moduleTitle_ZombossBattleIntroProperties;
+      case 'moduleTitle_ZombossLastStandMinigameProperties':
+        return l10n.moduleTitle_ZombossLastStandMinigameProperties;
       case 'moduleTitle_SeedRainProperties':
         return l10n.moduleTitle_SeedRainProperties;
       case 'moduleTitle_LastStandMinigameProperties':
@@ -187,6 +189,8 @@ class ModuleRegistry {
         return l10n.moduleTitle_RenaiModuleProperties;
       case 'moduleTitle_DropShipProperties':
         return l10n.moduleTitle_DropShipProperties;
+      case 'moduleTitle_GlacierModuleProperties':
+        return l10n.moduleTitle_GlacierModuleProperties;
       case 'moduleTitle_HeianWindModuleProperties':
         return l10n.moduleTitle_HeianWindModuleProperties;
       case 'moduleTitle_WitchModuleProperties':
@@ -263,6 +267,8 @@ class ModuleRegistry {
         return l10n.moduleDesc_ZombossBattleModuleProperties;
       case 'moduleDesc_ZombossBattleIntroProperties':
         return l10n.moduleDesc_ZombossBattleIntroProperties;
+      case 'moduleDesc_ZombossLastStandMinigameProperties':
+        return l10n.moduleDesc_ZombossLastStandMinigameProperties;
       case 'moduleDesc_SeedRainProperties':
         return l10n.moduleDesc_SeedRainProperties;
       case 'moduleDesc_LastStandMinigameProperties':
@@ -321,6 +327,8 @@ class ModuleRegistry {
         return l10n.moduleDesc_RenaiModuleProperties;
       case 'moduleDesc_DropShipProperties':
         return l10n.moduleDesc_DropShipProperties;
+      case 'moduleDesc_GlacierModuleProperties':
+        return l10n.moduleDesc_GlacierModuleProperties;
       case 'moduleDesc_HeianWindModuleProperties':
         return l10n.moduleDesc_HeianWindModuleProperties;
       case 'moduleDesc_WitchModuleProperties':
@@ -615,8 +623,8 @@ class ModuleRegistry {
       isCore: false,
       category: ModuleCategory.mode,
       defaultAlias: 'ZombossBattle',
-      initialDataFactory: () => ZombossBattleModuleData(),
-      routeId: 'ZombossSelection',
+      initialDataFactory: () => ZombossMechBattleModuleData(),
+      routeId: 'ZombossMechBattle',
     ),
     'ZombossBattleIntroProperties': ModuleMetadata(
       titleKey: 'moduleTitle_ZombossBattleIntroProperties',
@@ -625,8 +633,18 @@ class ModuleRegistry {
       isCore: false,
       category: ModuleCategory.mode,
       defaultAlias: 'ZombossBattleIntro',
-      initialDataFactory: () => ZombossBattleIntroData(),
+      initialDataFactory: () => ZombossMechBattleIntroData(),
       routeId: 'UnknownDetail',
+    ),
+    'ZombossLastStandMinigameProperties': ModuleMetadata(
+      titleKey: 'moduleTitle_ZombossLastStandMinigameProperties',
+      descriptionKey: 'moduleDesc_ZombossLastStandMinigameProperties',
+      icon: Icons.castle,
+      isCore: false,
+      category: ModuleCategory.mode,
+      defaultAlias: 'ZombossLastStand',
+      initialDataFactory: () => ZombossLastStandMinigameData(),
+      routeId: 'ZombossBattle',
     ),
     'SeedRainProperties': ModuleMetadata(
       titleKey: 'moduleTitle_SeedRainProperties',
@@ -928,6 +946,17 @@ class ModuleRegistry {
       defaultAlias: 'DropShip',
       initialDataFactory: () => DropShipPropertiesData(),
       routeId: 'DropShip',
+    ),
+    'GlacierModuleProperties': ModuleMetadata(
+      titleKey: 'moduleTitle_GlacierModuleProperties',
+      descriptionKey: 'moduleDesc_GlacierModuleProperties',
+      icon: Icons.ac_unit,
+      isCore: true,
+      allowMultiple: false,
+      category: ModuleCategory.gimmick,
+      defaultAlias: 'GlacierModule',
+      initialDataFactory: () => GlacierModulePropertiesData.createDefault(),
+      routeId: 'GlacierModule',
     ),
     'HeianWindModuleProperties': ModuleMetadata(
       titleKey: 'moduleTitle_HeianWindModuleProperties',

@@ -8,7 +8,8 @@ import 'package:z_editor/data/repository/grid_item_repository.dart';
 import 'package:z_editor/data/ambient_audio_catalog.dart';
 import 'package:z_editor/data/music_suffix_catalog.dart';
 import 'package:z_editor/data/repository/stage_repository.dart';
-import 'package:z_editor/data/repository/zomboss_repository.dart';
+import 'package:z_editor/data/repository/zomboss_battle_repository.dart';
+import 'package:z_editor/data/repository/zomboss_mech_repository.dart';
 import 'package:z_editor/l10n/resource_names.dart';
 
 void main() async {
@@ -36,7 +37,8 @@ void main() async {
   await MusicSuffixCatalog.init();
   await AmbientAudioCatalog.init();
   await GridItemRepository.init();
-  await ZombossRepository.init();
+  await ZombossMechRepository.init();
+  await ZombossBattleRepository.init();
   final prefs = await SharedPreferences.getInstance();
 
   runApp(
