@@ -322,11 +322,11 @@ abstract class AppLocalizations {
   /// **'Successfully renamed'**
   String get renameSuccess;
 
-  /// No description provided for @renamingFailed.
+  /// No description provided for @renameFail.
   ///
   /// In en, this message translates to:
-  /// **'Renaming failed'**
-  String get renamingFailed;
+  /// **'Rename failed, file already exists'**
+  String get renameFail;
 
   /// No description provided for @uploadLevel.
   ///
@@ -387,6 +387,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invalid wave number'**
   String get invalidWaveIndex;
+
+  /// No description provided for @renamingFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Renaming failed'**
+  String get renamingFailed;
 
   /// No description provided for @deleted.
   ///

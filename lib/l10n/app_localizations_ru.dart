@@ -126,7 +126,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get renameSuccess => 'Успешно переименовано';
 
   @override
-  String get renamingFailed => 'Ошибка переименования';
+  String get renameFail => 'Ошибка переименования, файл уже существует';
 
   @override
   String get uploadLevel => 'Upload to Creative Courtyard';
@@ -159,6 +159,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get invalidWaveIndex => 'Неверный номер волны';
+
+  @override
+  String get renamingFailed => 'Ошибка переименования';
 
   @override
   String get deleted => 'Удалено';

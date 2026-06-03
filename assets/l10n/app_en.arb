@@ -36,7 +36,7 @@
   "levelDeleteDetail": "This action cannot be undone.",
   "confirmDeleteCheckbox": "I confirm permanent deletion",
   "renameSuccess": "Successfully renamed",
-  "renamingFailed": "Rename failed, file already exists",
+  "renameFail": "Rename failed, file already exists",
   "uploadLevel": "Upload to Creative Courtyard",
   "uploadLevelConfirm": "You are about to leave the editor and open the official Advanced Creation Courtyard Creator Hub website. After signing in with your email account, you can upload JSON level files from the editor to the in-game Creative Courtyard for other players to enjoy. Do you want to continue?",
   "cancel": "Back",

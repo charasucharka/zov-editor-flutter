@@ -8,6 +8,7 @@ import 'package:c_editor/bloc/settings/settings_cubit.dart';
 import 'package:c_editor/data/repository/level_repository.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/screens/level_list_platform.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LevelListScreen extends StatefulWidget {
   const LevelListScreen({

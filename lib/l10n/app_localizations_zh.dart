@@ -123,7 +123,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get renameSuccess => '重命名成功';
 
   @override
-  String get renamingFailed => '重命名失败';
+  String get renameFail => '重命名失败，已有同名文件';
 
   @override
   String get uploadLevel => '上传至创意庭院';
@@ -155,6 +155,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get invalidWaveIndex => '无效波次序号';
+
+  @override
+  String get renamingFailed => '重命名失败';
 
   @override
   String get deleted => '已删除';
