@@ -86,6 +86,9 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
       gridItemMode: _data.gridItemMode,
     );
     _syncGridItemModeFromPreset();
+    if (_data.selectionMethod == 'chooser' && _data.zombieMode != true) {
+      _stripRealmExclusiveFromPreset();
+    }
   }
 
   /// Legacy levels may have grid items in preset without GridItemMode flag.
@@ -96,36 +99,26 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
     }
   }
 
-  /// Indices in [SeedBankData.presetPlantList] for chips (excludes grid items).
-  List<int> get _presetPlantDisplayIndices {
-    final indices = <int>[];
-    for (var i = 0; i < _data.presetPlantList.length; i++) {
-      if (!kSeedBankGridItemIds.contains(_data.presetPlantList[i])) {
-        indices.add(i);
-      }
-    }
-    return indices;
+  bool _isRealmExclusivePlantId(String id) {
+    if (kSeedBankGridItemIds.contains(id)) return false;
+    final plant = PlantRepository().getPlantInfoById(id);
+    if (plant == null) return false;
+    return plant.hasInternalTag('_internal_no42') ||
+        plant.hasInternalTag('_internal_mausoleum');
   }
 
-  List<String> get _presetPlantsExcludingGridItems => [
-        for (final i in _presetPlantDisplayIndices) _data.presetPlantList[i],
-      ];
-
-  bool _isGridItemSelected(String id) => _data.presetPlantList.contains(id);
+  void _stripRealmExclusiveFromPreset() {
+    _data.presetPlantList.removeWhere(_isRealmExclusivePlantId);
+  }
 
   void _removeGridItemsFromPreset() {
     _data.presetPlantList
         .removeWhere((id) => kSeedBankGridItemIds.contains(id));
   }
 
-  void _setGridItemSelected(String id, bool selected) {
-    if (selected) {
-      if (!_data.presetPlantList.contains(id)) {
-        _data.presetPlantList.add(id);
-      }
-    } else {
-      _data.presetPlantList.remove(id);
-    }
+  void _addGridItemToPreset(String id) {
+    _data.presetPlantList.add(id);
+    _data.gridItemMode = true;
   }
 
   void _sync() {
@@ -135,7 +128,6 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
   }
 
   void _addToPresetPlants() {
-    // Preset: allow duplicates and blacklisted plants
     widget.onRequestPlantSelection(
       (ids) {
         setState(() {
@@ -143,7 +135,7 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
           _sync();
         });
       },
-      blockRealmExclusiveInChooser: false,
+      blockRealmExclusiveInChooser: _data.selectionMethod == 'chooser',
       allowDuplicateSelection: true,
     );
   }
@@ -205,7 +197,20 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
 
   void _removePresetPlantAt(int index) {
     setState(() {
-      _data.presetPlantList.removeAt(_presetPlantDisplayIndices[index]);
+      _data.presetPlantList.removeAt(index);
+      if (!_data.presetPlantList.any(kSeedBankGridItemIds.contains)) {
+        _data.gridItemMode = false;
+      }
+      _sync();
+    });
+  }
+
+  void _reorderPresetPlant(int from, int to) {
+    if (from == to) return;
+    setState(() {
+      final temp = _data.presetPlantList[from];
+      _data.presetPlantList[from] = _data.presetPlantList[to];
+      _data.presetPlantList[to] = temp;
       _sync();
     });
   }
@@ -266,16 +271,18 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
                   isZombie: true,
                   onAdd: _addToZombies,
                   onRemove: (i) => _removeFromList(_data.presetPlantList, i),
+                  onReorder: _reorderPresetPlant,
                 )
               else ...[
                 _ResourceListEditor(
                   title: l10n?.presetPlants ?? 'Preset plants (PresetPlantList)',
                   description: l10n?.plantsAvailableAtStart ?? 'Plants available at start',
-                  items: _presetPlantsExcludingGridItems,
+                  items: _data.presetPlantList,
                   accentColor: theme.colorScheme.secondary,
                   isZombie: false,
                   onAdd: _addToPresetPlants,
                   onRemove: _removePresetPlantAt,
+                  onReorder: _reorderPresetPlant,
                 ),
                 const SizedBox(height: 16),
                 _ResourceListEditor(
@@ -384,6 +391,7 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
                       : (v) {
                           setState(() {
                             _data.selectionMethod = 'chooser';
+                            _stripRealmExclusiveFromPreset();
                             _sync();
                           });
                         },
@@ -482,7 +490,7 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
             ),
             subtitle: Text(
               l10n?.seedBankAddGridItemsSubtitle ??
-                  'Adds frozen mini-game grid items to the preset seed bank.',
+                  'Append grid items to PresetPlantList. Duplicates are allowed.',
             ),
             value: gridMode,
             onChanged: (enabled) {
@@ -510,10 +518,12 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
                     ),
                   _SeedBankGridItemRow(
                     typeName: kSeedBankGridItemIds[i],
-                    selected: _isGridItemSelected(kSeedBankGridItemIds[i]),
-                    onChanged: (selected) {
+                    count: _data.presetPlantList
+                        .where((id) => id == kSeedBankGridItemIds[i])
+                        .length,
+                    onAdd: () {
                       setState(() {
-                        _setGridItemSelected(kSeedBankGridItemIds[i], selected);
+                        _addGridItemToPreset(kSeedBankGridItemIds[i]);
                         _sync();
                       });
                     },
@@ -648,13 +658,13 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
 class _SeedBankGridItemRow extends StatelessWidget {
   const _SeedBankGridItemRow({
     required this.typeName,
-    required this.selected,
-    required this.onChanged,
+    required this.count,
+    required this.onAdd,
   });
 
   final String typeName;
-  final bool selected;
-  final ValueChanged<bool> onChanged;
+  final int count;
+  final VoidCallback onAdd;
 
   @override
   Widget build(BuildContext context) {
@@ -685,23 +695,63 @@ class _SeedBankGridItemRow extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(
-              name,
-              style: theme.textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (count > 0)
+                  Text(
+                    AppLocalizations.of(context)?.seedBankGridItemCount(count) ??
+                        'In preset list: $count',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+              ],
             ),
           ),
-          Checkbox(
-            value: selected,
-            onChanged: (v) => onChanged(v ?? false),
+          IconButton(
+            icon: const Icon(Icons.add),
+            tooltip: AppLocalizations.of(context)?.add ?? 'Add',
+            onPressed: onAdd,
           ),
         ],
       ),
     );
   }
+}
+
+String _entryDisplayName(BuildContext context, String id, {required bool isZombie}) {
+  if (kSeedBankGridItemIds.contains(id)) {
+    final key = 'griditem_$id';
+    final localized = ResourceNames.lookup(context, key);
+    return localized != key ? localized : id;
+  }
+  if (isZombie) {
+    final zombieTypeName = ZombiePropertiesRepository.getTypeNameByAlias(id);
+    return _zombieDisplayName(context, zombieTypeName);
+  }
+  return _plantDisplayName(context, id);
+}
+
+String _entryIconPath(String id, {required bool isZombie}) {
+  if (kSeedBankGridItemIds.contains(id)) {
+    return GridItemRepository.getIconPath(id);
+  }
+  if (isZombie) {
+    final zombieTypeName = ZombiePropertiesRepository.getTypeNameByAlias(id);
+    final zombie = ZombieRepository().getZombieById(zombieTypeName);
+    return zombie?.iconAssetPath ?? 'assets/images/others/unknown.webp';
+  }
+  final plant = PlantRepository().getPlantInfoById(id);
+  return plant?.iconAssetPath ?? 'assets/images/others/unknown.webp';
 }
 
 String _plantDisplayName(BuildContext context, String id) {
@@ -726,7 +776,7 @@ String _zombieDisplayName(BuildContext context, String id) {
   return translated;
 }
 
-class _ResourceListEditor extends StatelessWidget {
+class _ResourceListEditor extends StatefulWidget {
   const _ResourceListEditor({
     required this.title,
     required this.description,
@@ -735,6 +785,7 @@ class _ResourceListEditor extends StatelessWidget {
     required this.isZombie,
     required this.onAdd,
     required this.onRemove,
+    this.onReorder,
   });
 
   final String title;
@@ -744,10 +795,162 @@ class _ResourceListEditor extends StatelessWidget {
   final bool isZombie;
   final VoidCallback onAdd;
   final void Function(int) onRemove;
+  final void Function(int fromIndex, int toIndex)? onReorder;
+
+  @override
+  State<_ResourceListEditor> createState() => _ResourceListEditorState();
+}
+
+class _ResourceListEditorState extends State<_ResourceListEditor> {
+  int? _draggingIndex;
+
+  bool _useImmediateDrag(BuildContext context) {
+    switch (Theme.of(context).platform) {
+      case TargetPlatform.windows:
+      case TargetPlatform.macOS:
+      case TargetPlatform.linux:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  Widget _buildChip(
+    BuildContext context, {
+    required int index,
+    required String id,
+    required bool isDragTarget,
+    bool dimmed = false,
+    bool showRemove = true,
+    Widget? dragHandle,
+  }) {
+    final name = _entryDisplayName(context, id, isZombie: widget.isZombie);
+    final iconPath = _entryIconPath(id, isZombie: widget.isZombie);
+    const iconSize = 48.0;
+
+    return Opacity(
+      opacity: dimmed ? 0.35 : 1,
+      child: Container(
+        padding: const EdgeInsets.only(left: 4, top: 4, bottom: 4, right: 4),
+        decoration: BoxDecoration(
+          color: widget.accentColor.withValues(alpha: isDragTarget ? 0.2 : 0.1),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: widget.accentColor.withValues(alpha: isDragTarget ? 0.7 : 0.3),
+            width: isDragTarget ? 2 : 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ?dragHandle,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: SizedBox(
+                width: iconSize,
+                height: iconSize,
+                child: AssetImageWidget(
+                  assetPath: iconPath,
+                  width: iconSize,
+                  height: iconSize,
+                  fit: BoxFit.cover,
+                  altCandidates: imageAltCandidates(iconPath),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Flexible(
+              child: Text(
+                name,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
+            if (showRemove)
+              IconButton(
+                icon: const Icon(Icons.close, size: 18),
+                onPressed: () => widget.onRemove(index),
+                style: IconButton.styleFrom(
+                  padding: const EdgeInsets.all(4),
+                  minimumSize: const Size(28, 28),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDragHandle(
+    BuildContext context, {
+    required int index,
+    required String id,
+  }) {
+    final feedback = Material(
+      color: Colors.transparent,
+      elevation: 4,
+      borderRadius: BorderRadius.circular(20),
+      child: Opacity(
+        opacity: 0.92,
+        child: _buildChip(
+          context,
+          index: index,
+          id: id,
+          isDragTarget: false,
+          showRemove: false,
+        ),
+      ),
+    );
+
+    final handle = MouseRegion(
+      cursor: SystemMouseCursors.grab,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 2, right: 2),
+        child: Icon(
+          Icons.drag_indicator,
+          size: 18,
+          color: Theme.of(context)
+              .colorScheme
+              .onSurfaceVariant
+              .withValues(alpha: 0.85),
+        ),
+      ),
+    );
+
+    void onDragStarted() => setState(() => _draggingIndex = index);
+    void onDragEnd(DraggableDetails _) => setState(() => _draggingIndex = null);
+
+    if (_useImmediateDrag(context)) {
+      return Draggable<int>(
+        data: index,
+        dragAnchorStrategy: pointerDragAnchorStrategy,
+        feedback: feedback,
+        onDragStarted: onDragStarted,
+        onDragEnd: onDragEnd,
+        child: handle,
+      );
+    }
+
+    return LongPressDraggable<int>(
+      data: index,
+      dragAnchorStrategy: pointerDragAnchorStrategy,
+      feedback: feedback,
+      onDragStarted: onDragStarted,
+      onDragEnd: onDragEnd,
+      child: handle,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
+    final reorderHint = _useImmediateDrag(context)
+        ? (l10n?.presetPlantListReorderHintDesktop ??
+            'Drag the ⋮⋮ handle to reorder.')
+        : (l10n?.presetPlantListReorderHint ??
+            'Long press the ⋮⋮ handle and drag to reorder.');
 
     return Card(
       child: Padding(
@@ -762,14 +965,16 @@ class _ResourceListEditor extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        title,
+                        widget.title,
                         style: theme.textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: accentColor,
+                          color: widget.accentColor,
                         ),
                       ),
                       Text(
-                        description,
+                        widget.onReorder != null
+                            ? '${widget.description} $reorderHint'
+                            : widget.description,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: theme.colorScheme.onSurfaceVariant,
                         ),
@@ -779,13 +984,13 @@ class _ResourceListEditor extends StatelessWidget {
                 ),
                 IconButton(
                   icon: const Icon(Icons.add),
-                  onPressed: onAdd,
-                  color: accentColor,
+                  onPressed: widget.onAdd,
+                  color: widget.accentColor,
                 ),
               ],
             ),
             const SizedBox(height: 8),
-            if (items.isEmpty)
+            if (widget.items.isEmpty)
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
@@ -794,7 +999,7 @@ class _ResourceListEditor extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  AppLocalizations.of(context)?.emptyList ?? 'Empty list',
+                  l10n?.emptyList ?? 'Empty list',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -804,69 +1009,27 @@ class _ResourceListEditor extends StatelessWidget {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: List.generate(items.length, (i) {
-                  final id = items[i];
-                  final zombieTypeName = isZombie ? ZombiePropertiesRepository.getTypeNameByAlias(id) : null;
-                  final name = isZombie
-                      ? _zombieDisplayName(context, zombieTypeName!)
-                      : _plantDisplayName(context, id);
-                  final zombie = isZombie ? ZombieRepository().getZombieById(zombieTypeName!) : null;
-                  final plant = !isZombie ? PlantRepository().getPlantInfoById(id) : null;
-                  final iconPath = isZombie
-                      ? (zombie?.iconAssetPath ?? 'assets/images/others/unknown.webp')
-                      : (plant?.iconAssetPath ?? 'assets/images/others/unknown.webp');
-                  const iconSize = 48.0;
-                  return Container(
-                    padding: const EdgeInsets.only(
-                      left: 4,
-                      top: 4,
-                      bottom: 4,
-                      right: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: accentColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: accentColor.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: SizedBox(
-                                width: iconSize,
-                                height: iconSize,
-                                child: AssetImageWidget(
-                                  assetPath: iconPath,
-                                  width: iconSize,
-                                  height: iconSize,
-                                  fit: BoxFit.cover,
-                                  altCandidates: imageAltCandidates(iconPath),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Flexible(
-                              child: Text(
-                                name,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            IconButton(
-                              icon: const Icon(Icons.close, size: 18),
-                              onPressed: () => onRemove(i),
-                              style: IconButton.styleFrom(
-                                padding: const EdgeInsets.all(4),
-                                minimumSize: const Size(28, 28),
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              ),
-                            ),
-                          ],
-                        ),
+                children: List.generate(widget.items.length, (i) {
+                  final id = widget.items[i];
+
+                  if (widget.onReorder == null) {
+                    return _buildChip(context, index: i, id: id, isDragTarget: false);
+                  }
+
+                  return DragTarget<int>(
+                    onWillAcceptWithDetails: (details) => details.data != i,
+                    onAcceptWithDetails: (details) =>
+                        widget.onReorder!(details.data, i),
+                    builder: (context, candidateData, rejectedData) {
+                      return _buildChip(
+                        context,
+                        index: i,
+                        id: id,
+                        isDragTarget: candidateData.isNotEmpty,
+                        dimmed: _draggingIndex == i,
+                        dragHandle: _buildDragHandle(context, index: i, id: id),
+                      );
+                    },
                   );
                 }),
               ),
