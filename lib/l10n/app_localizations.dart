@@ -268,6 +268,12 @@ abstract class AppLocalizations {
   /// **'Convert'**
   String get convert;
 
+  /// No description provided for @convertHelpTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert between JSON, HUJSON, and encrypted RTON for hot-update import.'**
+  String get convertHelpTooltip;
+
   /// No description provided for @create.
   ///
   /// In en, this message translates to:
@@ -8404,6 +8410,18 @@ abstract class AppLocalizations {
   /// **'Plants pre-selected at the start'**
   String get plantsAvailableAtStart;
 
+  /// No description provided for @presetPlantListReorderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Long press the ⋮⋮ handle and drag to reorder.'**
+  String get presetPlantListReorderHint;
+
+  /// No description provided for @presetPlantListReorderHintDesktop.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag the ⋮⋮ handle to reorder.'**
+  String get presetPlantListReorderHintDesktop;
+
   /// No description provided for @whiteListDescription.
   ///
   /// In en, this message translates to:
@@ -8461,8 +8479,14 @@ abstract class AppLocalizations {
   /// No description provided for @seedBankAddGridItemsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Adds frozen mini-game grid items to the preset seed bank.'**
+  /// **'Append grid items to PresetPlantList. Duplicates are allowed.'**
   String get seedBankAddGridItemsSubtitle;
+
+  /// No description provided for @seedBankGridItemCount.
+  ///
+  /// In en, this message translates to:
+  /// **'In preset list: {count}'**
+  String seedBankGridItemCount(int count);
 
   /// No description provided for @starChallengeSelectConditions.
   ///

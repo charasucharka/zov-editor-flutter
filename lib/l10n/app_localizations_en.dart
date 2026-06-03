@@ -96,6 +96,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get convert => 'Convert';
 
   @override
+  String get convertHelpTooltip =>
+      'Convert between JSON, HUJSON, and encrypted RTON for hot-update import.';
+
+  @override
   String get create => 'Create';
 
   @override
@@ -4672,6 +4676,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get plantsAvailableAtStart => 'Plants pre-selected at the start';
 
   @override
+  String get presetPlantListReorderHint =>
+      'Long press the ⋮⋮ handle and drag to reorder.';
+
+  @override
+  String get presetPlantListReorderHintDesktop =>
+      'Drag the ⋮⋮ handle to reorder.';
+
+  @override
   String get whiteListDescription =>
       'Only these plants can be selected (no restriction if empty)';
 
@@ -4705,7 +4717,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get seedBankAddGridItemsSubtitle =>
-      'Adds frozen mini-game grid items to the preset seed bank.';
+      'Append grid items to PresetPlantList. Duplicates are allowed.';
+
+  @override
+  String seedBankGridItemCount(int count) {
+    return 'In preset list: $count';
+  }
 
   @override
   String get starChallengeSelectConditions => 'Select conditions';

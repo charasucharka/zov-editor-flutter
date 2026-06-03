@@ -94,6 +94,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get convert => '格式转换';
 
   @override
+  String get convertHelpTooltip => '在 JSON、HUJSON 与加密 RTON 格式之间转换，用于热更新导入。';
+
+  @override
   String get create => '创建';
 
   @override
@@ -4433,6 +4436,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get plantsAvailableAtStart => '开局自带的植物';
 
   @override
+  String get presetPlantListReorderHint => '长按 ⋮⋮ 手柄并拖动以调整顺序。';
+
+  @override
+  String get presetPlantListReorderHintDesktop => '拖动 ⋮⋮ 手柄以调整顺序。';
+
+  @override
   String get whiteListDescription => '仅允许选择这些植物（空则不限制）';
 
   @override
@@ -4461,7 +4470,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get seedBankAddGridItemsTitle => '添加网格物品';
 
   @override
-  String get seedBankAddGridItemsSubtitle => '将冰冻小游戏网格物品加入预选种子库。';
+  String get seedBankAddGridItemsSubtitle => '将网格物品追加到 PresetPlantList，可重复添加。';
+
+  @override
+  String seedBankGridItemCount(int count) {
+    return '已在预选列表中：$count 个';
+  }
 
   @override
   String get starChallengeSelectConditions => '选择状态';

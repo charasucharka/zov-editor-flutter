@@ -93,7 +93,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get confirm => 'Подтвердить';
 
   @override
-  String get convert => 'Convert';
+  String get convert => 'Преобразовать';
+
+  @override
+  String get convertHelpTooltip =>
+      'Преобразование между JSON, HUJSON и зашифрованным RTON для импорта через хот-апдейт.';
 
   @override
   String get create => 'Создать';
@@ -4610,6 +4614,14 @@ class AppLocalizationsRu extends AppLocalizations {
   String get plantsAvailableAtStart => 'Растения в начале';
 
   @override
+  String get presetPlantListReorderHint =>
+      'Удерживайте ручку ⋮⋮ и перетаскивайте для изменения порядка.';
+
+  @override
+  String get presetPlantListReorderHintDesktop =>
+      'Перетащите ручку ⋮⋮ для изменения порядка.';
+
+  @override
   String get whiteListDescription =>
       'Только эти растения (пусто = без ограничений)';
 
@@ -4642,7 +4654,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get seedBankAddGridItemsSubtitle =>
-      'Добавляет мини-игровые предметы сетки в предустановленный банк семян.';
+      'Добавляет предметы сетки в PresetPlantList. Дубликаты разрешены.';
+
+  @override
+  String seedBankGridItemCount(int count) {
+    return 'В списке пресетов: $count';
+  }
 
   @override
   String get starChallengeSelectConditions => 'Выбор состояний';
