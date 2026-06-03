@@ -362,7 +362,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get thanksLabel => 'Особая благодарность:';
 
   @override
-  String get thanksNames => 'Devourdoom, Evilhack28, Chara, Haruma, vi_i_guess';
+  String get thanksNames =>
+      'Devourdoom, Evilhack28, Chara, Haruma, nineteendo, vi_i_guess';
 
   @override
   String get sourceLabel => 'Исходный код:';

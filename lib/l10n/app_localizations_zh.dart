@@ -352,7 +352,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get thanksLabel => '特别鸣谢：';
 
   @override
-  String get thanksNames => 'Devourdoom、Evilhack28、Chara、Haruma、vi_i_guess';
+  String get thanksNames =>
+      'Devourdoom、Evilhack28、Chara、Haruma、nineteendo、vi_i_guess';
 
   @override
   String get sourceLabel => '源码：';
