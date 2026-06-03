@@ -42,7 +42,8 @@ flutter:
   generate: true
   assets:
     - assets/reference/template/
-    - assets/icon.png
+    - assets/meta/icon.png
+    - assets/meta/links.json
     - assets/reference/
     - assets/resources/
     - assets/l10n/resource_en.json
@@ -64,19 +65,19 @@ flutter_launcher_icons:
   android: true
   ios: true
   remove_alpha_ios: true
-  image_path: "assets/icon.png"
+  image_path: "assets/meta/icon.png"
   min_sdk_android: 21
   web:
     generate: true
-    image_path: "assets/icon.png"
+    image_path: "assets/meta/icon.png"
     background_color: "#ffffff"
     theme_color: "#1976d2"
   windows:
     generate: true
-    image_path: "assets/icon.png"
+    image_path: "assets/meta/icon.png"
   macos:
     generate: true
-    image_path: "assets/icon.png"
+    image_path: "assets/meta/icon.png"
   linux:
     generate: true
-    image_path: "assets/icon.png"
+    image_path: "assets/meta/icon.png"

@@ -323,15 +323,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get usageText =>
-      '1. 目录设置：首次进入请选择存放 JSON 关卡文件的目录。\n2. 导入/新建：点击列表项编辑现有关卡，或使用右下角按钮基于模板新建。\n3. 模块管理：在编辑器中可添加新模块。\n4. 保存关卡：编辑完成后点击保存，文件将回写到原 JSON。\n5. 转换关卡文件：可将 JSON 转换为热更新可读的 HUJSON 或加密后的 RTON，随后通过其他工具导入游戏内进行测试（记得在导入前手动将文件扩展名从 .hujson 改回 .json）。\n6. 如有疑问或需要高级关卡制作帮助，欢迎加入 Plants vs. Zombies Discord 服务器，在 PvZ2C-Modding 频道主题中提问。';
+      '1. 目录设置：首次进入请选择存放 JSON 关卡文件的目录。\n2. 导入/新建：点击列表项编辑现有关卡，或使用右下角按钮基于模板新建。\n3. 模块管理：在编辑器中可添加新模块。\n4. 保存关卡：编辑完成后点击保存，文件将回写到原 JSON。\n5. 可在官方《植物大战僵尸2》高级创作庭院作者中心上传 JSON 关卡（需登录）。\n6. 转换关卡文件：可将 JSON 转换为热更新可读的 HUJSON 或加密后的 RTON，随后通过其他工具导入游戏内进行测试（记得在导入前手动将文件扩展名从 .hujson 改回 .json）。\n7. 如有疑问或需要高级关卡制作帮助，欢迎加入 Plants vs. Zombies Discord 服务器，在 PvZ2C-Modding 频道主题中提问。';
 
   @override
   String get usageTextDesktop =>
-      '1. 目录设置：点击文件夹图标选择 JSON 关卡目录。\n2. 导入/新建：点击列表项编辑现有关卡，或使用右下角按钮基于模板新建。\n3. 模块管理：在编辑器中可添加新模块。\n4. 保存关卡：点击保存将修改写回 JSON 文件。\n5. 转换关卡文件：可将 JSON 转换为热更新可读的 HUJSON 或加密后的 RTON，随后通过其他工具导入游戏内进行测试（记得在导入前手动将文件扩展名从 .hujson 改回 .json）。\n6. 如有疑问或需要高级关卡制作帮助，欢迎加入 Plants vs. Zombies Discord 服务器，在 PvZ2C-Modding 频道主题中提问。';
+      '1. 目录设置：点击文件夹图标选择 JSON 关卡目录。\n2. 导入/新建：点击列表项编辑现有关卡，或使用右下角按钮基于模板新建。\n3. 模块管理：在编辑器中可添加新模块。\n4. 保存关卡：点击保存将修改写回 JSON 文件。\n5. 可在官方《植物大战僵尸2》高级创作庭院作者中心上传 JSON 关卡（需登录）。\n6. 转换关卡文件：可将 JSON 转换为热更新可读的 HUJSON 或加密后的 RTON，随后通过其他工具导入游戏内进行测试（记得在导入前手动将文件扩展名从 .hujson 改回 .json）。\n7. 如有疑问或需要高级关卡制作帮助，欢迎加入 Plants vs. Zombies Discord 服务器，在 PvZ2C-Modding 频道主题中提问。';
 
   @override
   String get usageTextMobile =>
-      '1. 目录设置：点击文件夹图标选择 JSON 关卡目录。\n2. 导入/新建：点击列表项编辑现有关卡，或使用右下角按钮基于模板新建。\n3. 模块管理：在编辑器中可添加新模块。\n4. 保存关卡：编辑完成后点击保存，文件将回写到原 JSON。\n5. 转换关卡文件：可将 JSON 转换为热更新可读的 HUJSON 或加密后的 RTON，随后通过其他工具导入游戏内进行测试（记得在导入前手动将文件扩展名从 .hujson 改回 .json）。\n6. 如有疑问或需要高级关卡制作帮助，欢迎加入 Plants vs. Zombies Discord 服务器，在 PvZ2C-Modding 频道主题中提问。';
+      '1. 目录设置：点击文件夹图标选择 JSON 关卡目录。\n2. 导入/新建：点击列表项编辑现有关卡，或使用右下角按钮基于模板新建。\n3. 模块管理：在编辑器中可添加新模块。\n4. 保存关卡：编辑完成后点击保存，文件将回写到原 JSON。\n5. 可在官方《植物大战僵尸2》高级创作庭院作者中心上传 JSON 关卡（需登录）。\n6. 转换关卡文件：可将 JSON 转换为热更新可读的 HUJSON 或加密后的 RTON，随后通过其他工具导入游戏内进行测试（记得在导入前手动将文件扩展名从 .hujson 改回 .json）。\n7. 如有疑问或需要高级关卡制作帮助，欢迎加入 Plants vs. Zombies Discord 服务器，在 PvZ2C-Modding 频道主题中提问。';
+
+  @override
+  String get usageLevelUploadLabel => '作者中心：';
 
   @override
   String get discordInviteLabel => '服务器邀请链接：';

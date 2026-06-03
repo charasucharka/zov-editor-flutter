@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:c_editor/data/app_links.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
-
-const _sourceUrl = 'https://github.com/CyberSteve777/c-editor-flutter';
-const _issuesUrl = 'https://github.com/CyberSteve777/c-editor-flutter/issues';
-const _discordInviteUrl = 'https://discord.gg/FBasnrE';
 
 String _usageTextForPlatform(BuildContext context, AppLocalizations l10n) {
   final p = Theme.of(context).platform;
@@ -21,10 +18,17 @@ Future<void> _openUrl(String url) async {
   await launchUrl(uri, mode: LaunchMode.externalApplication);
 }
 
-class AboutScreen extends StatelessWidget {
+class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key, required this.onBack});
 
   final VoidCallback onBack;
+
+  @override
+  State<AboutScreen> createState() => _AboutScreenState();
+}
+
+class _AboutScreenState extends State<AboutScreen> {
+  late final Future<AppLinks> _linksFuture = AppLinks.load();
 
   @override
   Widget build(BuildContext context) {
@@ -40,137 +44,155 @@ class AboutScreen extends StatelessWidget {
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: onBack,
+          onPressed: widget.onBack,
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              l10n.cEditor,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: theme.colorScheme.primary,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              l10n.pvzEditorSubtitle,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 18),
-            _InfoCard(
-              title: l10n.introSection,
-              child: Text(
-                l10n.introText,
-                style: TextStyle(height: 1.5, color: theme.colorScheme.onSurface),
-              ),
-            ),
-            _InfoCard(
-              title: l10n.featuresSection,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _Bullet(l10n.feature1),
-                  _Bullet(l10n.feature2),
-                  _Bullet(l10n.feature3),
-                  _Bullet(l10n.feature4),
-                ],
-              ),
-            ),
-            _InfoCard(
-              title: l10n.usageSection,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _usageTextForPlatform(context, l10n),
-                    style: TextStyle(height: 1.5, color: theme.colorScheme.onSurface),
-                  ),
-                  if (l10n.discordInviteLabel.isNotEmpty) ...[
-                    const SizedBox(height: 8),
-                    _LinkRow(
-                      label: l10n.discordInviteLabel,
-                      url: _discordInviteUrl,
-                      onSurface: theme.colorScheme.onSurface,
-                      linkColor: theme.colorScheme.primary,
-                    ),
-                  ],
-                ],
-              ),
-            ),
-            _InfoCard(
-              title: l10n.creditsSection,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _Bullet(l10n.authorLabel),
-                  Text(l10n.authorName, style: TextStyle(color: theme.colorScheme.onSurface)),
-                  _Bullet(l10n.thanksLabel),
-                  Text(l10n.thanksNames, style: TextStyle(color: theme.colorScheme.onSurface)),
-                  _LinkRow(
-                    label: l10n.sourceLabel,
-                    url: _sourceUrl,
-                    onSurface: theme.colorScheme.onSurface,
-                    linkColor: theme.colorScheme.primary,
-                  ),
-                  _LinkRow(
-                    label: l10n.issuesLabel,
-                    url: _issuesUrl,
-                    onSurface: theme.colorScheme.onSurface,
-                    linkColor: theme.colorScheme.primary,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    l10n.zEditorAcknowledgment,
-                    style: TextStyle(height: 1.5, color: theme.colorScheme.onSurface),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    l10n.zEditorCreditsSubsection,
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.primary,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  _Bullet(l10n.zEditorAuthorLabel),
-                  Text(l10n.zEditorAuthorName, style: TextStyle(color: theme.colorScheme.onSurface)),
-                  _Bullet(l10n.zEditorThanksLabel),
-                  Text(l10n.zEditorThanksNames, style: TextStyle(color: theme.colorScheme.onSurface)),
-                  _Bullet(l10n.zEditorQqGroupLabel),
-                  Text(l10n.zEditorQqGroupNumber, style: TextStyle(color: theme.colorScheme.onSurface)),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              l10n.tagline,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 20),
-            FutureBuilder<PackageInfo>(
-              future: PackageInfo.fromPlatform(),
-              builder: (context, snapshot) {
-                final versionStr = snapshot.data?.version ?? '0.0.0';
-                return Text(
-                  l10n.version(versionStr),
+      body: FutureBuilder<AppLinks>(
+        future: _linksFuture,
+        builder: (context, linksSnapshot) {
+          final links = linksSnapshot.data;
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  l10n.cEditor,
                   textAlign: TextAlign.center,
-                  style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
-                );
-              },
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  l10n.pvzEditorSubtitle,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 18),
+                _InfoCard(
+                  title: l10n.introSection,
+                  child: Text(
+                    l10n.introText,
+                    style: TextStyle(height: 1.5, color: theme.colorScheme.onSurface),
+                  ),
+                ),
+                _InfoCard(
+                  title: l10n.featuresSection,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _Bullet(l10n.feature1),
+                      _Bullet(l10n.feature2),
+                      _Bullet(l10n.feature3),
+                      _Bullet(l10n.feature4),
+                    ],
+                  ),
+                ),
+                _InfoCard(
+                  title: l10n.usageSection,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _usageTextForPlatform(context, l10n),
+                        style: TextStyle(height: 1.5, color: theme.colorScheme.onSurface),
+                      ),
+                      if (links != null && l10n.usageLevelUploadLabel.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        _LinkRow(
+                          label: l10n.usageLevelUploadLabel,
+                          url: links.levelUpload,
+                          onSurface: theme.colorScheme.onSurface,
+                          linkColor: theme.colorScheme.primary,
+                        ),
+                      ],
+                      if (links != null && l10n.discordInviteLabel.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        _LinkRow(
+                          label: l10n.discordInviteLabel,
+                          url: links.discordInvite,
+                          onSurface: theme.colorScheme.onSurface,
+                          linkColor: theme.colorScheme.primary,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                _InfoCard(
+                  title: l10n.creditsSection,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _Bullet(l10n.authorLabel),
+                      Text(l10n.authorName, style: TextStyle(color: theme.colorScheme.onSurface)),
+                      _Bullet(l10n.thanksLabel),
+                      Text(l10n.thanksNames, style: TextStyle(color: theme.colorScheme.onSurface)),
+                      if (links != null) ...[
+                        _LinkRow(
+                          label: l10n.sourceLabel,
+                          url: links.source,
+                          onSurface: theme.colorScheme.onSurface,
+                          linkColor: theme.colorScheme.primary,
+                        ),
+                        _LinkRow(
+                          label: l10n.issuesLabel,
+                          url: links.issues,
+                          onSurface: theme.colorScheme.onSurface,
+                          linkColor: theme.colorScheme.primary,
+                        ),
+                      ],
+                      const SizedBox(height: 12),
+                      Text(
+                        l10n.zEditorAcknowledgment,
+                        style: TextStyle(height: 1.5, color: theme.colorScheme.onSurface),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        l10n.zEditorCreditsSubsection,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.primary,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      _Bullet(l10n.zEditorAuthorLabel),
+                      Text(l10n.zEditorAuthorName, style: TextStyle(color: theme.colorScheme.onSurface)),
+                      _Bullet(l10n.zEditorThanksLabel),
+                      Text(l10n.zEditorThanksNames, style: TextStyle(color: theme.colorScheme.onSurface)),
+                      _Bullet(l10n.zEditorQqGroupLabel),
+                      Text(l10n.zEditorQqGroupNumber, style: TextStyle(color: theme.colorScheme.onSurface)),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  l10n.tagline,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                FutureBuilder<PackageInfo>(
+                  future: PackageInfo.fromPlatform(),
+                  builder: (context, snapshot) {
+                    final versionStr = snapshot.data?.version ?? '0.0.0';
+                    return Text(
+                      l10n.version(versionStr),
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                    );
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
