@@ -22,6 +22,9 @@ class ZombieSelectionScreen extends StatefulWidget {
     this.onMultiZombieSelected,
     required this.onBack,
     this.editorCubit,
+    this.excludeIds = const [],
+    this.initialSelectedIds = const [],
+    this.allowDuplicateSelection = false,
   });
 
   final bool multiSelect;
@@ -31,6 +34,15 @@ class ZombieSelectionScreen extends StatefulWidget {
   /// When set (e.g. from the level editor), enables Kongfu rocket → flick module prompt.
   final EditorCubit? editorCubit;
 
+  /// IDs hidden from the grid (e.g. entries in a conflicting list).
+  final List<String> excludeIds;
+
+  /// When unique multi-select is used, these IDs start selected (already in the parent list).
+  final List<String> initialSelectedIds;
+
+  /// When true, each tap adds another entry (batch append mode).
+  final bool allowDuplicateSelection;
+
   @override
   State<ZombieSelectionScreen> createState() => _ZombieSelectionScreenState();
 }
@@ -38,6 +50,7 @@ class ZombieSelectionScreen extends StatefulWidget {
 class _ZombieSelectionScreenState extends State<ZombieSelectionScreen> {
   String _searchQuery = '';
   final Set<String> _selectedIds = {};
+  final List<String> _selectedIdsWithDuplicates = [];
   bool _isLoaded = false;
   ZombieCategory _selectedCategory = ZombieCategory.main;
   ZombieTag _selectedTag = ZombieTag.all;
@@ -45,10 +58,19 @@ class _ZombieSelectionScreenState extends State<ZombieSelectionScreen> {
   @override
   void initState() {
     super.initState();
+    if (widget.multiSelect &&
+        !widget.allowDuplicateSelection &&
+        widget.initialSelectedIds.isNotEmpty) {
+      _selectedIds.addAll(widget.initialSelectedIds);
+    }
     ZombieRepository().init().then((_) {
       if (mounted) setState(() => _isLoaded = true);
     });
   }
+
+  int get _selectedCount => widget.allowDuplicateSelection
+      ? _selectedIdsWithDuplicates.length
+      : _selectedIds.length;
 
   List<ZombieTag> _visibleTagsFor(ZombieCategory category) {
     if (category == ZombieCategory.collection) return [];
@@ -88,11 +110,15 @@ class _ZombieSelectionScreenState extends State<ZombieSelectionScreen> {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final repo = ZombieRepository();
-    final zombies = repo.search(
+    final allZombies = repo.search(
       _searchQuery,
       _selectedCategory == ZombieCategory.collection ? null : _selectedTag,
       _selectedCategory,
     );
+    final excludeSet = widget.excludeIds.toSet();
+    final zombies = excludeSet.isEmpty
+        ? allZombies
+        : allZombies.where((z) => !excludeSet.contains(z.id)).toList();
     final visibleTags = _visibleTagsFor(_selectedCategory);
     final tagIndex = visibleTags.indexOf(_selectedTag);
     final safeTagIndex = tagIndex < 0 ? 0 : tagIndex;
@@ -122,13 +148,16 @@ class _ZombieSelectionScreenState extends State<ZombieSelectionScreen> {
               backgroundColor: themeColor,
               foregroundColor: theme.colorScheme.surface,
               onPressed: () async {
+                final ids = widget.allowDuplicateSelection
+                    ? List<String>.from(_selectedIdsWithDuplicates)
+                    : _selectedIds.toList();
                 await maybeShowKongfuRocketFlickPrompt(
                   context,
-                  _selectedIds,
+                  ids,
                   editorCubit: widget.editorCubit,
                 );
                 if (!context.mounted) return;
-                widget.onMultiZombieSelected?.call(_selectedIds.toList());
+                widget.onMultiZombieSelected?.call(ids);
               },
               child: const Icon(Icons.check),
             )
@@ -153,9 +182,9 @@ class _ZombieSelectionScreenState extends State<ZombieSelectionScreen> {
                         decoration: InputDecoration(
                           hintText: widget.multiSelect
                               ? (l10n?.selectedCountTapToSearch(
-                                      _selectedIds.length,
+                                      _selectedCount,
                                     ) ??
-                                    'Selected ${_selectedIds.length}, tap to search')
+                                    'Selected $_selectedCount, tap to search')
                               : (l10n?.searchZombie ?? 'Search zombie'),
                           prefixIcon: const Icon(Icons.search),
                           suffixIcon: _searchQuery.isNotEmpty
@@ -310,17 +339,24 @@ class _ZombieSelectionScreenState extends State<ZombieSelectionScreen> {
                         itemCount: zombies.length,
                         itemBuilder: (_, i) {
                           final zombie = zombies[i];
-                          final isSelected =
-                              _selectedIds.contains(zombie.id);
+                          final selectionCount = widget.allowDuplicateSelection
+                              ? _selectedIdsWithDuplicates
+                                  .where((id) => id == zombie.id)
+                                  .length
+                              : (_selectedIds.contains(zombie.id) ? 1 : 0);
+                          final isSelected = selectionCount > 0;
                           final isFavorite = repo.isFavorite(zombie.id);
                           return _ZombieGridItem(
                             zombie: zombie,
                             isSelected: isSelected,
                             isFavorite: isFavorite,
+                            selectionColor: widget.multiSelect ? themeColor : null,
                             onTap: () async {
                               if (widget.multiSelect) {
                                 setState(() {
-                                  if (isSelected) {
+                                  if (widget.allowDuplicateSelection) {
+                                    _selectedIdsWithDuplicates.add(zombie.id);
+                                  } else if (isSelected) {
                                     _selectedIds.remove(zombie.id);
                                   } else {
                                     _selectedIds.add(zombie.id);
@@ -355,6 +391,7 @@ class _ZombieGridItem extends StatelessWidget {
     required this.isFavorite,
     required this.onTap,
     required this.onLongPress,
+    this.selectionColor,
   });
 
   final ZombieInfo zombie;
@@ -362,6 +399,7 @@ class _ZombieGridItem extends StatelessWidget {
   final bool isFavorite;
   final VoidCallback onTap;
   final VoidCallback onLongPress;
+  final Color? selectionColor;
 
   @override
   Widget build(BuildContext context) {
@@ -369,11 +407,10 @@ class _ZombieGridItem extends StatelessWidget {
     final iconPath = zombie.iconAssetPath;
     final hasIcon = iconPath != null && iconPath.isNotEmpty;
 
-    final borderColor =
-        isSelected ? theme.colorScheme.primary : Colors.transparent;
-    final bgColor = isSelected
-        ? theme.colorScheme.primary.withValues(alpha: 0.08)
-        : Colors.transparent;
+    final accent = selectionColor ?? theme.colorScheme.primary;
+    final borderColor = isSelected ? accent : Colors.transparent;
+    final bgColor =
+        isSelected ? accent.withValues(alpha: 0.08) : Colors.transparent;
     return Material(
       color: bgColor,
       borderRadius: BorderRadius.circular(8),

@@ -2298,6 +2298,7 @@ class _EditorScreenState extends State<EditorScreen> {
             onRequestPlantSelection: (
               onSelected, {
               excludeIds,
+              initialSelectedIds,
               blockRealmExclusiveInChooser = false,
               allowDuplicateSelection = false,
             }) {
@@ -2307,6 +2308,7 @@ class _EditorScreenState extends State<EditorScreen> {
                   builder: (_) => PlantSelectionScreen(
                     isMultiSelect: true,
                     excludeIds: excludeIds ?? const [],
+                    initialSelectedIds: initialSelectedIds ?? const [],
                     blockRealmExclusiveInChooser:
                         blockRealmExclusiveInChooser,
                     allowDuplicateSelection: allowDuplicateSelection,

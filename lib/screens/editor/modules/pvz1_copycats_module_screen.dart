@@ -116,17 +116,13 @@ class _PVZ1CopycatsModuleScreenState extends State<PVZ1CopycatsModuleScreen> {
           onPlantSelected: (_) {},
           onMultiPlantSelected: (ids) {
             setState(() {
-              for (final id in ids) {
-                if (!_data.plantBlackList.contains(id)) {
-                  _data.plantBlackList.add(id);
-                }
-              }
+              _data.plantBlackList = List<String>.from(ids);
               _sync();
             });
             Navigator.pop(ctx);
           },
           onBack: () => Navigator.pop(ctx),
-          excludeIds: _data.plantBlackList,
+          initialSelectedIds: _data.plantBlackList,
           levelFile: widget.levelFile,
           onAddModule: widget.onAddModule,
         ),
@@ -145,16 +141,13 @@ class _PVZ1CopycatsModuleScreenState extends State<PVZ1CopycatsModuleScreen> {
           onZombieSelected: (_) {},
           onMultiZombieSelected: (ids) {
             setState(() {
-              for (final id in ids) {
-                if (!_data.zombieWhiteList.contains(id)) {
-                  _data.zombieWhiteList.add(id);
-                }
-              }
+              _data.zombieWhiteList = List<String>.from(ids);
               _sync();
             });
             Navigator.pop(ctx);
           },
           onBack: () => Navigator.pop(ctx),
+          initialSelectedIds: _data.zombieWhiteList,
         ),
       ),
     );

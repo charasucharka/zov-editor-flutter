@@ -550,12 +550,12 @@ class _DefeatZombiesOfTypeChallengeEditorState
           onMultiZombieSelected: (ids) {
             Navigator.pop(ctx);
             setState(() {
-              final merged = <String>{..._zombieList, ...ids}.toList();
-              _setTypesToKill(merged, _listType);
+              _setTypesToKill(List<String>.from(ids), _listType);
               _save();
             });
           },
           onBack: () => Navigator.pop(ctx),
+          initialSelectedIds: _zombieList,
         ),
       ),
     );

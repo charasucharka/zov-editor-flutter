@@ -81,6 +81,7 @@ class _PennyClassroomModuleScreenState extends State<PennyClassroomModuleScreen>
             Navigator.pop(context);
             final map = Map<String, int>.from(_data.plantMap);
             final level = _batchLevel.round();
+            map.removeWhere((key, _) => !ids.contains(key));
             for (final id in ids) {
               map.putIfAbsent(id, () => level);
             }
@@ -88,6 +89,7 @@ class _PennyClassroomModuleScreenState extends State<PennyClassroomModuleScreen>
             _sync();
           },
           onBack: () => Navigator.pop(context),
+          initialSelectedIds: _data.plantMap.keys.toList(),
           levelFile: widget.levelFile,
           onAddModule: widget.onAddModule,
         ),

@@ -33,6 +33,7 @@ class PlantSelectionScreen extends StatefulWidget {
     this.onMultiPlantSelected,
     required this.onBack,
     this.excludeIds = const [],
+    this.initialSelectedIds = const [],
     this.levelFile,
     this.onAddModule,
     this.blockRealmExclusiveInChooser = false,
@@ -44,8 +45,11 @@ class PlantSelectionScreen extends StatefulWidget {
   final void Function(List<String>)? onMultiPlantSelected;
   final VoidCallback onBack;
 
-  /// IDs to exclude from selection (e.g. plants already in the other list).
+  /// IDs to exclude from selection (e.g. entries in a conflicting list).
   final List<String> excludeIds;
+
+  /// When unique multi-select is used, these IDs start selected (already in the parent list).
+  final List<String> initialSelectedIds;
 
   /// When set, parallel plants gated by modules are disabled until the corresponding module is in the level.
   final PvzLevelFile? levelFile;
@@ -74,6 +78,11 @@ class _PlantSelectionScreenState extends State<PlantSelectionScreen> {
   @override
   void initState() {
     super.initState();
+    if (widget.isMultiSelect &&
+        !widget.allowDuplicateSelection &&
+        widget.initialSelectedIds.isNotEmpty) {
+      _selectedIds.addAll(widget.initialSelectedIds);
+    }
     PlantRepository().init().then((_) {
       if (mounted) setState(() => _isLoaded = true);
     });

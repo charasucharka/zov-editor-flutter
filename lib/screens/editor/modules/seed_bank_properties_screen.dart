@@ -30,6 +30,7 @@ class SeedBankPropertiesScreen extends StatefulWidget {
   final void Function(
     void Function(List<String>) onSelected, {
     List<String>? excludeIds,
+    List<String>? initialSelectedIds,
     bool blockRealmExclusiveInChooser,
     bool allowDuplicateSelection,
   }) onRequestPlantSelection;
@@ -141,37 +142,29 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
   }
 
   void _addToWhiteList() {
-    final exclude = [
-      ..._data.plantWhiteList,
-      ..._data.plantBlackList,
-    ];
     widget.onRequestPlantSelection(
       (ids) {
         setState(() {
-          final toAdd = ids.where((id) => !_data.plantWhiteList.contains(id));
-          _data.plantWhiteList.addAll(toAdd);
+          _data.plantWhiteList = List<String>.from(ids);
           _sync();
         });
       },
-      excludeIds: exclude,
+      excludeIds: _data.plantBlackList,
+      initialSelectedIds: _data.plantWhiteList,
       blockRealmExclusiveInChooser: _data.selectionMethod == 'chooser',
     );
   }
 
   void _addToBlackList() {
-    final exclude = [
-      ..._data.plantWhiteList,
-      ..._data.plantBlackList,
-    ];
     widget.onRequestPlantSelection(
       (ids) {
         setState(() {
-          final toAdd = ids.where((id) => !_data.plantBlackList.contains(id));
-          _data.plantBlackList.addAll(toAdd);
+          _data.plantBlackList = List<String>.from(ids);
           _sync();
         });
       },
-      excludeIds: exclude,
+      excludeIds: _data.plantWhiteList,
+      initialSelectedIds: _data.plantBlackList,
       blockRealmExclusiveInChooser: _data.selectionMethod == 'chooser',
     );
   }
