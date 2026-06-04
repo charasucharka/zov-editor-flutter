@@ -10,6 +10,7 @@ import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
 import 'package:c_editor/theme/app_theme.dart';
 import 'package:c_editor/widgets/asset_image.dart' show AssetImageWidget, imageAltCandidates;
+import 'package:c_editor/widgets/preset_resource_list_tile.dart';
 
 /// Seed bank properties. Ported from Z-Editor-master SeedBankPropertiesEP.kt
 class SeedBankPropertiesScreen extends StatefulWidget {
@@ -198,12 +199,11 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
     });
   }
 
-  void _reorderPresetPlant(int from, int to) {
-    if (from == to) return;
+  void _reorderPresetPlant(int oldIndex, int newIndex) {
+    if (oldIndex == newIndex) return;
     setState(() {
-      final temp = _data.presetPlantList[from];
-      _data.presetPlantList[from] = _data.presetPlantList[to];
-      _data.presetPlantList[to] = temp;
+      final item = _data.presetPlantList.removeAt(oldIndex);
+      _data.presetPlantList.insert(newIndex, item);
       _sync();
     });
   }
@@ -769,7 +769,7 @@ String _zombieDisplayName(BuildContext context, String id) {
   return translated;
 }
 
-class _ResourceListEditor extends StatefulWidget {
+class _ResourceListEditor extends StatelessWidget {
   const _ResourceListEditor({
     required this.title,
     required this.description,
@@ -788,16 +788,9 @@ class _ResourceListEditor extends StatefulWidget {
   final bool isZombie;
   final VoidCallback onAdd;
   final void Function(int) onRemove;
-  final void Function(int fromIndex, int toIndex)? onReorder;
+  final void Function(int oldIndex, int newIndex)? onReorder;
 
-  @override
-  State<_ResourceListEditor> createState() => _ResourceListEditorState();
-}
-
-class _ResourceListEditorState extends State<_ResourceListEditor> {
-  int? _draggingIndex;
-
-  bool _useImmediateDrag(BuildContext context) {
+  static bool _useImmediateDrag(BuildContext context) {
     switch (Theme.of(context).platform) {
       case TargetPlatform.windows:
       case TargetPlatform.macOS:
@@ -812,126 +805,56 @@ class _ResourceListEditorState extends State<_ResourceListEditor> {
     BuildContext context, {
     required int index,
     required String id,
-    required bool isDragTarget,
-    bool dimmed = false,
-    bool showRemove = true,
-    Widget? dragHandle,
   }) {
-    final name = _entryDisplayName(context, id, isZombie: widget.isZombie);
-    final iconPath = _entryIconPath(id, isZombie: widget.isZombie);
+    final name = _entryDisplayName(context, id, isZombie: isZombie);
+    final iconPath = _entryIconPath(id, isZombie: isZombie);
     const iconSize = 48.0;
 
-    return Opacity(
-      opacity: dimmed ? 0.35 : 1,
-      child: Container(
-        padding: const EdgeInsets.only(left: 4, top: 4, bottom: 4, right: 4),
-        decoration: BoxDecoration(
-          color: widget.accentColor.withValues(alpha: isDragTarget ? 0.2 : 0.1),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: widget.accentColor.withValues(alpha: isDragTarget ? 0.7 : 0.3),
-            width: isDragTarget ? 2 : 1,
-          ),
+    return Container(
+      padding: const EdgeInsets.only(left: 4, top: 4, bottom: 4, right: 4),
+      decoration: BoxDecoration(
+        color: accentColor.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: accentColor.withValues(alpha: 0.3),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ?dragHandle,
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: SizedBox(
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: SizedBox(
+              width: iconSize,
+              height: iconSize,
+              child: AssetImageWidget(
+                assetPath: iconPath,
                 width: iconSize,
                 height: iconSize,
-                child: AssetImageWidget(
-                  assetPath: iconPath,
-                  width: iconSize,
-                  height: iconSize,
-                  fit: BoxFit.cover,
-                  altCandidates: imageAltCandidates(iconPath),
-                ),
+                fit: BoxFit.cover,
+                altCandidates: imageAltCandidates(iconPath),
               ),
             ),
-            const SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                name,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
+          ),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              name,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
             ),
-            if (showRemove)
-              IconButton(
-                icon: const Icon(Icons.close, size: 18),
-                onPressed: () => widget.onRemove(index),
-                style: IconButton.styleFrom(
-                  padding: const EdgeInsets.all(4),
-                  minimumSize: const Size(28, 28),
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-              ),
-          ],
-        ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.close, size: 18),
+            onPressed: () => onRemove(index),
+            style: IconButton.styleFrom(
+              padding: const EdgeInsets.all(4),
+              minimumSize: const Size(28, 28),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+          ),
+        ],
       ),
-    );
-  }
-
-  Widget _buildDragHandle(
-    BuildContext context, {
-    required int index,
-    required String id,
-  }) {
-    final feedback = Material(
-      color: Colors.transparent,
-      elevation: 4,
-      borderRadius: BorderRadius.circular(20),
-      child: Opacity(
-        opacity: 0.92,
-        child: _buildChip(
-          context,
-          index: index,
-          id: id,
-          isDragTarget: false,
-          showRemove: false,
-        ),
-      ),
-    );
-
-    final handle = MouseRegion(
-      cursor: SystemMouseCursors.grab,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 2, right: 2),
-        child: Icon(
-          Icons.drag_indicator,
-          size: 18,
-          color: Theme.of(context)
-              .colorScheme
-              .onSurfaceVariant
-              .withValues(alpha: 0.85),
-        ),
-      ),
-    );
-
-    void onDragStarted() => setState(() => _draggingIndex = index);
-    void onDragEnd(DraggableDetails _) => setState(() => _draggingIndex = null);
-
-    if (_useImmediateDrag(context)) {
-      return Draggable<int>(
-        data: index,
-        dragAnchorStrategy: pointerDragAnchorStrategy,
-        feedback: feedback,
-        onDragStarted: onDragStarted,
-        onDragEnd: onDragEnd,
-        child: handle,
-      );
-    }
-
-    return LongPressDraggable<int>(
-      data: index,
-      dragAnchorStrategy: pointerDragAnchorStrategy,
-      feedback: feedback,
-      onDragStarted: onDragStarted,
-      onDragEnd: onDragEnd,
-      child: handle,
     );
   }
 
@@ -958,16 +881,16 @@ class _ResourceListEditorState extends State<_ResourceListEditor> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.title,
+                        title,
                         style: theme.textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: widget.accentColor,
+                          color: accentColor,
                         ),
                       ),
                       Text(
-                        widget.onReorder != null
-                            ? '${widget.description} $reorderHint'
-                            : widget.description,
+                        onReorder != null
+                            ? '$description $reorderHint'
+                            : description,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: theme.colorScheme.onSurfaceVariant,
                         ),
@@ -977,13 +900,13 @@ class _ResourceListEditorState extends State<_ResourceListEditor> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.add),
-                  onPressed: widget.onAdd,
-                  color: widget.accentColor,
+                  onPressed: onAdd,
+                  color: accentColor,
                 ),
               ],
             ),
             const SizedBox(height: 8),
-            if (widget.items.isEmpty)
+            if (items.isEmpty)
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
@@ -998,31 +921,45 @@ class _ResourceListEditorState extends State<_ResourceListEditor> {
                   ),
                 ),
               )
+            else if (onReorder != null)
+              SizedBox(
+                height: items.length * kPresetResourceRowHeight,
+                child: ReorderableListView.builder(
+                  clipBehavior: Clip.none,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  buildDefaultDragHandles: false,
+                  itemCount: items.length,
+                  onReorder: (oldIndex, newIndex) {
+                    if (newIndex > oldIndex) {
+                      newIndex--;
+                    }
+                    onReorder!(oldIndex, newIndex);
+                  },
+                  itemBuilder: (context, index) {
+                    final id = items[index];
+                    final iconPath = _entryIconPath(id, isZombie: isZombie);
+                    return PresetResourceListTile(
+                      key: ValueKey('preset-resource-$index-$id'),
+                      label: _entryDisplayName(context, id, isZombie: isZombie),
+                      iconAssetPath: iconPath,
+                      iconAltCandidates: imageAltCandidates(iconPath),
+                      reorderIndex: index,
+                      onRemove: () => onRemove(index),
+                    );
+                  },
+                ),
+              )
             else
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: List.generate(widget.items.length, (i) {
-                  final id = widget.items[i];
-
-                  if (widget.onReorder == null) {
-                    return _buildChip(context, index: i, id: id, isDragTarget: false);
-                  }
-
-                  return DragTarget<int>(
-                    onWillAcceptWithDetails: (details) => details.data != i,
-                    onAcceptWithDetails: (details) =>
-                        widget.onReorder!(details.data, i),
-                    builder: (context, candidateData, rejectedData) {
-                      return _buildChip(
-                        context,
-                        index: i,
-                        id: id,
-                        isDragTarget: candidateData.isNotEmpty,
-                        dimmed: _draggingIndex == i,
-                        dragHandle: _buildDragHandle(context, index: i, id: id),
-                      );
-                    },
+                children: List.generate(items.length, (i) {
+                  final id = items[i];
+                  return _buildChip(
+                    context,
+                    index: i,
+                    id: id,
                   );
                 }),
               ),
@@ -1032,3 +969,4 @@ class _ResourceListEditorState extends State<_ResourceListEditor> {
     );
   }
 }
+

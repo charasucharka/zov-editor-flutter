@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:c_editor/data/models/zomboss_mech_catalog.dart';
 import 'package:c_editor/data/pvz_models/PvzLevelFile.dart';
-import 'package:c_editor/data/zomboss_mech_action_utils.dart';
 import 'package:c_editor/data/zomboss_mech_l10n.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/theme/app_theme.dart';
@@ -32,174 +31,8 @@ TextStyle zombossMechActionTitleStyle(BuildContext context) {
       );
 }
 
-/// Estimated row height for action list layout.
+/// Estimated row height for [ReorderableListView] in a bounded [SizedBox].
 const double kZombossMechActionRowHeight = 62;
-
-bool zombossMechUseImmediateDrag(BuildContext context) {
-  switch (Theme.of(context).platform) {
-    case TargetPlatform.windows:
-    case TargetPlatform.macOS:
-    case TargetPlatform.linux:
-      return true;
-    default:
-      return false;
-  }
-}
-
-/// Drag-and-drop action list for custom zomboss mech phase editors.
-class ZombossMechReorderableActionList extends StatefulWidget {
-  const ZombossMechReorderableActionList({
-    super.key,
-    required this.mechId,
-    required this.catalog,
-    required this.levelFile,
-    required this.selectedActions,
-    required this.keyPrefix,
-    required this.onReorder,
-    required this.onRemove,
-    required this.onEditCustomAction,
-  });
-
-  final String mechId;
-  final ZombossMechCatalogEntry catalog;
-  final PvzLevelFile levelFile;
-  final List<String> selectedActions;
-  final String keyPrefix;
-  final void Function(int fromIndex, int toIndex) onReorder;
-  final void Function(int index) onRemove;
-  final ValueChanged<String> onEditCustomAction;
-
-  @override
-  State<ZombossMechReorderableActionList> createState() =>
-      _ZombossMechReorderableActionListState();
-}
-
-class _ZombossMechReorderableActionListState
-    extends State<ZombossMechReorderableActionList> {
-  Widget _buildDragHandle({
-    required BuildContext context,
-    required int index,
-    required String tag,
-    required String label,
-    required Color accent,
-    required double feedbackWidth,
-  }) {
-    final feedback = SizedBox(
-      width: feedbackWidth,
-      child: Material(
-        color: Colors.transparent,
-        elevation: 4,
-        borderRadius: BorderRadius.circular(10),
-        child: Opacity(
-          opacity: 0.92,
-          child: ZombossMechActionRow(
-            label: label,
-            tag: tag,
-            onRemove: () {},
-            showRemoveButton: false,
-          ),
-        ),
-      ),
-    );
-
-    const handleSize = Size(48, ZombossMechActionRow.controlHeight);
-    final placeholder = SizedBox.fromSize(size: handleSize);
-
-    final handle = MouseRegion(
-      cursor: SystemMouseCursors.grab,
-      child: SizedBox.fromSize(
-        size: handleSize,
-        child: Center(
-          child: Icon(
-            Icons.drag_indicator,
-            color: accent.withValues(alpha: 0.9),
-            size: 28,
-          ),
-        ),
-      ),
-    );
-
-    if (zombossMechUseImmediateDrag(context)) {
-      return Draggable<int>(
-        data: index,
-        dragAnchorStrategy: pointerDragAnchorStrategy,
-        feedback: feedback,
-        childWhenDragging: placeholder,
-        child: handle,
-      );
-    }
-
-    return LongPressDraggable<int>(
-      data: index,
-      dragAnchorStrategy: pointerDragAnchorStrategy,
-      feedback: feedback,
-      childWhenDragging: placeholder,
-      child: handle,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final rowWidth = constraints.maxWidth.isFinite
-            ? constraints.maxWidth
-            : MediaQuery.sizeOf(context).width;
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: List.generate(widget.selectedActions.length, (actionIndex) {
-            final rtid = widget.selectedActions[actionIndex];
-            final isCustom = ZombossMechActionUtils.isCustomRtid(rtid);
-            final resolved = ZombossMechActionUtils.resolveAction(
-              rtid: rtid,
-              catalog: widget.catalog,
-              levelFile: widget.levelFile,
-            );
-            final tag = resolved?.tag ?? '';
-            final label = ZombossMechL10n.labelForStageRtid(
-              context: context,
-              mechId: widget.mechId,
-              catalog: widget.catalog,
-              levelFile: widget.levelFile,
-              rtid: rtid,
-            );
-            final accent = zombossMechActionTagColor(tag, context);
-
-            return DragTarget<int>(
-              onWillAcceptWithDetails: (details) => details.data != actionIndex,
-              onAcceptWithDetails: (details) =>
-                  widget.onReorder(details.data, actionIndex),
-              builder: (context, candidateData, rejectedData) {
-                return ZombossMechActionListTile(
-                  key: ValueKey('${widget.keyPrefix}-$actionIndex-$rtid'),
-                  mechId: widget.mechId,
-                  catalog: widget.catalog,
-                  levelFile: widget.levelFile,
-                  rtid: rtid,
-                  tag: tag,
-                  isDragTarget: candidateData.isNotEmpty,
-                  dragHandle: _buildDragHandle(
-                    context: context,
-                    index: actionIndex,
-                    tag: tag,
-                    label: label,
-                    accent: accent,
-                    feedbackWidth: rowWidth,
-                  ),
-                  onEdit: isCustom
-                      ? () => widget.onEditCustomAction(rtid)
-                      : null,
-                  onRemove: () => widget.onRemove(actionIndex),
-                );
-              },
-            );
-          }),
-        );
-      },
-    );
-  }
-}
 
 /// Action row for phase lists (drag handle + title + action buttons).
 class ZombossMechActionListTile extends StatelessWidget {
@@ -210,10 +43,9 @@ class ZombossMechActionListTile extends StatelessWidget {
     required this.levelFile,
     required this.rtid,
     required this.tag,
+    required this.reorderIndex,
     required this.onRemove,
     this.onEdit,
-    this.dragHandle,
-    this.isDragTarget = false,
   });
 
   final String mechId;
@@ -221,10 +53,9 @@ class ZombossMechActionListTile extends StatelessWidget {
   final PvzLevelFile levelFile;
   final String rtid;
   final String tag;
+  final int reorderIndex;
   final VoidCallback onRemove;
   final VoidCallback? onEdit;
-  final Widget? dragHandle;
-  final bool isDragTarget;
 
   @override
   Widget build(BuildContext context) {
@@ -241,8 +72,7 @@ class ZombossMechActionListTile extends StatelessWidget {
         tag: tag,
         onRemove: onRemove,
         onEdit: onEdit,
-        dragHandle: dragHandle,
-        isDragTarget: isDragTarget,
+        reorderIndex: reorderIndex,
       ),
     );
   }
@@ -302,8 +132,7 @@ class ZombossMechActionRow extends StatelessWidget {
     required this.tag,
     required this.onRemove,
     this.onEdit,
-    this.dragHandle,
-    this.isDragTarget = false,
+    this.reorderIndex,
     this.showRemoveButton = true,
     this.trailing,
     this.mutedLabel = false,
@@ -313,13 +142,12 @@ class ZombossMechActionRow extends StatelessWidget {
   final String tag;
   final VoidCallback onRemove;
   final VoidCallback? onEdit;
-  final Widget? dragHandle;
-  final bool isDragTarget;
+  final int? reorderIndex;
   final bool showRemoveButton;
   final Widget? trailing;
   final bool mutedLabel;
 
-  static const controlHeight = 52.0;
+  static const _controlHeight = 52.0;
 
   @override
   Widget build(BuildContext context) {
@@ -331,14 +159,11 @@ class ZombossMechActionRow extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.55),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: accent.withValues(alpha: isDragTarget ? 0.7 : 0.35),
-          width: isDragTarget ? 2 : 1,
-        ),
+        border: Border.all(color: accent.withValues(alpha: 0.35)),
       ),
       child: IntrinsicHeight(
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
               width: 4,
@@ -349,7 +174,7 @@ class ZombossMechActionRow extends StatelessWidget {
                 ),
               ),
             ),
-            ?dragHandle,
+            if (reorderIndex != null) _buildReorderHandle(accent),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
@@ -364,7 +189,7 @@ class ZombossMechActionRow extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: controlHeight,
+              height: _controlHeight,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -389,6 +214,23 @@ class ZombossMechActionRow extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReorderHandle(Color accent) {
+    return SizedBox(
+      width: 48,
+      height: _controlHeight,
+      child: Center(
+        child: ReorderableDragStartListener(
+          index: reorderIndex!,
+          child: Icon(
+            Icons.drag_indicator,
+            color: accent.withValues(alpha: 0.9),
+            size: 28,
+          ),
         ),
       ),
     );
