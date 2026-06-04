@@ -1,8 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
-import 'package:c_editor/data/repository/reference_repository.dart';
 import 'package:c_editor/data/asset_loader.dart';
+import 'package:c_editor/data/pvz_models/PvzLevelFile.dart';
+import 'package:c_editor/data/pvz_models/PvzObject.dart';
+import 'package:c_editor/data/repository/reference_repository.dart';
+import 'package:c_editor/data/rtid_parser.dart';
 
 /// Grid item info. Ported from Z-Editor-master GridItemRepository.kt
 /// For display use ResourceNames.lookup(context, 'griditem_$typeName').
@@ -10,12 +13,16 @@ enum GridItemFilterMode { all, restricted, renaiStatues }
 
 enum GridItemTag { normal, special }
 
+enum GridItemSource { defaultSource, custom }
+
 class GridItemInfo {
   const GridItemInfo({
     required this.typeName,
     required this.category,
     this.icon,
     this.tag = GridItemTag.normal,
+    this.source = GridItemSource.defaultSource,
+    this.gridItemType,
   });
 
   final String typeName;
@@ -25,6 +32,8 @@ class GridItemInfo {
   /// Null = use placeholder icon.
   final String? icon;
   final GridItemTag tag;
+  final GridItemSource source;
+  final PvzObject? gridItemType;
 }
 
 enum GridItemCategory {
@@ -62,6 +71,8 @@ class GridItemRepository {
               category: _parseCategory(item['category'] as String?),
               icon: item['icon'] as String?,
               tag: _parseTag(item['tag'] as String?),
+              source: _parseSource(item['source'] as String?),
+              gridItemType: _parseGridItemType(item['gridItemType']),
             );
           }),
         );
@@ -79,6 +90,17 @@ class GridItemRepository {
   }
 
   static List<GridItemInfo> getAll() => allItems;
+
+  static GridItemInfo? getByTypeName(String typeName) {
+    final alias = buildGridAliases(typeName);
+    for (final item in allItems) {
+      if (item.typeName == typeName ||
+          buildGridAliases(item.typeName) == alias) {
+        return item;
+      }
+    }
+    return null;
+  }
 
   /// Returns asset path for icon, or unknown placeholder if no icon.
   /// For renai_zomboss_statue_zombie1_half, returns base statue icon path;
@@ -124,6 +146,47 @@ class GridItemRepository {
     return id;
   }
 
+  static String buildGridItemTypeRtid(String typeName, PvzLevelFile levelFile) {
+    final alias = buildGridAliases(typeName);
+    final item = getByTypeName(typeName);
+    if (item?.source == GridItemSource.custom) {
+      ensureGridItemTypeInLevel(typeName, levelFile);
+      return RtidParser.build(alias, 'CurrentLevel');
+    }
+    return RtidParser.build(alias, 'GridItemTypes');
+  }
+
+  static PvzObject? ensureGridItemTypeInLevel(
+    String typeName,
+    PvzLevelFile levelFile,
+  ) {
+    final item = getByTypeName(typeName);
+    if (item == null || item.source != GridItemSource.custom) return null;
+    final template = item.gridItemType;
+    if (template == null) return null;
+
+    final alias = buildGridAliases(typeName);
+    final templateAliases = template.aliases;
+    final aliases = templateAliases != null && templateAliases.isNotEmpty
+        ? templateAliases
+        : <String>[alias];
+    final templateTypeName = _gridItemTypeName(template) ?? item.typeName;
+
+    for (final object in levelFile.objects) {
+      if (object.objClass != 'GridItemType') continue;
+      final objectAliases = object.aliases ?? const <String>[];
+      if (aliases.any(objectAliases.contains)) return object;
+      if (_gridItemTypeName(object) == templateTypeName) return object;
+    }
+
+    final object = _clonePvzObject(template);
+    if (object.aliases == null || object.aliases!.isEmpty) {
+      object.aliases = List<String>.from(aliases);
+    }
+    levelFile.objects.add(object);
+    return object;
+  }
+
   static List<GridItemInfo> search(String query) {
     if (query.trim().isEmpty) return allItems;
     final lower = query.toLowerCase();
@@ -143,6 +206,36 @@ class GridItemRepository {
     return GridItemTag.values.firstWhere(
       (e) => e.name == raw,
       orElse: () => GridItemTag.normal,
+    );
+  }
+
+  static GridItemSource _parseSource(String? raw) {
+    return raw == 'custom'
+        ? GridItemSource.custom
+        : GridItemSource.defaultSource;
+  }
+
+  static PvzObject? _parseGridItemType(dynamic raw) {
+    if (raw is Map<String, dynamic>) return PvzObject.fromJson(raw);
+    if (raw is Map) return PvzObject.fromJson(Map<String, dynamic>.from(raw));
+    return null;
+  }
+
+  static String? _gridItemTypeName(PvzObject object) {
+    final objData = object.objData;
+    if (objData is Map) {
+      final typeName = objData['TypeName'];
+      if (typeName is String && typeName.isNotEmpty) return typeName;
+    }
+    return null;
+  }
+
+  static PvzObject _clonePvzObject(PvzObject object) {
+    final aliases = object.aliases;
+    return PvzObject(
+      aliases: aliases == null ? null : List<String>.from(aliases),
+      objClass: object.objClass,
+      objData: jsonDecode(jsonEncode(object.objData)),
     );
   }
 }

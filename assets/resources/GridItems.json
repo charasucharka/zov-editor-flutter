@@ -5,14 +5,45 @@
   { "typeName": "gravestonePlantfoodOnDestruction", "category": "scene", "icon": "gravestonePlantfoodOnDestruction.webp" },
   { "typeName": "gravestoneSunOnDestruction", "category": "scene", "icon": "gravestoneSunOnDestruction.webp" },
   { "typeName": "gravestone_battlez_sun", "category": "scene", "icon": "gravestoneSunOnDestruction.webp" },
+  {
+    "typeName": "armrack",
+    "category": "scene",
+    "icon": "ArmrackRandom.webp",
+    "source": "custom",
+    "gridItemType": {
+      "objclass": "GridItemType",
+      "aliases": ["armrack"],
+      "objdata": {
+        "TypeName": "armrack",
+        "GridItemClass": "GridItemArmrack",
+        "Properties": "RTID(GridItemArmrackDefault@PropertySheets)"
+      }
+    }
+  },
   { "typeName": "heian_box_sun", "category": "scene", "icon": "heian_box_sun.webp" },
   { "typeName": "heian_box_plantfood", "category": "scene", "icon": "heian_box_plantfood.webp" },
   { "typeName": "heian_box_levelup", "category": "scene", "icon": "heian_box_levelup.webp" },
   { "typeName": "heian_box_seedpacket", "category": "scene", "icon": "heian_box_seedpacket.webp" },
+  {
+    "typeName": "energyGrid",
+    "category": "scene",
+    "icon": "energyGrid.webp",
+    "source": "custom",
+    "gridItemType": {
+      "objclass": "GridItemType",
+      "aliases": ["energyGrid"],
+      "objdata": {
+        "TypeName": "energyGrid",
+        "GridItemClass": "GridItemEnergyGrid",
+        "Properties": "RTID(GridItemEnergyGridDefault@PropertySheets)"
+      }
+    }
+  },
   { "typeName": "goldtile", "category": "scene", "icon": "goldtile.webp", "tag": "special" },
   { "typeName": "fake_mold", "category": "scene", "icon": "fake_mold.webp", "tag": "special" },
   { "typeName": "printer_small_paper", "category": "scene", "icon": "printer_small_paper.webp" },
   { "typeName": "pvz1grid", "category": "scene", "icon": "pvz1grid.webp" },
+  { "typeName": "BesiegeBox", "category": "scene", "icon": "BesiegeBox.webp", "tag": "special" },
   { "typeName": "score_2x_tile", "category": "scene", "icon": "score_2x_tile.webp" },
   { "typeName": "score_3x_tile", "category": "scene", "icon": "score_3x_file.webp" },
   { "typeName": "score_5x_tile", "category": "scene", "icon": "score_5x_tile.webp" },
@@ -31,7 +62,7 @@
   { "typeName": "slider_down", "category": "trap", "icon": "slider_down.webp" },
   { "typeName": "slider_up_modern", "category": "trap", "icon": "slider_up_modern.webp" },
   { "typeName": "slider_down_modern", "category": "trap", "icon": "slider_down_modern.webp" },
-  { "typeName": "christmas_protect", "category": "trap", "icon": "christmas_protect.webp", "tag": "special" },
+  { "typeName": "christmas_protect", "category": "trap", "icon": "christmas_protect.webp" },
   { "typeName": "dumpling", "category": "trap", "icon": "dumpling.webp" },
   { "typeName": "turkey", "category": "trap", "icon": "turkey.webp" },
   { "typeName": "tangyuan", "category": "trap", "icon": "tangyuan.webp" },
@@ -44,7 +75,6 @@
   { "typeName": "cavalrygun", "category": "spawnableObjects", "icon": "cavalrygun.webp" },
   { "typeName": "surfboard", "category": "spawnableObjects", "icon": "surfboard.webp" },
   { "typeName": "backpack", "category": "spawnableObjects", "icon": "backpack.webp" },
-  { "typeName": "BesiegeBox", "category": "spawnableObjects", "tag": "special" },
   { "typeName": "eightiesarcadecabinet", "category": "spawnableObjects", "icon": "eightiesarcadecabinet.webp" },
   { "typeName": "gridItem_sushi", "category": "spawnableObjects", "icon": "griditem_sushi.webp" },
   { "typeName": "dinoegg_zomshell", "category": "spawnableObjects", "icon": "dinoegg_zomshell.webp" },

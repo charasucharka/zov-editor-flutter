@@ -91,9 +91,9 @@ class _SpawnGraveStonesEventScreenState
 
   void _addItem() {
     widget.onRequestGridItemSelection((typeName) {
-      final fullRtid = RtidParser.build(
-        GridItemRepository.buildGridAliases(typeName),
-        'GridItemTypes',
+      final fullRtid = GridItemRepository.buildGridItemTypeRtid(
+        typeName,
+        widget.levelFile,
       );
       final existingIdx = _data.gravestonePool.indexWhere(
         (i) => i.type == fullRtid,

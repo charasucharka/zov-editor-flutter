@@ -40,14 +40,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get storagePermissionHint =>
-      'Storage permission required. Enable \"All files access\" in Settings to open level files.';
+      'Storage permission required. Enable \"Allow access to manage all files\" in Settings to open level files.';
 
   @override
   String get storagePermissionDialogTitle => 'Storage Permission Required';
 
   @override
   String get storagePermissionDialogMessage =>
-      'This app requires external storage access to open and save level files. Please grant \"All files access\" permission in Settings.';
+      'This app requires external storage access to open and save level files. Please turn on \"Allow access to manage all files\" in Settings.';
 
   @override
   String get storagePermissionGoToSettings => 'Go to settings';
@@ -93,11 +93,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirm => 'Confirm';
 
   @override
-  String get convert => 'Convert';
-
-  @override
-  String get convertHelpTooltip =>
-      'Convert between JSON, HUJSON, and encrypted RTON for hot-update import.';
+  String get convertHelpTooltip => 'Convert';
 
   @override
   String get create => 'Create';
@@ -348,15 +344,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get usageText =>
-      '1. Directory Setup: Tap the folder icon to select a folder for level JSON files.\n2. Open/Create: Tap a level to edit or use \"+\" to create from template.\n3. Modules: Add modules in the editor.\n4. Save: Tap save to write back to the JSON file.\n5. Convert level files: JSON can be converted into hot-update-readable HUJSON or encrypted RTON, after which the files can be imported into the game using other tools for testing (remember to manually change the file extension from .hujson back to .json before importing).\n6. Once your level is complete, click the \"Upload to Creative Courtyard\" button in the bottom navigation bar of the main page to go to the official Plants vs. Zombies 2 Advanced Creative Courtyard Creator Hub. Sign in with your email account to upload the level to the in-game Creative Courtyard.\n7. You can view past officially recommended level IDs and the reasons they were selected on the \"Creative Courtyard · Recommended Levels Showcase\" webpage. Playing these levels not only supports the creators but also helps improve your own level design skills.\n8. If you have any questions or need help with advanced level creation, feel free to join the Plants vs. Zombies Discord server and ask in the PvZ2C-Modding channel thread.';
+      '1. Directory Setup: Tap the folder icon to select a folder for level JSON files.\n2. Open/Create: Tap a level to edit or use \"+\" to create from template.\n3. Modules: Add modules in the editor.\n4. Save: Tap save to write back to the JSON file.\n5. Convert level files: JSON can be converted into hot-update-readable HUJSON or encrypted RTON, after which the files can be imported into the game using other tools for testing (remember to manually change the file extension from .hujson back to .json before importing).\n6. Once your level is complete, click the \"Upload to Creative Courtyard\" button in the bottom navigation bar of the main page to go to the official Plants vs. Zombies 2 Advanced Creative Courtyard Creator Hub. Sign in with your email account to upload the level to the in-game Creative Courtyard.\n7. You can view past officially recommended level IDs and the reasons they were selected on the \"Creative Courtyard · Recommended Levels Showcase\" webpage. Playing these levels not only supports talented level creators but also helps improve your own level design skills.\n8. If you have any questions or need help with advanced level creation, feel free to join the Plants vs. Zombies Discord server and ask in the PvZ2C-Modding channel thread.';
 
   @override
   String get usageTextDesktop =>
-      '1. Directory Setup: Tap the folder icon to select a folder for level JSON files.\n2. Open/Create: Click a level to edit or use \"+\" to create from template.\n3. Modules: Add modules in the editor.\n4. Save: Click save to write back to the JSON file.\n5. Convert level files: JSON can be converted into hot-update-readable HUJSON or encrypted RTON, after which the files can be imported into the game using other tools for testing (remember to manually change the file extension from .hujson back to .json before importing).\n6. Once your level is complete, click the \"Upload to Creative Courtyard\" button in the bottom navigation bar of the main page to go to the official Plants vs. Zombies 2 Advanced Creative Courtyard Creator Hub. Sign in with your email account to upload the level to the in-game Creative Courtyard.\n7. You can view past officially recommended level IDs and the reasons they were selected on the \"Creative Courtyard · Recommended Levels Showcase\" webpage. Playing these levels not only supports the creators but also helps improve your own level design skills.\n8. If you have any questions or need help with advanced level creation, feel free to join the Plants vs. Zombies Discord server and ask in the PvZ2C-Modding channel thread.';
+      '1. Directory Setup: Tap the folder icon to select a folder for level JSON files.\n2. Open/Create: Click a level to edit or use \"+\" to create from template.\n3. Modules: Add modules in the editor.\n4. Save: Click save to write back to the JSON file.\n5. Convert level files: JSON can be converted into hot-update-readable HUJSON or encrypted RTON, after which the files can be imported into the game using other tools for testing (remember to manually change the file extension from .hujson back to .json before importing).\n6. Once your level is complete, click the \"Upload to Creative Courtyard\" button in the bottom navigation bar of the main page to go to the official Plants vs. Zombies 2 Advanced Creative Courtyard Creator Hub. Sign in with your email account to upload the level to the in-game Creative Courtyard.\n7. You can view past officially recommended level IDs and the reasons they were selected on the \"Creative Courtyard · Recommended Levels Showcase\" webpage. Playing these levels not only supports talented level creators but also helps improve your own level design skills.\n8. If you have any questions or need help with advanced level creation, feel free to join the Plants vs. Zombies Discord server and ask in the PvZ2C-Modding channel thread.';
 
   @override
   String get usageTextMobile =>
-      '1. Directory Setup: Tap the folder icon to select a folder for level JSON files.\n2. Open/Create: Tap a level to edit or use \"+\" to create from template.\n3. Modules: Add modules in the editor.\n4. Save: Tap save to write back to the JSON file.\n5. Convert level files: JSON can be converted into hot-update-readable HUJSON or encrypted RTON, after which the files can be imported into the game using other tools for testing (remember to manually change the file extension from .hujson back to .json before importing).\n6. Once your level is complete, tap the \"Upload to Creative Courtyard\" button in the bottom navigation bar of the main page to go to the official Plants vs. Zombies 2 Advanced Creative Courtyard Creator Hub. Sign in with your email account to upload the level to the in-game Creative Courtyard.\n7. You can view past officially recommended level IDs and the reasons they were selected on the \"Creative Courtyard · Recommended Levels Showcase\" webpage. Playing these levels not only supports the creators but also helps improve your own level design skills.\n8. If you have any questions or need help with advanced level creation, feel free to join the Plants vs. Zombies Discord server and ask in the PvZ2C-Modding channel thread.';
+      '1. Directory Setup: Tap the folder icon to select a folder for level JSON files.\n2. Open/Create: Tap a level to edit or use \"+\" to create from template.\n3. Modules: Add modules in the editor.\n4. Save: Tap save to write back to the JSON file.\n5. Convert level files: JSON can be converted into hot-update-readable HUJSON or encrypted RTON, after which the files can be imported into the game using other tools for testing (remember to manually change the file extension from .hujson back to .json before importing).\n6. Once your level is complete, tap the \"Upload to Creative Courtyard\" button in the bottom navigation bar of the main page to go to the official Plants vs. Zombies 2 Advanced Creative Courtyard Creator Hub. Sign in with your email account to upload the level to the in-game Creative Courtyard.\n7. You can view past officially recommended level IDs and the reasons they were selected on the \"Creative Courtyard · Recommended Levels Showcase\" webpage. Playing these levels not only supports talented level creators but also helps improve your own level design skills.\n8. If you have any questions or need help with advanced level creation, feel free to join the Plants vs. Zombies Discord server and ask in the PvZ2C-Modding channel thread.';
 
   @override
   String get usageRecommendedLevelsLabel =>
@@ -2077,7 +2073,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Reserved Plant Column (PlantDistance)';
 
   @override
-  String get column => 'Column';
+  String get column => 'Column(s)';
 
   @override
   String get iZombieInfoText =>

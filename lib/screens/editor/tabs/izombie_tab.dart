@@ -103,7 +103,7 @@ class _IZombieTabState extends State<IZombieTab> {
                       : null,
                 ),
                 Text(
-                  '${l10n?.column ?? "Column"} ${_data.plantDistance}',
+                  '${_data.plantDistance} ${l10n?.column ?? "Column"}',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 IconButton(
