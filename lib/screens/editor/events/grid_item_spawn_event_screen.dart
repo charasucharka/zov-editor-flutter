@@ -87,6 +87,7 @@ class _GridItemSpawnEventScreenState extends State<GridItemSpawnEventScreen> {
 
   void _sync() {
     _moduleObj.objData = _data.toJson();
+    GridItemRepository.cleanupUnusedCustomGridItemTypes(widget.levelFile);
     widget.onChanged();
     setState(() {});
   }
@@ -192,9 +193,9 @@ class _GridItemSpawnEventScreenState extends State<GridItemSpawnEventScreen> {
 
   void _addGridType() {
     widget.onRequestGridItemSelection((id) {
-      final rtid = RtidParser.build(
-        GridItemRepository.buildGridAliases(id),
-        'GridItemTypes',
+      final rtid = GridItemRepository.buildGridItemTypeRtid(
+        id,
+        widget.levelFile,
       );
       _data = SpawnZombiesFromGridItemData(
         waveStartMessage: _data.waveStartMessage,

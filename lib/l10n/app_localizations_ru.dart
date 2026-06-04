@@ -93,7 +93,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get confirm => 'Подтвердить';
 
   @override
-  String get convert => 'Преобразовать';
+  String get convert => 'Convert';
 
   @override
   String get convertHelpTooltip =>

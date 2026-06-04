@@ -26,7 +26,7 @@
   "move": "Переместить",
   "cancel": "Отмена",
   "confirm": "Подтвердить",
-  "convert": "Преобразовать",
+  "convert": "Convert",
   "convertHelpTooltip": "Преобразование между JSON, HUJSON и зашифрованным RTON для импорта через хот-апдейт.",
   "create": "Создать",
   "newName": "Новое имя",
