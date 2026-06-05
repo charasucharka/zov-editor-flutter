@@ -171,6 +171,10 @@ class ModuleRegistry {
         return l10n.moduleTitle_BombProperties;
       case 'moduleTitle_BronzeProperties':
         return l10n.moduleTitle_BronzeProperties;
+      case 'moduleTitle_ArmrackProperties':
+        return l10n.moduleTitle_ArmrackProperties;
+      case 'moduleTitle_EnergyGridProperties':
+        return l10n.moduleTitle_EnergyGridProperties;
       case 'moduleTitle_WarMistProperties':
         return l10n.moduleTitle_WarMistProperties;
       case 'moduleTitle_RainDarkProperties':
@@ -191,6 +195,8 @@ class ModuleRegistry {
         return l10n.moduleTitle_HeianWindModuleProperties;
       case 'moduleTitle_WitchModuleProperties':
         return l10n.moduleTitle_WitchModuleProperties;
+      case 'moduleTitle_ZombossFinalStageTimeLimitedChallengeProperties':
+        return l10n.moduleTitle_ZombossFinalStageTimeLimitedChallengeProperties;
       case 'moduleTitle_RiftThemeDemoModuleProperties':
         return l10n.moduleTitle_RiftThemeDemoModuleProperties;
       case 'moduleTitle_InitialGridItemGulliverTunnelProperties':
@@ -305,6 +311,10 @@ class ModuleRegistry {
         return l10n.moduleDesc_BombProperties;
       case 'moduleDesc_BronzeProperties':
         return l10n.moduleDesc_BronzeProperties;
+      case 'moduleDesc_ArmrackProperties':
+        return l10n.moduleDesc_ArmrackProperties;
+      case 'moduleDesc_EnergyGridProperties':
+        return l10n.moduleDesc_EnergyGridProperties;
       case 'moduleDesc_WarMistProperties':
         return l10n.moduleDesc_WarMistProperties;
       case 'moduleDesc_RainDarkProperties':
@@ -325,6 +335,8 @@ class ModuleRegistry {
         return l10n.moduleDesc_HeianWindModuleProperties;
       case 'moduleDesc_WitchModuleProperties':
         return l10n.moduleDesc_WitchModuleProperties;
+      case 'moduleDesc_ZombossFinalStageTimeLimitedChallengeProperties':
+        return l10n.moduleDesc_ZombossFinalStageTimeLimitedChallengeProperties;
       case 'moduleDesc_RiftThemeDemoModuleProperties':
         return l10n.moduleDesc_RiftThemeDemoModuleProperties;
       case 'moduleDesc_InitialGridItemGulliverTunnelProperties':
@@ -845,6 +857,28 @@ class ModuleRegistry {
       initialDataFactory: () => BronzePropertiesData(),
       routeId: 'Bronze',
     ),
+    'ArmrackProperties': ModuleMetadata(
+      titleKey: 'moduleTitle_ArmrackProperties',
+      descriptionKey: 'moduleDesc_ArmrackProperties',
+      icon: Icons.sports_martial_arts,
+      isCore: true,
+      allowMultiple: false,
+      category: ModuleCategory.scene,
+      defaultAlias: 'Armrack',
+      initialDataFactory: () => ArmrackPropertiesData(),
+      routeId: 'Armrack',
+    ),
+    'EnergyGridProperties': ModuleMetadata(
+      titleKey: 'moduleTitle_EnergyGridProperties',
+      descriptionKey: 'moduleDesc_EnergyGridProperties',
+      icon: Icons.grid_on,
+      isCore: true,
+      allowMultiple: false,
+      category: ModuleCategory.scene,
+      defaultAlias: 'EnergyGrid',
+      initialDataFactory: () => EnergyGridPropertiesData(),
+      routeId: 'EnergyGrid',
+    ),
     'WarMistProperties': ModuleMetadata(
       titleKey: 'moduleTitle_WarMistProperties',
       descriptionKey: 'moduleDesc_WarMistProperties',
@@ -949,6 +983,20 @@ class ModuleRegistry {
       defaultAlias: 'WitchModule',
       defaultSource: 'LevelModules',
       routeId: 'WitchModule',
+    ),
+    'ZombossFinalStageTimeLimitedChallengeProperties': ModuleMetadata(
+      titleKey: 'moduleTitle_ZombossFinalStageTimeLimitedChallengeProperties',
+      descriptionKey:
+          'moduleDesc_ZombossFinalStageTimeLimitedChallengeProperties',
+      icon: Icons.timer,
+      isCore: true,
+      allowMultiple: false,
+      category: ModuleCategory.gimmick,
+      defaultAlias: 'FinalStageTimeLimitedChallenge',
+      defaultSource: 'LevelModules',
+      initialDataFactory: () =>
+          ZombossFinalStageTimeLimitedChallengePropertiesData(),
+      routeId: 'FinalStageTimeLimitedChallenge',
     ),
     'InitialGridItemGulliverTunnelProperties': ModuleMetadata(
       titleKey: 'moduleTitle_InitialGridItemGulliverTunnelProperties',

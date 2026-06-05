@@ -29,6 +29,7 @@ import 'package:c_editor/screens/editor/modules/conveyor_seedbank_properties_scr
 import 'package:c_editor/screens/editor/modules/seed_bank_properties_screen.dart';
 import 'package:c_editor/screens/editor/modules/sun_dropper_properties_screen.dart';
 import 'package:c_editor/screens/editor/modules/witch_module_properties_screen.dart';
+import 'package:c_editor/screens/editor/modules/final_stage_time_limited_challenge_properties_screen.dart';
 import 'package:c_editor/screens/editor/modules/starting_plantfood_module_screen.dart';
 import 'package:c_editor/screens/editor/modules/tide_properties_screen.dart';
 import 'package:c_editor/screens/editor/modules/zombie_move_fast_module_screen.dart';
@@ -47,6 +48,8 @@ import 'package:c_editor/screens/editor/modules/roof_properties_screen.dart';
 import 'package:c_editor/screens/editor/modules/rain_dark_properties_screen.dart';
 import 'package:c_editor/screens/editor/modules/bomb_properties_screen.dart';
 import 'package:c_editor/screens/editor/modules/bronze_module_screen.dart';
+import 'package:c_editor/screens/editor/modules/armrack_module_screen.dart';
+import 'package:c_editor/screens/editor/modules/energy_grid_module_screen.dart';
 import 'package:c_editor/screens/editor/modules/sun_bomb_challenge_screen.dart';
 import 'package:c_editor/screens/editor/modules/war_mist_properties_screen.dart';
 import 'package:c_editor/screens/editor/modules/zombie_potion_module_screen.dart';
@@ -859,6 +862,9 @@ class _EditorScreenState extends State<EditorScreen> {
                     },
                     onBack: () => Navigator.pop(context),
                     filterMode: GridItemFilterMode.all,
+                    levelFile: _ec.state.levelFile,
+                    onAddModule: (objClass) =>
+                        _addModule(ModuleRegistry.getMetadata(objClass)),
                   ),
                 ),
               );
@@ -1351,6 +1357,9 @@ class _EditorScreenState extends State<EditorScreen> {
                     },
                     onBack: () => Navigator.pop(context),
                     filterMode: GridItemFilterMode.all,
+                    levelFile: _ec.state.levelFile,
+                    onAddModule: (objClass) =>
+                        _addModule(ModuleRegistry.getMetadata(objClass)),
                   ),
                 ),
               );
@@ -1398,6 +1407,9 @@ class _EditorScreenState extends State<EditorScreen> {
                     },
                     onBack: () => Navigator.pop(context),
                     filterMode: GridItemFilterMode.all,
+                    levelFile: _ec.state.levelFile,
+                    onAddModule: (objClass) =>
+                        _addModule(ModuleRegistry.getMetadata(objClass)),
                   ),
                 ),
               );
@@ -2187,6 +2199,31 @@ class _EditorScreenState extends State<EditorScreen> {
       openWitchModule(rtid);
       return;
     }
+    if (objClass == 'ZombossFinalStageTimeLimitedChallengeProperties' &&
+        _ec.state.parsedData?.levelDef != null) {
+      void openFinalStageChallenge(String rt) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FinalStageTimeLimitedChallengePropertiesScreen(
+              rtid: rt,
+              levelFile: _ec.state.levelFile!,
+              levelDef: _ec.state.parsedData!.levelDef!,
+              onChanged: _markDirty,
+              onBack: () => Navigator.pop(context),
+              onModeToggled: (newRtid) {
+                _markDirty();
+                Navigator.pop(context);
+                openFinalStageChallenge(newRtid);
+              },
+            ),
+          ),
+        );
+      }
+
+      openFinalStageChallenge(rtid);
+      return;
+    }
     if (info.source == 'CurrentLevel' && objClass == 'PiratePlankProperties') {
       if (_ec.state.parsedData!.levelDef != null) {
         Navigator.push(
@@ -2407,6 +2444,8 @@ class _EditorScreenState extends State<EditorScreen> {
             levelFile: _ec.state.levelFile!,
             onChanged: _markDirty,
             onBack: () => Navigator.pop(context),
+            onAddModule: (objClass) =>
+                _addModule(ModuleRegistry.getMetadata(objClass)),
           ),
         ),
       );
@@ -2583,6 +2622,34 @@ class _EditorScreenState extends State<EditorScreen> {
         context,
         MaterialPageRoute(
           builder: (context) => BronzeModuleScreen(
+            rtid: rtid,
+            levelFile: _ec.state.levelFile!,
+            onChanged: _markDirty,
+            onBack: () => Navigator.pop(context),
+          ),
+        ),
+      );
+      return;
+    }
+    if (info.source == 'CurrentLevel' && objClass == 'ArmrackProperties') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ArmrackModuleScreen(
+            rtid: rtid,
+            levelFile: _ec.state.levelFile!,
+            onChanged: _markDirty,
+            onBack: () => Navigator.pop(context),
+          ),
+        ),
+      );
+      return;
+    }
+    if (info.source == 'CurrentLevel' && objClass == 'EnergyGridProperties') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => EnergyGridModuleScreen(
             rtid: rtid,
             levelFile: _ec.state.levelFile!,
             onChanged: _markDirty,

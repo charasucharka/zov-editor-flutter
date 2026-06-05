@@ -38,6 +38,7 @@ class EditorCubit extends Cubit<EditorState> {
   }
 
   Future<void> loadLevel() async {
+    if (isClosed) return;
     emit(state.copyWith(isLoading: true));
     await ReferenceRepository.init();
     await ZombiePropertiesRepository.init();
@@ -46,6 +47,7 @@ class EditorCubit extends Cubit<EditorState> {
     await ZombieRepository().init();
     await FishTypeRepository().init();
     await FishPropertiesRepository.init();
+    if (isClosed) return;
     var level = await LevelRepository.loadLevel(fileName);
     if (level == null && filePath.isNotEmpty) {
       level = await LevelRepository.loadLevelFromPath(filePath);
@@ -53,9 +55,11 @@ class EditorCubit extends Cubit<EditorState> {
         await LevelRepository.prepareInternalCache(filePath, fileName);
       }
     }
+    if (isClosed) return;
     if (level != null) {
       final parsed = LevelParser.parseLevel(level);
       final tabs = _computeAvailableTabs(level, parsed);
+      if (isClosed) return;
       emit(
         EditorState(
           levelFile: level,
@@ -66,6 +70,7 @@ class EditorCubit extends Cubit<EditorState> {
         ),
       );
     } else {
+      if (isClosed) return;
       emit(
         const EditorState(
           isLoading: false,
