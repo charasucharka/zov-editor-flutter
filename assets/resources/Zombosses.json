@@ -54,6 +54,23 @@
       "ZombiePVZ1RobotZombossGroup",
       "ZombossQinShiHuangAudio",
       "ZombossQinShiHuangGroup"
+    ],
+    "modules": [
+      {
+        "objclass": "ZombossFinalStageTimeLimitedChallengeProperties",
+        "alias": "FinalStageTimeLimitedChallenge",
+        "source": "LevelModules"
+      },
+      {
+        "objclass": "TunnelDefendModuleProperties",
+        "alias": "TunnelDefend",
+        "source": "CurrentLevel",
+        "objdata": {
+          "Roads": [],
+          "TunnelSequenceInterval": 0.4,
+          "BrickMapIndex": 1
+        }
+      }
     ]
   },
   {
@@ -71,6 +88,23 @@
       "ZombiePVZ1RobotZombossGroup",
       "ZombossQinShiHuangAudio",
       "ZombossQinShiHuangGroup"
+    ],
+    "modules": [
+      {
+        "objclass": "ZombossFinalStageTimeLimitedChallengeProperties",
+        "alias": "FinalStageTimeLimitedChallenge",
+        "source": "LevelModules"
+      },
+      {
+        "objclass": "TunnelDefendModuleProperties",
+        "alias": "TunnelDefend",
+        "source": "CurrentLevel",
+        "objdata": {
+          "Roads": [],
+          "TunnelSequenceInterval": 0.4,
+          "BrickMapIndex": 2
+        }
+      }
     ]
   }
 ]
