@@ -71,6 +71,7 @@ class _TunnelDefendModuleScreenState extends State<TunnelDefendModuleScreen> {
   late PvzObject _moduleObj;
   late TunnelDefendModuleData _data;
   late List<List<String?>> _gridState;
+  late TextEditingController _sequenceIntervalCtrl;
   String _selectedImg = _availableAssets[0];
 
   @override
@@ -108,6 +109,15 @@ class _TunnelDefendModuleScreenState extends State<TunnelDefendModuleScreen> {
       }
     }
     _selectedImg = _availableAssets[0];
+    _sequenceIntervalCtrl = TextEditingController(
+      text: '${_data.tunnelSequenceInterval}',
+    );
+  }
+
+  @override
+  void dispose() {
+    _sequenceIntervalCtrl.dispose();
+    super.dispose();
   }
 
   void _sync() {
@@ -126,7 +136,11 @@ class _TunnelDefendModuleScreenState extends State<TunnelDefendModuleScreen> {
         roads.add(road);
       }
     }
-    _data = TunnelDefendModuleData(roads: roads, brickMapIndex: _data.brickMapIndex);
+    _data = TunnelDefendModuleData(
+      roads: roads,
+      brickMapIndex: _data.brickMapIndex,
+      tunnelSequenceInterval: _data.tunnelSequenceInterval,
+    );
     _moduleObj.objData = _data.toJson();
     widget.onChanged();
     setState(() {});
@@ -233,6 +247,7 @@ class _TunnelDefendModuleScreenState extends State<TunnelDefendModuleScreen> {
     _data = TunnelDefendModuleData(
       roads: inside,
       brickMapIndex: _data.brickMapIndex,
+      tunnelSequenceInterval: _data.tunnelSequenceInterval,
     );
     _moduleObj.objData = _data.toJson();
     widget.onChanged();
@@ -281,6 +296,12 @@ class _TunnelDefendModuleScreenState extends State<TunnelDefendModuleScreen> {
                     body: l10n?.tunnelDefendHelpUsageBody ??
                         'Select a tunnel piece below, then tap the grid to place. Tap the same piece again to remove. Tap a different piece to replace.',
                   ),
+                  HelpSectionData(
+                    title: l10n?.tunnelDefendHelpSequenceInterval ??
+                        'Sequence interval',
+                    body: l10n?.tunnelDefendHelpSequenceIntervalBody ??
+                        'Delay between tunnel sequence steps. Lower values make pathways appear faster.',
+                  ),
                 ],
               );
             },
@@ -326,6 +347,25 @@ class _TunnelDefendModuleScreenState extends State<TunnelDefendModuleScreen> {
                   },
                 ),
               ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _sequenceIntervalCtrl,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              decoration: InputDecoration(
+                labelText: l10n?.tunnelDefendSequenceInterval ??
+                    'Tunnel sequence interval (TunnelSequenceInterval, seconds)',
+                filled: true,
+                border: const OutlineInputBorder(),
+              ),
+              onChanged: (value) {
+                final parsed = double.tryParse(value);
+                if (parsed != null && parsed >= 0) {
+                  setState(() => _data.tunnelSequenceInterval = parsed);
+                  _moduleObj.objData = _data.toJson();
+                  widget.onChanged();
+                }
+              },
             ),
             const SizedBox(height: 16),
             scaleTableForDesktop(
