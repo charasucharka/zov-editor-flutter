@@ -7,6 +7,7 @@ import 'package:c_editor/data/level_parser.dart';
 import 'package:c_editor/data/pvz_models.dart';
 import 'package:c_editor/data/rtid_parser.dart';
 import 'package:c_editor/data/wave_point_analysis.dart';
+import 'package:c_editor/data/armrack_type_catalog.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/escape_override.dart';
 import 'package:c_editor/data/repository/zombie_repository.dart';
@@ -2290,6 +2291,18 @@ class _WaveTimelineTabState extends State<WaveTimelineTab> {
                 onTap: () => _showDropShipInfoDialog(context, waveIndex),
               ));
             }
+            if (_waveHasArmrackActivity(waveIndex)) {
+              actionButtons.add((
+                label: l10n?.armrackModuleExpectationLabel ?? 'Weapon stands',
+                onTap: () => _showArmrackInfoDialog(context, waveIndex),
+              ));
+            }
+            if (_waveHasEnergyGridActivity(waveIndex)) {
+              actionButtons.add((
+                label: l10n?.energyGridModuleExpectationLabel ?? 'Taiji tiles',
+                onTap: () => _showEnergyGridInfoDialog(context, waveIndex),
+              ));
+            }
             if (_waveHasHeianWindActivity(waveIndex)) {
               actionButtons.add((
                 label: l10n?.heianWindModuleExpectationLabel ?? 'Heian wind',
@@ -2420,6 +2433,52 @@ class _WaveTimelineTabState extends State<WaveTimelineTab> {
     if (dropShip == null) return false;
     return dropShip.appearWaves
         .any((w) => w.wave + 1 == waveIndex);
+  }
+
+  ArmrackPropertiesData? _getArmrackModuleData() {
+    final obj = widget.levelFile.objects.firstWhereOrNull(
+      (o) => o.objClass == 'ArmrackProperties',
+    );
+    if (obj?.objData is Map<String, dynamic>) {
+      try {
+        return ArmrackPropertiesData.fromJson(
+          obj!.objData as Map<String, dynamic>,
+        );
+      } catch (_) {}
+    }
+    return null;
+  }
+
+  bool _waveHasArmrackActivity(int waveIndex) {
+    if (waveIndex != 1) return false;
+    final data = _getArmrackModuleData();
+    if (data == null) return false;
+    return data.overrides.any(
+      (o) => o.wave == 1 && o.itemList.isNotEmpty,
+    );
+  }
+
+  EnergyGridPropertiesData? _getEnergyGridModuleData() {
+    final obj = widget.levelFile.objects.firstWhereOrNull(
+      (o) => o.objClass == 'EnergyGridProperties',
+    );
+    if (obj?.objData is Map<String, dynamic>) {
+      try {
+        return EnergyGridPropertiesData.fromJson(
+          obj!.objData as Map<String, dynamic>,
+        );
+      } catch (_) {}
+    }
+    return null;
+  }
+
+  bool _waveHasEnergyGridActivity(int waveIndex) {
+    if (waveIndex != 1) return false;
+    final data = _getEnergyGridModuleData();
+    if (data == null) return false;
+    return data.overrides.any(
+      (o) => o.wave == 1 && o.itemList.isNotEmpty,
+    );
   }
 
   HeianWindModulePropertiesData? _getHeianWindModuleData() {
@@ -2583,6 +2642,134 @@ class _WaveTimelineTabState extends State<WaveTimelineTab> {
               ),
               onPressed: () {
                 final rtid = _getModuleRtid('DropShipProperties');
+                if (rtid != null) {
+                  Navigator.pop(ctx);
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    widget.onOpenModule!(rtid);
+                  });
+                }
+              },
+              child: Text(l10n?.openModuleSettings ?? 'Open module settings'),
+            ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(l10n?.close ?? 'Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showArmrackInfoDialog(BuildContext context, int waveIndex) {
+    final l10n = AppLocalizations.of(context);
+    final data = _getArmrackModuleData();
+    if (data == null) return;
+    final waveOverrides = data.overrides
+        .where((o) => o.wave == waveIndex && o.itemList.isNotEmpty)
+        .toList();
+    if (waveOverrides.isEmpty) return;
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          '${l10n?.waveLabel ?? "Wave"} $waveIndex - ${l10n?.armrackModuleExpectationLabel ?? "Weapon stands"}',
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final wave in waveOverrides)
+                for (final item in wave.itemList)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 28,
+                          height: 28,
+                          child: AssetImageWidget(
+                            assetPath: armrackIconAsset(item.type),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            '${item.type} — R${item.mY + 1}:C${item.mX + 1}',
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+            ],
+          ),
+        ),
+        actions: [
+          if (widget.onOpenModule != null)
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: Colors.green,
+              ),
+              onPressed: () {
+                final rtid = _getModuleRtid('ArmrackProperties');
+                if (rtid != null) {
+                  Navigator.pop(ctx);
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    widget.onOpenModule!(rtid);
+                  });
+                }
+              },
+              child: Text(l10n?.openModuleSettings ?? 'Open module settings'),
+            ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(l10n?.close ?? 'Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showEnergyGridInfoDialog(BuildContext context, int waveIndex) {
+    final l10n = AppLocalizations.of(context);
+    final data = _getEnergyGridModuleData();
+    if (data == null) return;
+    final waveOverrides = data.overrides
+        .where((o) => o.wave == waveIndex && o.itemList.isNotEmpty)
+        .toList();
+    if (waveOverrides.isEmpty) return;
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          '${l10n?.waveLabel ?? "Wave"} $waveIndex - ${l10n?.energyGridModuleExpectationLabel ?? "Taiji tiles"}',
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final wave in waveOverrides)
+                for (final item in wave.itemList)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Text(
+                      'R${item.mY + 1}:C${item.mX + 1}',
+                    ),
+                  ),
+            ],
+          ),
+        ),
+        actions: [
+          if (widget.onOpenModule != null)
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: Colors.green,
+              ),
+              onPressed: () {
+                final rtid = _getModuleRtid('EnergyGridProperties');
                 if (rtid != null) {
                   Navigator.pop(ctx);
                   WidgetsBinding.instance.addPostFrameCallback((_) {

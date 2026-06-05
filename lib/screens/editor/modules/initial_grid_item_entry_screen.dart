@@ -17,12 +17,14 @@ class InitialGridItemEntryScreen extends StatefulWidget {
     required this.levelFile,
     required this.onChanged,
     required this.onBack,
+    this.onAddModule,
   });
 
   final String rtid;
   final PvzLevelFile levelFile;
   final VoidCallback onChanged;
   final VoidCallback onBack;
+  final void Function(String objClass)? onAddModule;
 
   @override
   State<InitialGridItemEntryScreen> createState() =>
@@ -78,6 +80,8 @@ class _InitialGridItemEntryScreenState extends State<InitialGridItemEntryScreen>
       MaterialPageRoute(
         builder: (_) => GridItemSelectionScreen(
           filterMode: GridItemFilterMode.all,
+          levelFile: widget.levelFile,
+          onAddModule: widget.onAddModule,
           onGridItemSelected: (typeName) {
             Navigator.pop(context);
             final newList = List<InitialGridItemData>.from(_data.placements);

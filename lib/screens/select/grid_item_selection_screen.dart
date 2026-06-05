@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:c_editor/data/pvz_models/PvzLevelFile.dart';
 import 'package:c_editor/data/repository/grid_item_repository.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
+import 'package:c_editor/screens/select/grid_item_module_prompt.dart';
 import 'package:c_editor/theme/app_theme.dart' show pvzBrownDark, pvzBrownLight;
 import 'package:c_editor/widgets/asset_image.dart'
     show AssetImageWidget, imageAltCandidates;
@@ -13,11 +15,15 @@ class GridItemSelectionScreen extends StatefulWidget {
     required this.onGridItemSelected,
     required this.onBack,
     required this.filterMode,
+    this.levelFile,
+    this.onAddModule,
   });
 
   final void Function(String id) onGridItemSelected;
   final VoidCallback onBack;
   final GridItemFilterMode filterMode;
+  final PvzLevelFile? levelFile;
+  final void Function(String objClass)? onAddModule;
 
   @override
   State<GridItemSelectionScreen> createState() =>
@@ -196,8 +202,7 @@ class _GridItemSelectionScreenState extends State<GridItemSelectionScreen> {
                                     GridItemRepository.needsZombossBadge(
                                       item.typeName,
                                     ),
-                                onTap: () =>
-                                    widget.onGridItemSelected(item.typeName),
+                                onTap: () => _handleItemTap(item.typeName),
                               );
                             },
                           );
@@ -209,6 +214,20 @@ class _GridItemSelectionScreenState extends State<GridItemSelectionScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _handleItemTap(String typeName) async {
+    final levelFile = widget.levelFile;
+    if (levelFile != null) {
+      final proceed = await confirmGridItemModuleRequirements(
+        context,
+        typeName: typeName,
+        levelFile: levelFile,
+        onAddModule: widget.onAddModule,
+      );
+      if (!proceed || !mounted) return;
+    }
+    widget.onGridItemSelected(typeName);
   }
 
   String _categoryLabel(GridItemCategory cat, AppLocalizations? l10n) {
