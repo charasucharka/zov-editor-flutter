@@ -192,8 +192,8 @@ class _EnergyGridModuleScreenState extends State<EnergyGridModuleScreen> {
                   title: l10n?.energyGridModuleHelpOverview ?? 'Overview',
                   body:
                       l10n?.energyGridModuleHelpOverviewBody ??
-                      'Places Taiji Tiles on the lawn. '
-                          'This module is required for them to display properly.',
+                      'Places Taiji Tiles on the lawn for wave 1. '
+                          'Use this module to configure tile positions in the level file.',
                 ),
                 HelpSectionData(
                   title: l10n?.energyGridModuleHelpPlacement ?? 'Placement',
@@ -243,9 +243,10 @@ class _EnergyGridModuleScreenState extends State<EnergyGridModuleScreen> {
                 if (selected != null) ...[
                   const SizedBox(height: 24),
                   Card(
+                    margin: EdgeInsets.zero,
                     key: ValueKey('energy_grid_panel_$_selectedIndex'),
                     child: Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: kGridOverrideModuleSectionPadding,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

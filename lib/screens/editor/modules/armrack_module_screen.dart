@@ -256,9 +256,10 @@ class _ArmrackModuleScreenState extends State<ArmrackModuleScreen> {
                 if (selected != null) ...[
                   const SizedBox(height: 24),
                   Card(
+                    margin: EdgeInsets.zero,
                     key: ValueKey('armrack_panel_$_selectedIndex'),
                     child: Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: kGridOverrideModuleSectionPadding,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
