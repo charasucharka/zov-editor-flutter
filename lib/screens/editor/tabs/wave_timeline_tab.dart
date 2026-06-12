@@ -2307,7 +2307,7 @@ class _WaveTimelineTabState extends State<WaveTimelineTab> {
             final actionButtons = <({String label, VoidCallback onTap})>[];
             if (points != 0) {
               actionButtons.add((
-                label: '${points}pt',
+                label: l10n?.wavePointsShort(points) ?? '$points pts.',
                 onTap: () =>
                     _showExpectationDialog(context, waveIndex, points),
               ));

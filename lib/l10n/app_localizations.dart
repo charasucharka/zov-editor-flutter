@@ -1501,19 +1501,19 @@ abstract class AppLocalizations {
   /// No description provided for @waveTimelineGuideBody.
   ///
   /// In en, this message translates to:
-  /// **'Swipe right: Manage wave events\nSwipe left: Delete a wave\nTap pt: View spawn expectations'**
+  /// **'Swipe right: Manage wave events\nSwipe left: Delete a wave\nTap points: View spawn expectations'**
   String get waveTimelineGuideBody;
 
   /// No description provided for @waveTimelineGuideBodyDesktop.
   ///
   /// In en, this message translates to:
-  /// **'Left-click a wave: Manage wave events\nClick delete: Remove a wave\nClick pt: View spawn expectations'**
+  /// **'Left-click a wave: Manage wave events\nClick delete: Remove a wave\nClick points: View spawn expectations'**
   String get waveTimelineGuideBodyDesktop;
 
   /// No description provided for @waveTimelineGuideBodyMobile.
   ///
   /// In en, this message translates to:
-  /// **'Swipe right: Manage wave events\nSwipe left: Delete a wave\nTap pt: View spawn expectations'**
+  /// **'Swipe right: Manage wave events\nSwipe left: Delete a wave\nTap points: View spawn expectations'**
   String get waveTimelineGuideBodyMobile;
 
   /// No description provided for @waveDeadLinksTitle.
@@ -2349,6 +2349,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Points'**
   String get pointsLabel;
+
+  /// No description provided for @wavePointsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{points} pts.'**
+  String wavePointsShort(int points);
 
   /// No description provided for @noDynamicZombies.
   ///

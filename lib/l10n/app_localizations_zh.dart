@@ -735,14 +735,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get waveTimelineGuideTitle => '操作指引';
 
   @override
-  String get waveTimelineGuideBody => '右滑：管理波次事件\n左滑：删除波次\n点击pt：查看点数出怪期望';
+  String get waveTimelineGuideBody => '右滑：管理波次事件\n左滑：删除波次\n点击点数：查看点数出怪期望';
 
   @override
   String get waveTimelineGuideBodyDesktop =>
-      '左键点击波次：管理事件\n点击删除按钮：移除波次\n点击pt：查看点数出怪期望';
+      '左键点击波次：管理事件\n点击删除按钮：移除波次\n点击点数：查看点数出怪期望';
 
   @override
-  String get waveTimelineGuideBodyMobile => '右滑：管理波次事件\n左滑：删除波次\n点击pt：查看点数出怪期望';
+  String get waveTimelineGuideBodyMobile => '右滑：管理波次事件\n左滑：删除波次\n点击点数：查看点数出怪期望';
 
   @override
   String get waveDeadLinksTitle => '引用失效报警';
@@ -1189,6 +1189,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get pointsLabel => '点数';
+
+  @override
+  String wavePointsShort(int points) {
+    return '$points 点';
+  }
 
   @override
   String get noDynamicZombies => '没有动态僵尸';

@@ -1235,6 +1235,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get pointsLabel => 'Очки';
 
   @override
+  String wavePointsShort(int points) {
+    return '$points очк.';
+  }
+
+  @override
   String get noDynamicZombies => 'Нет динамических зомби';
 
   @override

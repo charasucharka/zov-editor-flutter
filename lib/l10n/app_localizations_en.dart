@@ -748,15 +748,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get waveTimelineGuideBody =>
-      'Swipe right: Manage wave events\nSwipe left: Delete a wave\nTap pt: View spawn expectations';
+      'Swipe right: Manage wave events\nSwipe left: Delete a wave\nTap points: View spawn expectations';
 
   @override
   String get waveTimelineGuideBodyDesktop =>
-      'Left-click a wave: Manage wave events\nClick delete: Remove a wave\nClick pt: View spawn expectations';
+      'Left-click a wave: Manage wave events\nClick delete: Remove a wave\nClick points: View spawn expectations';
 
   @override
   String get waveTimelineGuideBodyMobile =>
-      'Swipe right: Manage wave events\nSwipe left: Delete a wave\nTap pt: View spawn expectations';
+      'Swipe right: Manage wave events\nSwipe left: Delete a wave\nTap points: View spawn expectations';
 
   @override
   String get waveDeadLinksTitle => 'Broken References';
@@ -1230,6 +1230,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pointsLabel => 'Points';
+
+  @override
+  String wavePointsShort(int points) {
+    return '$points pts.';
+  }
 
   @override
   String get noDynamicZombies => 'No dynamic zombies';

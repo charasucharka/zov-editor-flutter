@@ -361,6 +361,8 @@
   },
   "waveLabel": "Волна",
   "pointsLabel": "Очки",
+  "wavePointsShort": "{points} очк.",
+  "@wavePointsShort": {"placeholders": {"points": {"type": "int"}}},
   "noDynamicZombies": "Нет динамических зомби",
   "iZombiePlantReserveLabel": "Колонна резерва растений (PlantDistance)",
   "column": "Колонна",
