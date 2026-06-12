@@ -7,6 +7,8 @@ import 'package:c_editor/data/models/zomboss_mech_catalog.dart';
 import 'package:c_editor/data/pvz_models/PvzObject.dart';
 import 'package:c_editor/data/pvz_models/PvzLevelFile.dart';
 import 'package:c_editor/data/pvz_models/LocationData.dart';
+import 'package:c_editor/data/repository/zombie_properties_repository.dart';
+import 'package:c_editor/data/zomboss_mech_action_utils.dart';
 
 /// Dropdown value for the custom (memo) zombossmech variation in the battle tab.
 const kZombossMechCustomVariationValue = '__z_editor_custom__';
@@ -230,5 +232,25 @@ class ZombossMechRepository {
       'zombossmech_pvz1_robot_9',
     };
     return noSpawnPos.contains(variation);
+  }
+
+  /// ``alias@source`` label for the property sheet referenced by [mechType].
+  static String? propertiesDisplayLabel(
+    String mechType, {
+    ZombossMechCatalogEntry? catalog,
+  }) {
+    if (catalog != null && isCustomVariation(mechType, catalog)) {
+      final alias = catalog.editableInstancePropsName;
+      if (alias.isEmpty) return null;
+      return '$alias@${ZombossMechActionUtils.customSource}';
+    }
+    if (!ZombiePropertiesRepository.isInitialized) return null;
+    final typeName = ZombiePropertiesRepository.getTypeNameByAlias(mechType);
+    final template = ZombiePropertiesRepository.getTemplateJson(typeName);
+    final typeObj = template?['type'];
+    if (typeObj?.objData is! Map) return null;
+    final propsRtid = (typeObj!.objData as Map)['Properties'] as String?;
+    if (propsRtid == null || propsRtid.isEmpty) return null;
+    return ZombossMechActionUtils.displayLabel(propsRtid);
   }
 }

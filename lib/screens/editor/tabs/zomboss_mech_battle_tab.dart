@@ -6,8 +6,9 @@ import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/data/zomboss_mech_l10n.dart';
 import 'package:c_editor/l10n/resource_names.dart';
 import 'package:c_editor/screens/editor/others/custom_zomboss_mech_properties_screen.dart';
-import 'package:c_editor/widgets/asset_image.dart';
+import 'package:c_editor/screens/editor/others/zomboss_mech_base_selection_screen.dart';
 import 'package:c_editor/widgets/editor_components.dart';
+import 'package:c_editor/widgets/zomboss_mech_editor_widgets.dart';
 
 class ZombossMechBattleTab extends StatefulWidget {
   const ZombossMechBattleTab({
@@ -191,8 +192,8 @@ class _ZombossMechBattleTabState extends State<ZombossMechBattleTab> {
     }
   }
 
-  void _onBaseChanged(String? baseId) {
-    if (baseId == null || baseId == _selectedBaseId) return;
+  void _onBaseChanged(String baseId) {
+    if (baseId == _selectedBaseId) return;
     final base = ZombossMechRepository.getBase(baseId);
     if (base == null || base.variations.isEmpty) return;
 
@@ -204,7 +205,7 @@ class _ZombossMechBattleTabState extends State<ZombossMechBattleTab> {
         );
 
     String pickVariation() {
-      if (keepCustom && catalog.hasCustomInstance) {
+      if (keepCustom && catalog != null && catalog.hasCustomInstance) {
         return catalog.editableInstance;
       }
       if (base.variations.contains(_battleData.zombossMechType)) {
@@ -234,6 +235,20 @@ class _ZombossMechBattleTabState extends State<ZombossMechBattleTab> {
     }
     if (value == _battleData.zombossMechType) return;
     _applyVariation(value);
+  }
+
+  Future<void> _openBaseSelection() async {
+    final baseId = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ZombossMechBaseSelectionScreen(
+          selectedBaseId: _selectedBaseId,
+        ),
+      ),
+    );
+    if (baseId != null && mounted) {
+      _onBaseChanged(baseId);
+    }
   }
 
   String? _variationDropdownValue(
@@ -347,11 +362,14 @@ class _ZombossMechBattleTabState extends State<ZombossMechBattleTab> {
       );
     }
 
-    final bases = ZombossMechRepository.allZombossMechs;
     final currentBase = ZombossMechRepository.getBase(_selectedBaseId);
     final catalog = _currentCatalog;
     final variations = currentBase?.variations ?? <String>[];
     final showCustomOption = catalog?.hasCustomInstance ?? false;
+    final propertiesLabel = ZombossMechRepository.propertiesDisplayLabel(
+      _battleData.zombossMechType,
+      catalog: catalog,
+    );
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -399,81 +417,19 @@ class _ZombossMechBattleTabState extends State<ZombossMechBattleTab> {
         ),
         const SizedBox(height: 8),
         if (currentBase != null)
-          Card(
-            margin: const EdgeInsets.only(bottom: 12),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 48,
-                    height: 48,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: AssetImageWidget(
-                        assetPath:
-                            'assets/images/zombies/${currentBase.icon}',
-                        width: 48,
-                        height: 48,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          _displayName(context, currentBase.id),
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          _isCustomSelected
-                              ? (l10n?.zombossMechCustomVariation ?? 'Custom')
-                              : _battleData.zombossMechType,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        if (_isCustomSelected &&
-                            catalog != null &&
-                            catalog.editableInstancePropsName.isNotEmpty)
-                          Text(
-                            catalog.editableInstancePropsName,
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: ZombossMechBaseCard(
+              baseId: currentBase.id,
+              icon: currentBase.icon,
+              compact: true,
+              trailing: IconButton(
+                icon: const Icon(Icons.edit_outlined),
+                tooltip: l10n?.zombossMechChangeBase ?? 'Change base ZombossMech',
+                onPressed: _openBaseSelection,
               ),
             ),
           ),
-        Tooltip(
-          message: l10n?.zombossMechBaseHint ?? '',
-          child: DropdownButtonFormField<String>(
-            value: _selectedBaseId.isEmpty ? null : _selectedBaseId,
-            decoration: editorInputDecoration(
-              context,
-              labelText: l10n?.zombossMechBaseLabel ?? 'Base ZombossMech',
-            ),
-            items: bases
-                .map(
-                  (b) => DropdownMenuItem(
-                    value: b.id,
-                    child: Text(_displayName(context, b.id)),
-                  ),
-                )
-                .toList(),
-            onChanged: _onBaseChanged,
-          ),
-        ),
-        const SizedBox(height: 12),
         Tooltip(
           message: l10n?.zombossMechVariationHint ?? '',
           child: DropdownButtonFormField<String>(
@@ -516,6 +472,22 @@ class _ZombossMechBattleTabState extends State<ZombossMechBattleTab> {
                 icon: const Icon(Icons.edit),
                 label: Text(l10n?.editCustomZombossMech ?? 'Edit'),
               ),
+            ),
+          ),
+        ],
+        if (propertiesLabel != null) ...[
+          const SizedBox(height: 16),
+          Text(
+            l10n?.zombossMechUsedProperties ?? 'Used properties',
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 4),
+          SelectableText(
+            propertiesLabel,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontFamily: 'monospace',
             ),
           ),
         ],

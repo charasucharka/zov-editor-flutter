@@ -7,6 +7,7 @@ import 'package:c_editor/data/zomboss_mech_action_utils.dart';
 import 'package:c_editor/data/zomboss_mech_l10n.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/screens/editor/others/custom_zomboss_mech_action_editor_screen.dart';
+import 'package:c_editor/widgets/animated_extended_fab.dart';
 
 /// Picks a catalog or level-local zomboss action; returns RTID string.
 class ZombossMechActionSelectionScreen extends StatefulWidget {
@@ -31,6 +32,29 @@ class _ZombossMechActionSelectionScreenState
   static const _categories = ['all', 'movement', 'attack', 'special'];
   String _category = 'all';
   String _query = '';
+  final ScrollController _listScrollController = ScrollController();
+  bool _listScrollAtTop = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _listScrollController.addListener(_onListScroll);
+  }
+
+  @override
+  void dispose() {
+    _listScrollController.removeListener(_onListScroll);
+    _listScrollController.dispose();
+    super.dispose();
+  }
+
+  void _onListScroll() {
+    if (!_listScrollController.hasClients) return;
+    final atTop = _listScrollController.offset <= 0;
+    if (atTop != _listScrollAtTop && mounted) {
+      setState(() => _listScrollAtTop = atTop);
+    }
+  }
 
   List<_ActionListItem> get _items {
     final items = <_ActionListItem>[];
@@ -133,92 +157,104 @@ class _ZombossMechActionSelectionScreenState
               : (l10n?.zombossMechSelectAction ?? 'Select action'),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _openCreateCustom,
-        icon: const Icon(Icons.add),
-        label: Text(l10n?.zombossMechCreateCustomAction ?? 'New custom action'),
-      ),
-      body: Column(
+      body: Stack(
         children: [
-          if (!widget.retreatOnly)
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: Row(
-                children: [
-                  for (final cat in _categories)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: ChoiceChip(
-                        label: Text(_categoryLabel(context, cat)),
-                        selected: _category == cat,
-                        onSelected: (_) => setState(() => _category = cat),
-                      ),
-                    ),
-                ],
+          Column(
+            children: [
+              if (!widget.retreatOnly)
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Row(
+                    children: [
+                      for (final cat in _categories)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: ChoiceChip(
+                            label: Text(_categoryLabel(context, cat)),
+                            selected: _category == cat,
+                            onSelected: (_) => setState(() => _category = cat),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: l10n?.search ?? 'Search',
+                    prefixIcon: const Icon(Icons.search),
+                    border: const OutlineInputBorder(),
+                  ),
+                  onChanged: (v) => setState(() => _query = v),
+                ),
               ),
-            ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: TextField(
-              decoration: InputDecoration(
-                labelText: l10n?.search ?? 'Search',
-                prefixIcon: const Icon(Icons.search),
-                border: const OutlineInputBorder(),
-              ),
-              onChanged: (v) => setState(() => _query = v),
-            ),
-          ),
-          Expanded(
-            child: items.isEmpty
-                ? Center(
-                    child: Text(
-                      l10n?.zombossMechNoActionsFound ?? 'No actions found',
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  )
-                : ListView.builder(
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      final item = items[index];
-                      return ListTile(
-                        title: Text(item.primaryLabel(context)),
-                        subtitle: Text(
-                          item.secondaryLabel(context),
-                          style: theme.textTheme.bodySmall?.copyWith(
+              Expanded(
+                child: items.isEmpty
+                    ? Center(
+                        child: Text(
+                          l10n?.zombossMechNoActionsFound ?? 'No actions found',
+                          style: theme.textTheme.bodyLarge?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
                         ),
-                        trailing: item.isCustom
-                            ? IconButton(
-                                icon: const Icon(Icons.edit_outlined),
-                                tooltip: l10n?.edit ?? 'Edit',
-                                onPressed: () async {
-                                  final rtid = await Navigator.push<String>(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          CustomZombossMechActionEditorScreen(
-                                        catalog: widget.catalog,
-                                        levelFile: widget.levelFile,
-                                        existingRtid: item.rtid,
-                                        retreatOnly: widget.retreatOnly,
-                                      ),
-                                    ),
-                                  );
-                                  if (!context.mounted) return;
-                                  if (rtid != null) {
-                                    Navigator.pop(context, rtid);
-                                  }
-                                },
-                              )
-                            : null,
-                        onTap: () => Navigator.pop(context, item.rtid),
-                      );
-                    },
-                  ),
+                      )
+                    : ListView.builder(
+                        controller: _listScrollController,
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          final item = items[index];
+                          return ListTile(
+                            title: Text(item.primaryLabel(context)),
+                            subtitle: Text(
+                              item.secondaryLabel(context),
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                            trailing: item.isCustom
+                                ? IconButton(
+                                    icon: const Icon(Icons.edit_outlined),
+                                    tooltip: l10n?.edit ?? 'Edit',
+                                    onPressed: () async {
+                                      final rtid = await Navigator.push<String>(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              CustomZombossMechActionEditorScreen(
+                                            catalog: widget.catalog,
+                                            levelFile: widget.levelFile,
+                                            existingRtid: item.rtid,
+                                            retreatOnly: widget.retreatOnly,
+                                          ),
+                                        ),
+                                      );
+                                      if (!context.mounted) return;
+                                      if (rtid != null) {
+                                        Navigator.pop(context, rtid);
+                                      }
+                                    },
+                                  )
+                                : null,
+                            onTap: () => Navigator.pop(context, item.rtid),
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
+          Positioned(
+            right: 16,
+            bottom: 16,
+            child: AnimatedExtendedFab(
+              visible: _listScrollAtTop,
+              heroTag: 'zombossMechCreateCustomAction',
+              onPressed: _openCreateCustom,
+              icon: Icons.add,
+              label: l10n?.zombossMechCreateCustomAction ?? 'New custom action',
+            ),
           ),
         ],
       ),
@@ -255,19 +291,26 @@ class _ActionListItem {
   final String tag;
 
   String primaryLabel(BuildContext context) {
+    if (isCustom) {
+      return ZombossMechL10n.actionLabel(
+        context,
+        catalog.id,
+        objclass,
+        fallback: alias,
+      );
+    }
+    return ZombossMechL10n.implementationLabel(
+      context,
+      catalog.id,
+      alias,
+    );
+  }
+
+  String secondaryLabel(BuildContext context) {
     final info = RtidParser.parse(rtid);
     if (info != null) {
       return '${info.alias}@${info.source}';
     }
     return rtid;
-  }
-
-  String secondaryLabel(BuildContext context) {
-    return ZombossMechL10n.actionLabel(
-      context,
-      catalog.id,
-      objclass,
-      fallback: objclass,
-    );
   }
 }

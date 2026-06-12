@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:c_editor/data/models/zomboss_mech_catalog.dart';
 import 'package:c_editor/data/pvz_models/PvzLevelFile.dart';
+import 'package:c_editor/data/repository/zomboss_mech_repository.dart';
 import 'package:c_editor/data/zomboss_mech_l10n.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
+import 'package:c_editor/l10n/resource_names.dart';
 import 'package:c_editor/theme/app_theme.dart';
+import 'package:c_editor/widgets/asset_image.dart';
 
 /// Accent for custom zomboss mech editor (matches boss / custom tooling).
 Color zombossMechAccent(BuildContext context) {
@@ -29,6 +32,123 @@ TextStyle zombossMechActionTitleStyle(BuildContext context) {
         fontSize: 15,
         height: 1.25,
       );
+}
+
+/// Shared zomboss mech base card: icon + localized name in one row.
+class ZombossMechBaseCard extends StatelessWidget {
+  const ZombossMechBaseCard({
+    super.key,
+    required this.baseId,
+    this.icon,
+    this.compact = false,
+    this.selected = false,
+    this.trailing,
+    this.onTap,
+  });
+
+  final String baseId;
+  final String? icon;
+  /// Tighter padding for the battle-tab summary row.
+  final bool compact;
+  final bool selected;
+  final Widget? trailing;
+  final VoidCallback? onTap;
+
+  String _displayName(BuildContext context) {
+    final name = ResourceNames.lookup(context, baseId);
+    return name == baseId ? baseId : name;
+  }
+
+  String? _resolveIcon() {
+    if (icon != null && icon!.isNotEmpty) return icon;
+    return ZombossMechRepository.getBase(baseId)?.icon;
+  }
+
+  double _iconSize(double maxWidth) {
+    final base = maxWidth * 0.11;
+    if (compact) return base.clamp(36, 48);
+    return base.clamp(40, 52);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final iconPath = _resolveIcon();
+    final borderColor = selected
+        ? theme.colorScheme.primary
+        : theme.colorScheme.outlineVariant.withValues(alpha: 0.6);
+
+    return Material(
+      color: selected
+          ? theme.colorScheme.primaryContainer.withValues(alpha: 0.35)
+          : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final iconSize = _iconSize(constraints.maxWidth);
+            final gap = iconSize * 0.2;
+            final hPad = compact ? 10.0 : 12.0;
+            final vPad = compact ? 10.0 : 8.0;
+
+            return Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: hPad, vertical: vPad),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: borderColor,
+                  width: selected ? 2 : 1,
+                ),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _buildIcon(context, iconPath, iconSize),
+                  SizedBox(width: gap),
+                  Expanded(
+                    child: Text(
+                      _displayName(context),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        height: 1.2,
+                      ),
+                    ),
+                  ),
+                  if (trailing != null) ...[
+                    SizedBox(width: gap),
+                    trailing!,
+                  ],
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIcon(BuildContext context, String? iconPath, double size) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: iconPath == null
+          ? Icon(Icons.smart_toy_outlined, size: size * 0.6)
+          : ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: AssetImageWidget(
+                assetPath: 'assets/images/zombies/$iconPath',
+                width: size,
+                height: size,
+                fit: BoxFit.contain,
+              ),
+            ),
+    );
+  }
 }
 
 /// Estimated row height for [ReorderableListView] in a bounded [SizedBox].

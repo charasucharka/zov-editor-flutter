@@ -16,6 +16,9 @@ abstract class ZombossMechL10n {
   static String actionKey(String mechId, String objclass) =>
       '${mechId}_action_$objclass';
 
+  static String actionImplementationKey(String mechId, String alias) =>
+      '${mechId}_action_impl_$alias';
+
   static String fieldKey(String mechId, String objclass, String fieldName) =>
       '${mechId}_action_${objclass}_field_$fieldName';
 
@@ -42,6 +45,20 @@ abstract class ZombossMechL10n {
   }) {
     final fb = fallback ?? objclass;
     return _lookup(context, actionKey(mechId, objclass), fb) ?? fb;
+  }
+
+  /// Per-implementation alias label (picker rows). Falls back to [alias].
+  static String implementationLabel(
+    BuildContext context,
+    String mechId,
+    String alias, {
+    String? fallback,
+  }) {
+    final fb = fallback ?? alias;
+    final implKey = actionImplementationKey(mechId, alias);
+    final localized = ResourceNames.lookup(context, implKey);
+    if (localized != implKey) return localized;
+    return fb;
   }
 
   static String fieldLabel(
@@ -81,6 +98,14 @@ abstract class ZombossMechL10n {
     if (info == null) return rtid;
     if (info.source == 'CurrentLevel') {
       return '${info.alias}@${info.source}';
+    }
+    if (implementationAlias != null && implementationAlias.isNotEmpty) {
+      return implementationLabel(
+        context,
+        mechId,
+        implementationAlias,
+        fallback: info.alias,
+      );
     }
     if (objclass != null && objclass.isNotEmpty) {
       return actionLabel(
