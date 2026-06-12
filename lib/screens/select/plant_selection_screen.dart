@@ -10,7 +10,7 @@ import 'package:c_editor/screens/select/magic_hat_spawn_preview_screen.dart';
 import 'package:c_editor/widgets/asset_image.dart'
     show AssetImageWidget, imageAltCandidates;
 import 'package:c_editor/widgets/editor_components.dart'
-    show ScrollableWithMouseDrag;
+    show AccentBarTabBarStyle, ScrollableWithMouseDrag;
 
 /// Placeholder when a plant has no icon or icon fails to load.
 const String _kUnknownIconPath = 'assets/images/others/unknown.webp';
@@ -295,6 +295,7 @@ class _PlantSelectionScreenState extends State<PlantSelectionScreen> {
     }
     final themeColor = theme.colorScheme.primary;
     final filterMaxHeight = MediaQuery.sizeOf(context).height * 0.42;
+    final tabColors = AccentBarTabBarStyle.colors(context);
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
@@ -370,10 +371,9 @@ class _PlantSelectionScreenState extends State<PlantSelectionScreen> {
                       ),
                       child: TabBar(
                         isScrollable: true,
-                        indicatorColor: theme.colorScheme.surface,
-                        labelColor: theme.colorScheme.surface,
-                        unselectedLabelColor: theme.colorScheme.surface
-                            .withValues(alpha: 0.6),
+                        indicatorColor: tabColors.indicator,
+                        labelColor: tabColors.label,
+                        unselectedLabelColor: tabColors.unselectedLabel,
                         onTap: (index) =>
                             _setCategory(PlantCategory.values[index]),
                         tabs: PlantCategory.values.map((category) {
@@ -386,10 +386,8 @@ class _PlantSelectionScreenState extends State<PlantSelectionScreen> {
                                     Icons.star,
                                     size: 16,
                                     color: isSelected
-                                        ? theme.colorScheme.surface
-                                        : theme.colorScheme.surface.withValues(
-                                            alpha: 0.6,
-                                          ),
+                                        ? tabColors.label
+                                        : tabColors.unselectedLabel,
                                   ),
                                   const SizedBox(width: 4),
                                 ],
@@ -414,12 +412,9 @@ class _PlantSelectionScreenState extends State<PlantSelectionScreen> {
                         initialIndex: safeTagIndex,
                         child: TabBar(
                           isScrollable: true,
-                          indicatorColor: theme.colorScheme.surface.withValues(
-                            alpha: 0.8,
-                          ),
-                          labelColor: theme.colorScheme.surface,
-                          unselectedLabelColor: theme.colorScheme.surface
-                              .withValues(alpha: 0.6),
+                          indicatorColor: tabColors.indicator,
+                          labelColor: tabColors.label,
+                          unselectedLabelColor: tabColors.unselectedLabel,
                           onTap: (index) => setState(
                             () => _selectedTag = visibleTags[index],
                           ),

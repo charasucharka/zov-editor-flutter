@@ -4,6 +4,7 @@ import 'package:c_editor/data/repository/stage_repository.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
 import 'package:c_editor/widgets/asset_image.dart' show AssetImageWidget, imageAltCandidates;
+import 'package:c_editor/widgets/editor_components.dart';
 
 /// Full-screen stage selection. Ported from Z-Editor-master StageSelectionScreen.kt
 class StageSelectionScreen extends StatefulWidget {
@@ -71,14 +72,11 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 child: Row(
                   children: StageType.values.map((t) {
-                    final isSelected = _selectedType == t;
-                    return Padding(
+                    return AccentBarChoiceChip(
+                      label: _typeLabel(t, l10n),
+                      selected: _selectedType == t,
+                      onSelected: (_) => setState(() => _selectedType = t),
                       padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: ChoiceChip(
-                        label: Text(_typeLabel(t, l10n)),
-                        selected: isSelected,
-                        onSelected: (_) => setState(() => _selectedType = t),
-                      ),
                     );
                   }).toList(),
                 ),

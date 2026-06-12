@@ -8,7 +8,7 @@ import 'package:c_editor/screens/select/kongfu_rocket_flick_prompt.dart';
 import 'package:c_editor/widgets/asset_image.dart'
     show AssetImageWidget, imageAltCandidates;
 import 'package:c_editor/widgets/editor_components.dart'
-    show ScrollableWithMouseDrag;
+    show AccentBarTabBarStyle, ScrollableWithMouseDrag;
 
 /// Placeholder when a zombie has no icon or icon fails to load.
 const String _kUnknownIconPath = 'assets/images/others/unknown.webp';
@@ -130,6 +130,7 @@ class _ZombieSelectionScreenState extends State<ZombieSelectionScreen> {
         ? pvzPurpleDark
         : pvzPurpleLight;
     final filterMaxHeight = MediaQuery.sizeOf(context).height * 0.42;
+    final tabColors = AccentBarTabBarStyle.colors(context);
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
@@ -210,10 +211,9 @@ class _ZombieSelectionScreenState extends State<ZombieSelectionScreen> {
                           ZombieCategory.values.indexOf(_selectedCategory),
                       child: TabBar(
                         isScrollable: true,
-                        indicatorColor: theme.colorScheme.surface,
-                        labelColor: theme.colorScheme.surface,
-                        unselectedLabelColor:
-                            theme.colorScheme.surface.withValues(alpha: 0.6),
+                        indicatorColor: tabColors.indicator,
+                        labelColor: tabColors.label,
+                        unselectedLabelColor: tabColors.unselectedLabel,
                         onTap: (index) =>
                             _setCategory(ZombieCategory.values[index]),
                         tabs: ZombieCategory.values.map((category) {
@@ -226,9 +226,8 @@ class _ZombieSelectionScreenState extends State<ZombieSelectionScreen> {
                                     Icons.star,
                                     size: 16,
                                     color: isSelected
-                                        ? theme.colorScheme.surface
-                                        : theme.colorScheme.surface
-                                            .withValues(alpha: 0.6),
+                                        ? tabColors.label
+                                        : tabColors.unselectedLabel,
                                   ),
                                   const SizedBox(width: 4),
                                 ],
@@ -253,11 +252,9 @@ class _ZombieSelectionScreenState extends State<ZombieSelectionScreen> {
                         initialIndex: safeTagIndex,
                         child: TabBar(
                           isScrollable: true,
-                          indicatorColor:
-                              theme.colorScheme.surface.withValues(alpha: 0.8),
-                          labelColor: theme.colorScheme.surface,
-                          unselectedLabelColor:
-                              theme.colorScheme.surface.withValues(alpha: 0.6),
+                          indicatorColor: tabColors.indicator,
+                          labelColor: tabColors.label,
+                          unselectedLabelColor: tabColors.unselectedLabel,
                           onTap: (index) => setState(
                             () => _selectedTag = visibleTags[index],
                           ),
