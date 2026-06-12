@@ -4,11 +4,13 @@
 Key formats (per mech catalog ``id`` from ZombossMechs.json):
   {id}_variation_{variation}
   {id}_action_{objclass}
+  {id}_action_impl_{alias}
   {id}_action_{objclass}_field_{fieldName}   (nested: Parent_Child)
 
 Default values:
   variation — humanized variation id (strip zombossmech_ prefix)
   action — first implementation alias in the action group
+  action_impl — implementation alias
   field — humanized field name (CamelCase → words)
 """
 
@@ -78,6 +80,11 @@ def collect_entries(mechs: list[dict[str, Any]]) -> dict[str, str]:
                     .removesuffix("ActionHandler")
                 )
             out.setdefault(action_key, default_action)
+
+            if isinstance(implementations, dict):
+                for impl_alias in implementations:
+                    impl_key = f"{mech_id}_action_impl_{impl_alias}"
+                    out.setdefault(impl_key, str(impl_alias))
 
             for field_name in iter_field_names(action.get("fields") or []):
                 field_key = f"{mech_id}_action_{objclass}_field_{field_name}"
