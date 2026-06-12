@@ -97,6 +97,14 @@ class ZombiePropertiesRepository {
     if (t == null || p == null) return null;
     return {'type': t, 'props': p};
   }
- 
+
+  /// Whether the base zombie's default property sheet defines a [Resilience]
+  /// shield (distinct from [ZombieTypeData.resistences]).
+  static bool supportsResilienceShield(String typeName) {
+    final props = instance._originalPropsJson[typeName];
+    if (props?.objData is! Map<String, dynamic>) return false;
+    return (props!.objData as Map<String, dynamic>).containsKey('Resilience');
+  }
+
   static bool get isInitialized => instance._isInitialized;
 }
