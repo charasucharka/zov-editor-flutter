@@ -6,7 +6,7 @@ import 'package:c_editor/data/repository/stage_repository.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
 import 'package:c_editor/widgets/asset_image.dart' show AssetImageWidget, imageAltCandidates;
-import 'package:c_editor/widgets/editor_components.dart' show editorInputDecoration;
+import 'package:c_editor/widgets/editor_components.dart';
 // Options matching LevelDefinitionEP.kt (keep codenames)
 const _musicTypeOptions = [
   ('MainPath', 'MainPath'),
@@ -354,11 +354,10 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
               ),
             ),
             const SizedBox(height: 8),
-            Text(
-              l10n?.victoryModuleWarning ?? 'Using non-default victory modules may cause level crashes due to module conflicts. Use with caution.',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+            EditorWarningBanner(
+              margin: EdgeInsets.zero,
+              message: l10n?.victoryModuleWarning ??
+                  'Using non-default victory modules may cause level crashes due to module conflicts. Use with caution.',
             ),
             const SizedBox(height: 24),
             Text(l10n?.restrictionsSection ?? 'Restrictions', style: sectionStyle),

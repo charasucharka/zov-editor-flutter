@@ -52,7 +52,7 @@ class UnknownModuleScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                Icons.warning_amber,
+                editorWarningIcon,
                 size: 80,
                 color: theme.colorScheme.tertiary,
               ),

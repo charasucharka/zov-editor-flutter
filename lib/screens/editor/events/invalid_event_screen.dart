@@ -61,7 +61,7 @@ class InvalidEventScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                Icons.warning_amber,
+                editorErrorIcon,
                 size: 80,
                 color: theme.colorScheme.error,
               ),

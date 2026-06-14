@@ -475,15 +475,15 @@ class _PumpkinHouseItemCard extends StatelessWidget {
                       child: Row(
                         children: [
                           Icon(
-                            Icons.warning_amber_rounded,
-                            color: Colors.amber.shade700,
+                            editorWarningIcon,
+                            color: editorWarningBannerForeground(theme.brightness),
                             size: 16,
                           ),
                           const SizedBox(width: 4),
                           Text(
                             'R${item.location.y + 1}:C${item.location.x + 1}',
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: Colors.amber.shade700,
+                              color: editorWarningBannerForeground(theme.brightness),
                             ),
                           ),
                         ],

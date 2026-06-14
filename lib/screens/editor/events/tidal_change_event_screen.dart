@@ -135,7 +135,7 @@ class _TidalChangeEventScreenState extends State<TidalChangeEventScreen> {
                     child: Row(
                       children: [
                         Icon(
-                          Icons.warning,
+                          editorErrorIcon,
                           color: theme.colorScheme.error,
                         ),
                         const SizedBox(width: 12),

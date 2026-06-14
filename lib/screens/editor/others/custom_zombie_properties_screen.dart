@@ -551,7 +551,7 @@ class _CustomZombiePropertiesScreenState
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.warning, size: 80, color: themeColor),
+              Icon(editorWarningIcon, size: 80, color: themeColor),
               const SizedBox(height: 16),
               Text(
                 l10n?.propertyObjectNotFound ?? 'Property object not found',

@@ -289,9 +289,11 @@ class _WaveTimelineTabState extends State<WaveTimelineTab> {
               spacing: 8,
               runSpacing: 8,
               children: customFishes.map((info) {
-                final icon = info.isUnused ? Icons.warning : Icons.check_circle;
+                final icon = info.isUnused ? editorWarningIcon : Icons.check_circle;
                 final iconColor = info.isUnused
-                    ? Colors.amber.shade700
+                    ? editorWarningBannerForeground(
+                        Theme.of(context).brightness,
+                      )
                     : const Color(0xFF2E7D32);
                 return Material(
                   color: itemBg,
@@ -384,10 +386,12 @@ class _WaveTimelineTabState extends State<WaveTimelineTab> {
                 runSpacing: 8,
                 children: customZombies.map((info) {
                   final icon = info.isUnused
-                      ? Icons.warning
+                      ? editorWarningIcon
                       : Icons.check_circle;
                   final iconColor = info.isUnused
-                      ? Colors.amber.shade700
+                      ? editorWarningBannerForeground(
+                          Theme.of(context).brightness,
+                        )
                       : const Color(0xFF2E7D32); // Dark green for ok
                   return Material(
                     color: itemBg,

@@ -259,7 +259,7 @@ class _WaveManagerModuleScreenState extends State<WaveManagerModuleScreen> {
                     Row(
                       children: [
                         Icon(
-                          isPropsValid ? Icons.check_circle : Icons.warning,
+                          isPropsValid ? Icons.check_circle : editorWarningIcon,
                           color: isPropsValid
                               ? (isDark
                                     ? Colors.white

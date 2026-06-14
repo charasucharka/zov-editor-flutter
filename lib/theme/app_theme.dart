@@ -24,6 +24,24 @@ const Color snackbarFailedLight = Color(0xFFFFF59D);
 /// Warning bar: missing modules (different yellow for dark/light theme)
 const Color warningBarDark = Color(0xFFFFEB3B);
 const Color warningBarLight = Color(0xFF8D6E00);
+const Color warningBarBackgroundLight = Color(0xFFFFF59D);
+const Color warningBarBackgroundDark = Color(0xFF8D6E00);
+
+/// Background for editor warning banners (e.g. missing modules).
+Color editorWarningBannerBackground(Brightness brightness) {
+  return brightness == Brightness.dark
+      ? warningBarBackgroundDark
+      : warningBarBackgroundLight;
+}
+
+/// Foreground (text/icon) for editor warning banners.
+Color editorWarningBannerForeground(Brightness brightness) {
+  return brightness == Brightness.dark ? warningBarDark : warningBarLight;
+}
+
+/// Standard icons for editor alert banners (keep warning vs error distinct).
+const IconData editorWarningIcon = Icons.warning_amber_rounded;
+const IconData editorErrorIcon = Icons.error;
 
 /// Purple for Custom Zombie card in Wave Timeline (matches Kotlin PvzPurpleLight/Dark)
 const Color pvzPurpleLight = Color(0xFF673AB7);

@@ -260,27 +260,10 @@ class _BungeeWaveEventScreenState extends State<BungeeWaveEventScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(Icons.info_outline, color: appBarColor, size: 24),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          l10n?.bungeeWaveRoofWarning ??
-                              'On roof maps, bungee drops intercepted by umbrellas may trigger instant brain-eating. Use with care.',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: appBarColor,
-                            height: 1.3,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              EditorWarningBanner(
+                margin: EdgeInsets.zero,
+                message: l10n?.bungeeWaveRoofWarning ??
+                    'On roof maps, bungee drops intercepted by umbrellas may trigger instant brain-eating. Use with care.',
               ),
               const SizedBox(height: 32),
             ],

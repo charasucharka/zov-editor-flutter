@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:c_editor/data/registry/conflict_registry.dart';
-import 'package:c_editor/theme/app_theme.dart';
+import 'package:c_editor/widgets/editor_components.dart';
 import 'package:c_editor/data/registry/module_registry.dart';
 import 'package:c_editor/data/pvz_models.dart';
 import 'package:c_editor/data/repository/plant_repository.dart';
@@ -348,145 +348,44 @@ class _LevelSettingsTabState extends State<LevelSettingsTab> {
 
             // Missing Essentials
             if (widget.missingModules.isNotEmpty)
-              Builder(
-                builder: (ctx) {
-                  final isDark = Theme.of(ctx).brightness == Brightness.dark;
-                  final warningBg = isDark
-                      ? warningBarDark.withValues(alpha: 0.2)
-                      : warningBarLight.withValues(alpha: 0.2);
-                  final warningFg = isDark ? warningBarDark : warningBarLight;
-                  return Card(
-                    color: warningBg,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(Icons.warning, color: warningFg),
-                              const SizedBox(width: 8),
-                              Text(
-                                l10n?.missingModules ?? 'Missing modules',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: warningFg,
-                                ),
-                              ),
-                            ],
+              EditorWarningBanner(
+                title: l10n?.missingModules ?? 'Missing modules',
+                message: l10n?.missingModulesRecommended ??
+                    'The level might not function correctly. Recommended to add:',
+                children: widget.missingModules
+                    .map(
+                      (meta) => Text(
+                        '• ${meta.getTitle(context)}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: editorWarningBannerForeground(
+                            Theme.of(context).brightness,
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            l10n?.missingModulesRecommended ?? 'The level might not function correctly. Recommended to add:',
-                            style: TextStyle(color: warningFg),
-                          ),
-                          ...widget.missingModules.map(
-                            (meta) => Text(
-                              '• ${meta.getTitle(context)}',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: warningFg,
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  );
-                },
+                    )
+                    .toList(),
               ),
 
             if (widget.showGlacierModuleCompatibilityWarning) ...[
               const SizedBox(height: 12),
-              Card(
-                color: Theme.of(context).colorScheme.errorContainer,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.warning_amber_rounded,
-                            color: Theme.of(context).colorScheme.onErrorContainer,
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              ModuleRegistry.getMetadata('GlacierModuleProperties')
-                                  .getTitle(context),
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onErrorContainer,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        l10n?.glacierModuleCompatibilityWarning ??
-                            'This module only works with the Zomboss Battle module '
-                                'and an Ice Age Zomboss Mech (zombossmech_iceage). '
-                                'Add or fix those settings so glacier blocks can spawn zombies.',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onErrorContainer,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              EditorWarningBanner(
+                title: ModuleRegistry.getMetadata('GlacierModuleProperties')
+                    .getTitle(context),
+                message: l10n?.glacierModuleCompatibilityWarning ??
+                    'This module only works with the Zomboss Battle module '
+                        'and an Ice Age Zomboss Mech (zombossmech_iceage). '
+                        'Add or fix those settings so glacier blocks can spawn zombies.',
               ),
             ],
 
             if (showTunnelDefendRecommendation) ...[
               const SizedBox(height: 12),
-              Builder(
-                builder: (ctx) {
-                  final isDark = Theme.of(ctx).brightness == Brightness.dark;
-                  final warningBg = isDark
-                      ? warningBarDark.withValues(alpha: 0.2)
-                      : warningBarLight.withValues(alpha: 0.2);
-                  final warningFg = isDark ? warningBarDark : warningBarLight;
-                  return Card(
-                    color: warningBg,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(Icons.warning_amber, color: warningFg),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  l10n?.recommendedTunnelDefendTitle ??
-                                      'Tunnel pathways strongly recommended',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: warningFg,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            l10n?.recommendedTunnelDefendBody ??
-                                'This Underground Palace stage expects the Tunnel Defend module for pathway visuals. Without it the lawn may look empty in-game.',
-                            style: TextStyle(color: warningFg),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
+              EditorWarningBanner(
+                title: l10n?.recommendedTunnelDefendTitle ??
+                    'Tunnel pathways strongly recommended',
+                message: l10n?.recommendedTunnelDefendBody ??
+                    'The tiles in Underground Palace Secret Realm lawns must be placed through the "Underground Palace Pathways" module. If this module is not added, the lawns may appear overly empty in-game.',
               ),
             ],
           ],

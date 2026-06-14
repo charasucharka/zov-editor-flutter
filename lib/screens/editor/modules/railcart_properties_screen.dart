@@ -218,12 +218,14 @@ class _RailcartPropertiesScreenState extends State<RailcartPropertiesScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (_hasOutOfAreaWarning())
-              _RailcartWarningBanner(
+              EditorWarningBanner(
+                margin: EdgeInsets.zero,
                 message: l10n?.warningObjectsOutsideArea(_gridRows, _gridCols) ??
                     'Some objects are outside the playable area ($_gridRows rows × $_gridCols cols).',
               ),
             if (_hasStageSwitchWarning())
-              _RailcartWarningBanner(
+              EditorWarningBanner(
+                margin: EdgeInsets.zero,
                 message: l10n?.warningStageSwitchedTo5Rows ??
                     'Stage uses 5 rows but some data references row 6.',
               ),
@@ -404,38 +406,6 @@ class _RailcartPropertiesScreenState extends State<RailcartPropertiesScreen> {
                       ),
                     ),
                   ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _RailcartWarningBanner extends StatelessWidget {
-  const _RailcartWarningBanner({required this.message});
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Card(
-      color: theme.colorScheme.errorContainer.withValues(alpha: 0.5),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(Icons.warning_amber, color: theme.colorScheme.error, size: 24),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                message,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onErrorContainer,
                 ),
               ),
             ),

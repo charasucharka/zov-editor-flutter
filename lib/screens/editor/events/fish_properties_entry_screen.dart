@@ -621,7 +621,7 @@ class _FishPropertiesEntryScreenState extends State<FishPropertiesEntryScreen> {
               Row(
                 children: [
                   Icon(
-                    Icons.warning_amber_rounded,
+                    editorWarningIcon,
                     color: theme.colorScheme.error,
                     size: 20,
                   ),

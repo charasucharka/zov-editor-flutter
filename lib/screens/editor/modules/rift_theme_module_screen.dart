@@ -185,8 +185,8 @@ class _RiftThemeModuleScreenState extends State<RiftThemeModuleScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
-                                Icons.warning_amber_rounded,
-                                color: Colors.amber.shade700,
+                                editorWarningIcon,
+                                color: editorWarningBannerForeground(theme.brightness),
                                 size: 20,
                               ),
                               IconButton(

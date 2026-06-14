@@ -5,6 +5,7 @@ import 'package:c_editor/data/pvz_models.dart';
 import 'package:c_editor/data/repository/reference_repository.dart';
 import 'package:c_editor/data/rtid_parser.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
+import 'package:c_editor/widgets/editor_components.dart';
 
 /// Pirate plank properties editor. Ported from Z-Editor-master PiratePlankPropertiesEP.kt
 class PiratePlankPropertiesScreen extends StatefulWidget {
@@ -120,7 +121,7 @@ class _PiratePlankPropertiesScreenState
                   child: Row(
                     children: [
                       Icon(
-                        Icons.warning,
+                        editorErrorIcon,
                         color: theme.colorScheme.onErrorContainer,
                       ),
                       const SizedBox(width: 12),

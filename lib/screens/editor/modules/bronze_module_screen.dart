@@ -823,15 +823,15 @@ class _BronzeStatueCardState extends State<_BronzeStatueCard> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              Icons.warning_amber_rounded,
-                              color: Colors.amber.shade700,
+                              editorWarningIcon,
+                              color: editorWarningBannerForeground(theme.brightness),
                               size: 16,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               'R${widget.item.mY + 1}:C${widget.item.mX + 1}',
                               style: theme.textTheme.bodySmall?.copyWith(
-                                color: Colors.amber.shade700,
+                                color: editorWarningBannerForeground(theme.brightness),
                               ),
                             ),
                           ],

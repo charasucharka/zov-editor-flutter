@@ -7,6 +7,69 @@ import 'package:c_editor/data/repository/grid_item_repository.dart';
 import 'package:c_editor/theme/app_theme.dart';
 import 'package:c_editor/widgets/asset_image.dart' show AssetImageWidget, imageAltCandidates;
 
+export 'package:c_editor/theme/app_theme.dart'
+    show
+        editorWarningIcon,
+        editorErrorIcon,
+        warningBarDark,
+        warningBarLight,
+        editorWarningBannerBackground,
+        editorWarningBannerForeground;
+
+/// Yellow warning card used across editor screens (Settings, modules, events).
+class EditorWarningBanner extends StatelessWidget {
+  const EditorWarningBanner({
+    super.key,
+    this.title,
+    required this.message,
+    this.children = const [],
+    this.margin,
+  });
+
+  final String? title;
+  final String message;
+  final List<Widget> children;
+  final EdgeInsetsGeometry? margin;
+
+  @override
+  Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    final fg = editorWarningBannerForeground(brightness);
+    final bodyStyle = TextStyle(color: fg);
+    final titleStyle = TextStyle(fontWeight: FontWeight.bold, color: fg);
+
+    return Card(
+      margin: margin,
+      color: editorWarningBannerBackground(brightness),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(editorWarningIcon, color: fg),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: title != null
+                      ? Text(title!, style: titleStyle)
+                      : Text(message, style: bodyStyle),
+                ),
+              ],
+            ),
+            if (title != null) ...[
+              const SizedBox(height: 8),
+              Text(message, style: bodyStyle),
+            ],
+            ...children,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// Shared editor UI components. Ported from Z-Editor-master EditorComponents.kt
 
 /// Square add button with rounded corners and + symbol.

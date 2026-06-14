@@ -125,16 +125,14 @@ class _VaseBreakerTabState extends State<VaseBreakerTab> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (showStageWarning)
-            _WarningBanner(
+            EditorWarningBanner(
               message: l10n?.warningStageSwitchedTo5Rows ??
                   'Stage uses 5 rows but some data references row 6. These objects may not display correctly in-game.',
-              icon: Icons.warning_amber,
             ),
           if (showOutOfAreaWarning)
-            _WarningBanner(
+            _InfoBanner(
               message: l10n?.warningObjectsOutsideArea(_gridRows, _gridCols) ??
                   'Some objects are outside the playable area ($_gridRows rows × $_gridCols cols).',
-              icon: Icons.info_outline,
             ),
           if (showStageWarning || showOutOfAreaWarning) const SizedBox(height: 16),
           _buildRangeSection(l10n),
@@ -309,7 +307,7 @@ class _VaseBreakerTabState extends State<VaseBreakerTab> {
         child: Row(
           children: [
             Icon(
-              isError ? Icons.warning : Icons.check_circle,
+              isError ? editorWarningIcon : Icons.check_circle,
               color: isError
                   ? Theme.of(context).colorScheme.error
                   : Colors.green,
@@ -617,11 +615,10 @@ class _CollectableType {
   final String iconName;
 }
 
-class _WarningBanner extends StatelessWidget {
-  const _WarningBanner({required this.message, required this.icon});
+class _InfoBanner extends StatelessWidget {
+  const _InfoBanner({required this.message});
 
   final String message;
-  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -633,7 +630,7 @@ class _WarningBanner extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, color: theme.colorScheme.error, size: 24),
+            Icon(Icons.info_outline, color: theme.colorScheme.error, size: 24),
             const SizedBox(width: 12),
             Expanded(
               child: Text(

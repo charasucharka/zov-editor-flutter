@@ -205,7 +205,7 @@ class _ZombossMechBattleTabState extends State<ZombossMechBattleTab> {
         );
 
     String pickVariation() {
-      if (keepCustom && catalog != null && catalog.hasCustomInstance) {
+      if (keepCustom && catalog.hasCustomInstance) {
         return catalog.editableInstance;
       }
       if (base.variations.contains(_battleData.zombossMechType)) {
@@ -382,7 +382,7 @@ class _ZombossMechBattleTabState extends State<ZombossMechBattleTab> {
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  Icon(Icons.warning, color: theme.colorScheme.onErrorContainer),
+                  Icon(editorErrorIcon, color: theme.colorScheme.onErrorContainer),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Column(
@@ -433,7 +433,7 @@ class _ZombossMechBattleTabState extends State<ZombossMechBattleTab> {
         Tooltip(
           message: l10n?.zombossMechVariationHint ?? '',
           child: DropdownButtonFormField<String>(
-            value: _variationDropdownValue(
+            initialValue: _variationDropdownValue(
               variations,
               variations.contains(_battleData.zombossMechType)
                   ? _battleData.zombossMechType

@@ -326,8 +326,8 @@ class _MagicMirrorEventScreenState extends State<MagicMirrorEventScreen> {
                               Padding(
                                 padding: const EdgeInsets.only(right: 4),
                                 child: Icon(
-                                  Icons.warning_amber_rounded,
-                                  color: Colors.amber.shade700,
+                                  editorWarningIcon,
+                                  color: editorWarningBannerForeground(theme.brightness),
                                   size: 20,
                                 ),
                               ),
@@ -342,8 +342,8 @@ class _MagicMirrorEventScreenState extends State<MagicMirrorEventScreen> {
                               Padding(
                                 padding: const EdgeInsets.only(right: 4),
                                 child: Icon(
-                                  Icons.warning_amber_rounded,
-                                  color: Colors.amber.shade700,
+                                  editorWarningIcon,
+                                  color: editorWarningBannerForeground(theme.brightness),
                                   size: 20,
                                 ),
                               ),

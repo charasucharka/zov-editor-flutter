@@ -349,7 +349,7 @@ class _CustomFishPropertiesScreenState extends State<CustomFishPropertiesScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.warning, size: 80, color: _themeColor),
+              Icon(editorWarningIcon, size: 80, color: _themeColor),
               const SizedBox(height: 16),
               Text(
                 l10n?.propertyObjectNotFound ?? 'Property object not found',

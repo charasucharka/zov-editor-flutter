@@ -336,7 +336,7 @@ class _ModifyConveyorEventScreenState extends State<ModifyConveyorEventScreen> {
                     padding: const EdgeInsets.all(16),
                     child: Row(
                       children: [
-                        Icon(Icons.warning, color: theme.colorScheme.error),
+                        Icon(editorErrorIcon, color: theme.colorScheme.error),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(

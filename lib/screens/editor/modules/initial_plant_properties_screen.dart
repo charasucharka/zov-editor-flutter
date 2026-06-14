@@ -586,15 +586,15 @@ class _PlacementCard extends StatelessWidget {
                         child: Row(
                           children: [
                             Icon(
-                              Icons.warning_amber_rounded,
-                              color: Colors.amber.shade700,
+                              editorWarningIcon,
+                              color: editorWarningBannerForeground(theme.brightness),
                               size: 16,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               'R${placement.gridY + 1}:C${placement.gridX + 1}',
                               style: theme.textTheme.bodySmall?.copyWith(
-                                color: Colors.amber.shade700,
+                                color: editorWarningBannerForeground(theme.brightness),
                               ),
                             ),
                           ],

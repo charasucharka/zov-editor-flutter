@@ -152,31 +152,11 @@ class _SpermWhaleModuleScreenState extends State<SpermWhaleModuleScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (!_isDeepSea)
-              Card(
-                color: theme.colorScheme.errorContainer,
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.warning_amber_rounded,
-                        color: theme.colorScheme.onErrorContainer,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          l10n?.spermWhaleModuleNotDeepSeaWarning ??
-                              'This module is meant for Deep Sea / Deep Sea Land stages. '
-                                  'The lawn grid below reflects your current level; for standard lawns it will not match Atlantis gameplay.',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onErrorContainer,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              EditorWarningBanner(
+                margin: EdgeInsets.zero,
+                message: l10n?.spermWhaleModuleNotDeepSeaWarning ??
+                    'This module is meant for Deep Sea / Deep Sea Land stages. '
+                        'The lawn grid below reflects your current level; for standard lawns it will not match Atlantis gameplay.',
               ),
             if (!_isDeepSea) const SizedBox(height: 16),
             Text(

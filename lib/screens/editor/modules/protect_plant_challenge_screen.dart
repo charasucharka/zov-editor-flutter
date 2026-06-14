@@ -380,8 +380,8 @@ class _PlantListTile extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(right: 8),
                 child: Icon(
-                  Icons.warning_amber_rounded,
-                  color: Colors.amber.shade700,
+                  editorWarningIcon,
+                  color: editorWarningBannerForeground(theme.brightness),
                   size: 24,
                 ),
               ),
