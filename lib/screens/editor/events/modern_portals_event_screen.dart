@@ -332,7 +332,7 @@ class _ModernPortalsEventScreenState extends State<ModernPortalsEventScreen> {
                           final isSelected =
                               def.typeCode == _data.portalType;
                           return SizedBox(
-                            width: 160,
+                            width: 144,
                             child: Card(
                               color: isSelected
                                   ? theme.colorScheme.primaryContainer
