@@ -231,19 +231,24 @@ class _ModernPortalsEventScreenState extends State<ModernPortalsEventScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            l10n?.position ?? 'Position',
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            'R${_data.portalRow + 1} : C${_data.portalColumn + 1}',
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                l10n?.selectedPosition ?? 'Selected position',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                              Text(
+                                'R${_data.portalRow + 1} : C${_data.portalColumn + 1}',
+                                style: theme.textTheme.titleLarge?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: theme.colorScheme.primary,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -327,7 +332,7 @@ class _ModernPortalsEventScreenState extends State<ModernPortalsEventScreen> {
                           final isSelected =
                               def.typeCode == _data.portalType;
                           return SizedBox(
-                            width: 180,
+                            width: 160,
                             child: Card(
                               color: isSelected
                                   ? theme.colorScheme.primaryContainer

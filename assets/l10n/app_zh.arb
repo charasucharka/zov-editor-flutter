@@ -1048,7 +1048,7 @@
   "moduleHelpUnknownEvents": "本软件通过读取objclass解析模块类型。当前模块的objclass尚未注册到软件的模块列表中，所以没有匹配的模块编辑器，需要等开发者后续完善。",
   "eventHelpInvalidBody": "该事件在波次容器中被引用过，但是解析器在关卡里找不到这个事件的实体定义，Rtid语句块落空。",
   "eventHelpInvalidImpact": "若将该失效语句保留在关卡中，会导致关卡无法正常读取导致闪退。需要将该语句手动移除。",
-  "position": "初始潮水位置",
+  "position": "选中的位置",
   "editing": "编辑",
   "logic": "逻辑",
   "impact": "影响",

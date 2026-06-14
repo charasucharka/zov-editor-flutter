@@ -3180,7 +3180,7 @@ class AppLocalizationsZh extends AppLocalizations {
       '若将该失效语句保留在关卡中，会导致关卡无法正常读取导致闪退。需要将该语句手动移除。';
 
   @override
-  String get position => '初始潮水位置';
+  String get position => '选中的位置';
 
   @override
   String get editing => '编辑';

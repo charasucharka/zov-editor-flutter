@@ -7,6 +7,8 @@ import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/widgets/editor_components.dart';
 import 'package:c_editor/widgets/asset_image.dart'
     show AssetImageWidget, imageAltCandidates;
+import 'package:c_editor/theme/app_theme.dart'
+    show pvzLightOrangeDark, pvzLightOrangeLight;
 
 /// Mechanism Plank / Connected Minecart properties editor.
 ///
@@ -40,8 +42,14 @@ class _MechanismPlankPropertiesScreenState
   int get _gridRows => _gridDims.$1;
   int get _gridCols => _gridDims.$2;
 
-  static const _railsAssetPath = 'assets/images/others/rails.webp';
-  static const _cartsAssetPath = 'assets/images/others/railcarts.webp';
+  static const _railsAssetPath =
+      'assets/images/others/kongfu_minecart_tracks.webp';
+  static const _cartLeftAssetPath =
+      'assets/images/others/kongfu_minecart_left.webp';
+  static const _cartMiddleAssetPath =
+      'assets/images/others/kongfu_minecart_middle.webp';
+  static const _cartRightAssetPath =
+      'assets/images/others/kongfu_minecart_right.webp';
 
   Map<String, dynamic> get _rect =>
       Map<String, dynamic>.from(_data['MechanismGearsRect'] as Map? ?? {});
@@ -207,6 +215,14 @@ class _MechanismPlankPropertiesScreenState
     return _cartLocalRows.contains(localRow);
   }
 
+  String _cartAssetPathForColumn(int col) {
+    final localCol = col - _mX;
+    if (_mWidth <= 1) return _cartMiddleAssetPath;
+    if (localCol <= 0) return _cartLeftAssetPath;
+    if (localCol >= _mWidth - 1) return _cartRightAssetPath;
+    return _cartMiddleAssetPath;
+  }
+
   bool _hasOutOfAreaWarning() {
     if (_mX < 0 || _mY < 0) return true;
     if (_mX + _mWidth > _gridCols) return true;
@@ -336,9 +352,9 @@ class _MechanismPlankPropertiesScreenState
                                           child: Transform.scale(
                                             scale: 0.9,
                                             child: AssetImageWidget(
-                                              assetPath: _cartsAssetPath,
+                                              assetPath: _cartAssetPathForColumn(c),
                                               altCandidates: imageAltCandidates(
-                                                _cartsAssetPath,
+                                                _cartAssetPathForColumn(c),
                                               ),
                                               fit: BoxFit.contain,
                                             ),
@@ -415,7 +431,8 @@ class _MechanismPlankInfoBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = theme.colorScheme.primary;
+    final isDark = theme.brightness == Brightness.dark;
+    final color = isDark ? pvzLightOrangeDark : pvzLightOrangeLight;
 
     return Card(
       child: Padding(
