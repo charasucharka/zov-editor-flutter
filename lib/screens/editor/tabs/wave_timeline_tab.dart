@@ -9,6 +9,7 @@ import 'package:c_editor/data/rtid_parser.dart';
 import 'package:c_editor/data/wave_point_analysis.dart';
 import 'package:c_editor/data/armrack_type_catalog.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
+import 'package:c_editor/l10n/resource_names.dart';
 import 'package:c_editor/escape_override.dart';
 import 'package:c_editor/data/repository/zombie_repository.dart';
 import 'package:c_editor/data/repository/fish_type_repository.dart';
@@ -43,6 +44,26 @@ String _waveEmptyRowHintForPlatform(
       ? l10n.waveEmptyRowHintDesktop
       : l10n.waveEmptyRowHintMobile;
 }
+
+const _kUnknownIconPath = 'assets/images/others/unknown.webp';
+
+double _expectationDialogIconSize(BuildContext context) {
+  final isDesktop = isDesktopPlatform(context);
+  final compact = MediaQuery.sizeOf(context).width < 400;
+  if (isDesktop) return compact ? 44 : 48;
+  return compact ? 36 : 40;
+}
+
+Size _expectationDialogListSize(BuildContext context) {
+  final isDesktop = isDesktopPlatform(context);
+  final screenWidth = MediaQuery.sizeOf(context).width;
+  if (isDesktop) {
+    return Size(420, compactWidth(screenWidth) ? 300 : 360);
+  }
+  return Size((screenWidth - 96).clamp(280, 360), 280);
+}
+
+bool compactWidth(double screenWidth) => screenWidth < 500;
 
 /// Wave timeline tab with events. Ported from Z-Editor-master WaveTimelineTab.kt
 class WaveTimelineTab extends StatefulWidget {
@@ -2804,6 +2825,8 @@ class _WaveTimelineTabState extends State<WaveTimelineTab> {
       context: context,
       builder: (ctx) {
         final scrollController = ScrollController();
+        final iconSize = _expectationDialogIconSize(ctx);
+        final listSize = _expectationDialogListSize(ctx);
         return AlertDialog(
           title: Text(
             '${l10n?.waveLabel ?? "Wave"} $waveIndex ${l10n?.expectation ?? "Expectation"}',
@@ -2821,8 +2844,8 @@ class _WaveTimelineTabState extends State<WaveTimelineTab> {
                 )
               else
                 SizedBox(
-                  width: 360,
-                  height: 320,
+                  width: listSize.width,
+                  height: listSize.height,
                   child: Scrollbar(
                     controller: scrollController,
                     thumbVisibility: true,
@@ -2832,22 +2855,75 @@ class _WaveTimelineTabState extends State<WaveTimelineTab> {
                       itemCount: items.length,
                       itemBuilder: (_, i) {
                         final e = items[i];
+                        final typeName = e.key;
+                        final info = ZombieRepository().getZombieById(typeName);
+                        final nameKey =
+                            info?.name ?? ZombieRepository().getName(typeName);
+                        final displayName = ResourceNames.lookup(ctx, nameKey);
+                        final iconPath =
+                            info?.iconAssetPath ?? _kUnknownIconPath;
                         return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          padding: EdgeInsets.symmetric(
+                            vertical: isDesktopPlatform(ctx) ? 5 : 4,
+                          ),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Expanded(
-                                child: Text(
-                                  e.key,
-                                  overflow: TextOverflow.ellipsis,
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: ColoredBox(
+                                  color: Theme.of(ctx)
+                                      .colorScheme
+                                      .surfaceContainerHighest,
+                                  child: SizedBox(
+                                    width: iconSize,
+                                    height: iconSize,
+                                    child: AssetImageWidget(
+                                      assetPath: iconPath,
+                                      altCandidates:
+                                          imageAltCandidates(iconPath),
+                                      width: iconSize,
+                                      height: iconSize,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
                                 ),
                               ),
-                              Flexible(
-                                child: Text(
-                                  e.value.toStringAsFixed(2),
-                                  overflow: TextOverflow.ellipsis,
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      displayName.isNotEmpty
+                                          ? displayName
+                                          : typeName,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(ctx)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                    ),
+                                    Text(
+                                      typeName,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(ctx)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: Theme.of(ctx)
+                                                .colorScheme
+                                                .onSurfaceVariant,
+                                          ),
+                                    ),
+                                  ],
                                 ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                e.value.toStringAsFixed(2),
+                                style: Theme.of(ctx).textTheme.bodyMedium,
                               ),
                             ],
                           ),
