@@ -466,6 +466,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get templateIPlantExample => 'I, Plant level template';
 
   @override
+  String get templateOldStyleExample => 'Old-style level';
+
+  @override
   String get unsavedChanges => 'Unsaved changes';
 
   @override
@@ -1164,6 +1167,22 @@ class AppLocalizationsEn extends AppLocalizations {
       'Lawn mowers are ineffective when the Creative Courtyard module is enabled.';
 
   @override
+  String get conflictDesc_WaveGeneratorWaveManagerModule =>
+      'Wave Generator and Wave Manager module cannot coexist — they are two different wave systems.';
+
+  @override
+  String get conflictDesc_WaveGeneratorWaveManager =>
+      'Wave Generator embeds waves directly and cannot be used with a separate Wave Manager container.';
+
+  @override
+  String get conflictDesc_WaveGeneratorRenai =>
+      'Wave Generator is incompatible with the Renai module and will crash the level on load.';
+
+  @override
+  String get conflictDesc_WaveGeneratorWitch =>
+      'Wave Generator is incompatible with the Witch module and will crash the level on load.';
+
+  @override
   String get missingPlantModuleWarningTitle =>
       'Missing module for parallel universe plants';
 
@@ -1252,6 +1271,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get moduleDesc_WaveManagerModuleProperties =>
       'Manages overall wave event configuration for the level';
+
+  @override
+  String get moduleTitle_WaveGeneratorProperties => 'Wave Generator';
+
+  @override
+  String get moduleDesc_WaveGeneratorProperties =>
+      'Legacy embedded wave definition (campaign-style levels). Mutually exclusive with Wave Manager.';
 
   @override
   String get moduleTitle_CustomLevelModuleProperties =>
@@ -6306,4 +6332,173 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get portalTypeEliteKing => 'Elite King';
+
+  @override
+  String get waveGeneratorTabLabel => 'Waves';
+
+  @override
+  String get waveGeneratorModuleTitle => 'Wave Generator';
+
+  @override
+  String get waveGeneratorModuleHelpTitle => 'Wave Generator module';
+
+  @override
+  String get waveGeneratorModuleHelpOverview => 'Overview';
+
+  @override
+  String get waveGeneratorModuleHelpOverviewBody =>
+      'Legacy embedded wave system used in campaign-style levels such as Kongfu. Waves are stored inside this module — there are no separate wave events. Edit individual waves on the Waves tab.';
+
+  @override
+  String get waveGeneratorModuleHelpSpending => 'Spending points';
+
+  @override
+  String get waveGeneratorModuleHelpSpendingBody =>
+      'WaveSpendingPoints must be less than or equal to WaveSpendingPointIncrement. If WaveSpendingPoints is higher, the level crashes on load.';
+
+  @override
+  String get waveGeneratorModuleHelpPool => 'Zombie pool';
+
+  @override
+  String get waveGeneratorModuleHelpPoolBody =>
+      'AddToZombiePool extends the random-spawn zombie pool from the given wave onward. Only built-in zombie types (ZombieTypes RTIDs) are supported — custom zombies crash the game.';
+
+  @override
+  String get waveGeneratorModuleHelpIncompat => 'Incompatibilities';
+
+  @override
+  String get waveGeneratorModuleHelpIncompatBody =>
+      'Cannot coexist with Wave Manager modules, Renai module, or Witch module.';
+
+  @override
+  String get waveGeneratorModuleGlobalParams => 'Global parameters';
+
+  @override
+  String get waveGeneratorGlobalParams => 'Wave Generator Parameters';
+
+  @override
+  String get waveGeneratorFlagIntervalHint =>
+      'Final wave is always a flag wave.';
+
+  @override
+  String get flagWaveInterval => 'Flag wave interval (FlagWaveInterval)';
+
+  @override
+  String get waveGeneratorSpendingPoints =>
+      'Spending points (WaveSpendingPoints)';
+
+  @override
+  String get waveGeneratorSpendingPointIncrement =>
+      'Point increment (WaveSpendingPointIncrement)';
+
+  @override
+  String get waveGeneratorSpendingPointsWarning =>
+      'WaveSpendingPoints must be ≤ WaveSpendingPointIncrement or the level will crash on load.';
+
+  @override
+  String waveGeneratorWaveCountSummary(int count) {
+    return 'Waves: $count (edit on Waves tab)';
+  }
+
+  @override
+  String get waveGeneratorInitialPool =>
+      'Initial zombie pool (AddToZombiePool)';
+
+  @override
+  String get waveGeneratorEmptyPool => 'No zombies in the initial pool.';
+
+  @override
+  String get waveGeneratorCustomZombieBlocked =>
+      'Custom zombies are not supported in wave generator levels.';
+
+  @override
+  String get waveGeneratorTabMissingModule =>
+      'Add Wave Generator module to edit waves.';
+
+  @override
+  String waveGeneratorTabSummary(int interval, int points, int increment) {
+    return 'Flag interval: $interval, Spending: $points + $increment/wave';
+  }
+
+  @override
+  String get waveGeneratorNoWaves => 'No waves defined.';
+
+  @override
+  String get waveGeneratorEmptyWaveRow => 'No scripted zombies (tap to edit)';
+
+  @override
+  String get waveGeneratorRandomSpawnsEnabled => 'Random spawns enabled';
+
+  @override
+  String get waveGeneratorRandomZombiesLabel => 'Random zombies:';
+
+  @override
+  String get waveGeneratorWavePoolDisabled =>
+      'Random spawns are disabled — you cannot add zombies to the pool on this wave.';
+
+  @override
+  String get waveGeneratorDisableRandomSpawns =>
+      'Disable random spawns (DisableRandomSpawns)';
+
+  @override
+  String get waveGeneratorDisableRandomSpawnsHint =>
+      'When enabled, only scripted zombies spawn on this wave.';
+
+  @override
+  String get waveGeneratorWaitUntilAllDie =>
+      'Wait until all zombies die (WaitUntilAllZombiesDie)';
+
+  @override
+  String get waveGeneratorNoScriptedZombies =>
+      'No scripted zombies on this wave.';
+
+  @override
+  String get waveGeneratorSpawnPlantFood =>
+      'Plant food drops (SpawnPlantFoodCount)';
+
+  @override
+  String get waveGeneratorWavePointStart => 'Wave point start (WavePointStart)';
+
+  @override
+  String get waveGeneratorWavePointIncrement =>
+      'Wave point increment (WavePointIncrement)';
+
+  @override
+  String get waveGeneratorBlackHoleFieldHint =>
+      'Built-in black hole event on this wave. Leave empty to disable.';
+
+  @override
+  String waveGeneratorBlackHoleWaveHint(int cols) {
+    return 'Built-in black hole on this wave — plants dragged $cols column(s) (ColNumPlantIsDragged).';
+  }
+
+  @override
+  String get waveGeneratorWavePoolAdd =>
+      'Add to pool this wave (AddToZombiePool)';
+
+  @override
+  String get waveGeneratorRowHint =>
+      'Row values are 1-based strings in JSON (\"?\" = random).';
+
+  @override
+  String get waveGeneratorWaveScreenSubtitle => 'Wave generator wave';
+
+  @override
+  String get waveGeneratorWaveScreenHelpTitle => 'Wave editor';
+
+  @override
+  String get waveGeneratorWaveScreenHelpBody =>
+      'Edit scripted spawns and wave-specific options. Random spawns use the cumulative zombie pool and spending points.';
+
+  @override
+  String get waveGeneratorExpectationTapHint =>
+      'Tap to view random spawn expectation';
+
+  @override
+  String get waveGeneratorExpectationEmpty =>
+      'No eligible pool zombies for random spawns on this wave.';
+
+  @override
+  String get waveGeneratorExpectationPoolNote =>
+      'Expectations are based on the cumulative AddToZombiePool. Other zombies may still appear if points are high enough.';
 }

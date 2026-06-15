@@ -457,6 +457,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get templateIPlantExample => '我是植物示例';
 
   @override
+  String get templateOldStyleExample => '旧式关卡';
+
+  @override
   String get unsavedChanges => '有未保存的更改';
 
   @override
@@ -1127,6 +1130,20 @@ class AppLocalizationsZh extends AppLocalizations {
   String get conflictDesc_LawnMowerYard => '庭院模块中小推车无效。';
 
   @override
+  String get conflictDesc_WaveGeneratorWaveManagerModule =>
+      '波次生成器与波次管理器模块不能共存——它们是两套不同的波次系统。';
+
+  @override
+  String get conflictDesc_WaveGeneratorWaveManager =>
+      '波次生成器内嵌波次数据，不能与独立的波次管理器容器同时使用。';
+
+  @override
+  String get conflictDesc_WaveGeneratorRenai => '波次生成器与 Renai 模块不兼容，会导致关卡加载崩溃。';
+
+  @override
+  String get conflictDesc_WaveGeneratorWitch => '波次生成器与 Witch 模块不兼容，会导致关卡加载崩溃。';
+
+  @override
   String get missingPlantModuleWarningTitle => '缺少平行宇宙植物所需模块';
 
   @override
@@ -1212,6 +1229,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get moduleDesc_WaveManagerModuleProperties => '管理关卡的波次事件总配置';
+
+  @override
+  String get moduleTitle_WaveGeneratorProperties => '波次生成器';
+
+  @override
+  String get moduleDesc_WaveGeneratorProperties => '旧版内嵌波次定义（战役关卡）。与波次管理器互斥。';
 
   @override
   String get moduleTitle_CustomLevelModuleProperties => '庭院模块';
@@ -5985,4 +6008,156 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get portalTypeEliteKing => '精英国王';
+
+  @override
+  String get waveGeneratorTabLabel => '波次';
+
+  @override
+  String get waveGeneratorModuleTitle => '波次生成器';
+
+  @override
+  String get waveGeneratorModuleHelpTitle => '波次生成器模块';
+
+  @override
+  String get waveGeneratorModuleHelpOverview => '概述';
+
+  @override
+  String get waveGeneratorModuleHelpOverviewBody =>
+      '旧版内嵌波次系统（如功夫世界）。波次数据存储在本模块内，不使用独立波次事件。请在「波次」标签页编辑各波。';
+
+  @override
+  String get waveGeneratorModuleHelpSpending => '消耗点数';
+
+  @override
+  String get waveGeneratorModuleHelpSpendingBody =>
+      'WaveSpendingPoints 必须小于或等于 WaveSpendingPointIncrement，否则关卡加载时会崩溃。';
+
+  @override
+  String get waveGeneratorModuleHelpPool => '僵尸池';
+
+  @override
+  String get waveGeneratorModuleHelpPoolBody =>
+      'AddToZombiePool 从指定波次起扩展随机出怪池。仅支持内置僵尸类型——自定义僵尸会导致崩溃。';
+
+  @override
+  String get waveGeneratorModuleHelpIncompat => '不兼容模块';
+
+  @override
+  String get waveGeneratorModuleHelpIncompatBody =>
+      '不能与波次管理器、Renai 模块或 Witch 模块共存。';
+
+  @override
+  String get waveGeneratorModuleGlobalParams => '全局参数';
+
+  @override
+  String get waveGeneratorGlobalParams => '波次生成器参数';
+
+  @override
+  String get waveGeneratorFlagIntervalHint => '最后一波始终为旗帜波。';
+
+  @override
+  String get flagWaveInterval => '旗帜波间隔 (FlagWaveInterval)';
+
+  @override
+  String get waveGeneratorSpendingPoints => '消耗点数 (WaveSpendingPoints)';
+
+  @override
+  String get waveGeneratorSpendingPointIncrement =>
+      '点数增量 (WaveSpendingPointIncrement)';
+
+  @override
+  String get waveGeneratorSpendingPointsWarning =>
+      'WaveSpendingPoints 必须 ≤ WaveSpendingPointIncrement，否则关卡加载时会崩溃。';
+
+  @override
+  String waveGeneratorWaveCountSummary(int count) {
+    return '波次数：$count（在「波次」标签页编辑）';
+  }
+
+  @override
+  String get waveGeneratorInitialPool => '初始僵尸池 (AddToZombiePool)';
+
+  @override
+  String get waveGeneratorEmptyPool => '初始池中没有僵尸。';
+
+  @override
+  String get waveGeneratorCustomZombieBlocked => '波次生成器关卡不支持自定义僵尸。';
+
+  @override
+  String get waveGeneratorTabMissingModule => '请添加波次生成器模块以编辑波次。';
+
+  @override
+  String waveGeneratorTabSummary(int interval, int points, int increment) {
+    return '旗帜间隔：$interval，消耗：$points + $increment/波';
+  }
+
+  @override
+  String get waveGeneratorNoWaves => '未定义波次。';
+
+  @override
+  String get waveGeneratorEmptyWaveRow => '无脚本僵尸（点击编辑）';
+
+  @override
+  String get waveGeneratorRandomSpawnsEnabled => '已启用随机出怪';
+
+  @override
+  String get waveGeneratorRandomZombiesLabel => '随机僵尸：';
+
+  @override
+  String get waveGeneratorWavePoolDisabled => '已禁用随机出怪——无法在本波向僵尸池添加僵尸。';
+
+  @override
+  String get waveGeneratorDisableRandomSpawns => '禁用随机出怪 (DisableRandomSpawns)';
+
+  @override
+  String get waveGeneratorDisableRandomSpawnsHint => '启用后，该波仅生成脚本指定的僵尸。';
+
+  @override
+  String get waveGeneratorWaitUntilAllDie =>
+      '等待全部僵尸死亡 (WaitUntilAllZombiesDie)';
+
+  @override
+  String get waveGeneratorNoScriptedZombies => '该波没有脚本僵尸。';
+
+  @override
+  String get waveGeneratorSpawnPlantFood => '植物食物掉落 (SpawnPlantFoodCount)';
+
+  @override
+  String get waveGeneratorWavePointStart => '波次点数起始 (WavePointStart)';
+
+  @override
+  String get waveGeneratorWavePointIncrement => '波次点数增量 (WavePointIncrement)';
+
+  @override
+  String get waveGeneratorBlackHoleFieldHint => '该波内置黑洞事件。留空则禁用。';
+
+  @override
+  String waveGeneratorBlackHoleWaveHint(int cols) {
+    return '内置黑洞——植物被拖拽 $cols 列 (ColNumPlantIsDragged)。';
+  }
+
+  @override
+  String get waveGeneratorWavePoolAdd => '本波扩展僵尸池 (AddToZombiePool)';
+
+  @override
+  String get waveGeneratorRowHint => 'JSON 中行号为从 1 开始的字符串（\"?\" = 随机）。';
+
+  @override
+  String get waveGeneratorWaveScreenSubtitle => '波次生成器波次';
+
+  @override
+  String get waveGeneratorWaveScreenHelpTitle => '波次编辑器';
+
+  @override
+  String get waveGeneratorWaveScreenHelpBody => '编辑脚本僵尸与各波参数。随机出怪使用累积僵尸池和消耗点数。';
+
+  @override
+  String get waveGeneratorExpectationTapHint => '点击查看随机出怪期望';
+
+  @override
+  String get waveGeneratorExpectationEmpty => '该波没有可用于随机出怪的池内僵尸。';
+
+  @override
+  String get waveGeneratorExpectationPoolNote =>
+      '期望基于累积 AddToZombiePool。点数足够高时仍可能出现其他僵尸。';
 }

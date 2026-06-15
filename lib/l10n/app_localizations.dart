@@ -946,6 +946,12 @@ abstract class AppLocalizations {
   /// **'I, Plant level template'**
   String get templateIPlantExample;
 
+  /// No description provided for @templateOldStyleExample.
+  ///
+  /// In en, this message translates to:
+  /// **'Old-style level'**
+  String get templateOldStyleExample;
+
   /// No description provided for @unsavedChanges.
   ///
   /// In en, this message translates to:
@@ -2224,6 +2230,30 @@ abstract class AppLocalizations {
   /// **'Lawn mowers are ineffective when the Creative Courtyard module is enabled.'**
   String get conflictDesc_LawnMowerYard;
 
+  /// No description provided for @conflictDesc_WaveGeneratorWaveManagerModule.
+  ///
+  /// In en, this message translates to:
+  /// **'Wave Generator and Wave Manager module cannot coexist — they are two different wave systems.'**
+  String get conflictDesc_WaveGeneratorWaveManagerModule;
+
+  /// No description provided for @conflictDesc_WaveGeneratorWaveManager.
+  ///
+  /// In en, this message translates to:
+  /// **'Wave Generator embeds waves directly and cannot be used with a separate Wave Manager container.'**
+  String get conflictDesc_WaveGeneratorWaveManager;
+
+  /// No description provided for @conflictDesc_WaveGeneratorRenai.
+  ///
+  /// In en, this message translates to:
+  /// **'Wave Generator is incompatible with the Renai module and will crash the level on load.'**
+  String get conflictDesc_WaveGeneratorRenai;
+
+  /// No description provided for @conflictDesc_WaveGeneratorWitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Wave Generator is incompatible with the Witch module and will crash the level on load.'**
+  String get conflictDesc_WaveGeneratorWitch;
+
   /// No description provided for @missingPlantModuleWarningTitle.
   ///
   /// In en, this message translates to:
@@ -2385,6 +2415,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Manages overall wave event configuration for the level'**
   String get moduleDesc_WaveManagerModuleProperties;
+
+  /// No description provided for @moduleTitle_WaveGeneratorProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'Wave Generator'**
+  String get moduleTitle_WaveGeneratorProperties;
+
+  /// No description provided for @moduleDesc_WaveGeneratorProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'Legacy embedded wave definition (campaign-style levels). Mutually exclusive with Wave Manager.'**
+  String get moduleDesc_WaveGeneratorProperties;
 
   /// No description provided for @moduleTitle_CustomLevelModuleProperties.
   ///
@@ -11313,6 +11355,282 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Elite King'**
   String get portalTypeEliteKing;
+
+  /// No description provided for @waveGeneratorTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Waves'**
+  String get waveGeneratorTabLabel;
+
+  /// No description provided for @waveGeneratorModuleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wave Generator'**
+  String get waveGeneratorModuleTitle;
+
+  /// No description provided for @waveGeneratorModuleHelpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wave Generator module'**
+  String get waveGeneratorModuleHelpTitle;
+
+  /// No description provided for @waveGeneratorModuleHelpOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get waveGeneratorModuleHelpOverview;
+
+  /// No description provided for @waveGeneratorModuleHelpOverviewBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Legacy embedded wave system used in campaign-style levels such as Kongfu. Waves are stored inside this module — there are no separate wave events. Edit individual waves on the Waves tab.'**
+  String get waveGeneratorModuleHelpOverviewBody;
+
+  /// No description provided for @waveGeneratorModuleHelpSpending.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending points'**
+  String get waveGeneratorModuleHelpSpending;
+
+  /// No description provided for @waveGeneratorModuleHelpSpendingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'WaveSpendingPoints must be less than or equal to WaveSpendingPointIncrement. If WaveSpendingPoints is higher, the level crashes on load.'**
+  String get waveGeneratorModuleHelpSpendingBody;
+
+  /// No description provided for @waveGeneratorModuleHelpPool.
+  ///
+  /// In en, this message translates to:
+  /// **'Zombie pool'**
+  String get waveGeneratorModuleHelpPool;
+
+  /// No description provided for @waveGeneratorModuleHelpPoolBody.
+  ///
+  /// In en, this message translates to:
+  /// **'AddToZombiePool extends the random-spawn zombie pool from the given wave onward. Only built-in zombie types (ZombieTypes RTIDs) are supported — custom zombies crash the game.'**
+  String get waveGeneratorModuleHelpPoolBody;
+
+  /// No description provided for @waveGeneratorModuleHelpIncompat.
+  ///
+  /// In en, this message translates to:
+  /// **'Incompatibilities'**
+  String get waveGeneratorModuleHelpIncompat;
+
+  /// No description provided for @waveGeneratorModuleHelpIncompatBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot coexist with Wave Manager modules, Renai module, or Witch module.'**
+  String get waveGeneratorModuleHelpIncompatBody;
+
+  /// No description provided for @waveGeneratorModuleGlobalParams.
+  ///
+  /// In en, this message translates to:
+  /// **'Global parameters'**
+  String get waveGeneratorModuleGlobalParams;
+
+  /// No description provided for @waveGeneratorGlobalParams.
+  ///
+  /// In en, this message translates to:
+  /// **'Wave Generator Parameters'**
+  String get waveGeneratorGlobalParams;
+
+  /// No description provided for @waveGeneratorFlagIntervalHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Final wave is always a flag wave.'**
+  String get waveGeneratorFlagIntervalHint;
+
+  /// No description provided for @flagWaveInterval.
+  ///
+  /// In en, this message translates to:
+  /// **'Flag wave interval (FlagWaveInterval)'**
+  String get flagWaveInterval;
+
+  /// No description provided for @waveGeneratorSpendingPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending points (WaveSpendingPoints)'**
+  String get waveGeneratorSpendingPoints;
+
+  /// No description provided for @waveGeneratorSpendingPointIncrement.
+  ///
+  /// In en, this message translates to:
+  /// **'Point increment (WaveSpendingPointIncrement)'**
+  String get waveGeneratorSpendingPointIncrement;
+
+  /// No description provided for @waveGeneratorSpendingPointsWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'WaveSpendingPoints must be ≤ WaveSpendingPointIncrement or the level will crash on load.'**
+  String get waveGeneratorSpendingPointsWarning;
+
+  /// No description provided for @waveGeneratorWaveCountSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Waves: {count} (edit on Waves tab)'**
+  String waveGeneratorWaveCountSummary(int count);
+
+  /// No description provided for @waveGeneratorInitialPool.
+  ///
+  /// In en, this message translates to:
+  /// **'Initial zombie pool (AddToZombiePool)'**
+  String get waveGeneratorInitialPool;
+
+  /// No description provided for @waveGeneratorEmptyPool.
+  ///
+  /// In en, this message translates to:
+  /// **'No zombies in the initial pool.'**
+  String get waveGeneratorEmptyPool;
+
+  /// No description provided for @waveGeneratorCustomZombieBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom zombies are not supported in wave generator levels.'**
+  String get waveGeneratorCustomZombieBlocked;
+
+  /// No description provided for @waveGeneratorTabMissingModule.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Wave Generator module to edit waves.'**
+  String get waveGeneratorTabMissingModule;
+
+  /// No description provided for @waveGeneratorTabSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Flag interval: {interval}, Spending: {points} + {increment}/wave'**
+  String waveGeneratorTabSummary(int interval, int points, int increment);
+
+  /// No description provided for @waveGeneratorNoWaves.
+  ///
+  /// In en, this message translates to:
+  /// **'No waves defined.'**
+  String get waveGeneratorNoWaves;
+
+  /// No description provided for @waveGeneratorEmptyWaveRow.
+  ///
+  /// In en, this message translates to:
+  /// **'No scripted zombies (tap to edit)'**
+  String get waveGeneratorEmptyWaveRow;
+
+  /// No description provided for @waveGeneratorRandomSpawnsEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Random spawns enabled'**
+  String get waveGeneratorRandomSpawnsEnabled;
+
+  /// No description provided for @waveGeneratorRandomZombiesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Random zombies:'**
+  String get waveGeneratorRandomZombiesLabel;
+
+  /// No description provided for @waveGeneratorWavePoolDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Random spawns are disabled — you cannot add zombies to the pool on this wave.'**
+  String get waveGeneratorWavePoolDisabled;
+
+  /// No description provided for @waveGeneratorDisableRandomSpawns.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable random spawns (DisableRandomSpawns)'**
+  String get waveGeneratorDisableRandomSpawns;
+
+  /// No description provided for @waveGeneratorDisableRandomSpawnsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When enabled, only scripted zombies spawn on this wave.'**
+  String get waveGeneratorDisableRandomSpawnsHint;
+
+  /// No description provided for @waveGeneratorWaitUntilAllDie.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait until all zombies die (WaitUntilAllZombiesDie)'**
+  String get waveGeneratorWaitUntilAllDie;
+
+  /// No description provided for @waveGeneratorNoScriptedZombies.
+  ///
+  /// In en, this message translates to:
+  /// **'No scripted zombies on this wave.'**
+  String get waveGeneratorNoScriptedZombies;
+
+  /// No description provided for @waveGeneratorSpawnPlantFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Plant food drops (SpawnPlantFoodCount)'**
+  String get waveGeneratorSpawnPlantFood;
+
+  /// No description provided for @waveGeneratorWavePointStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Wave point start (WavePointStart)'**
+  String get waveGeneratorWavePointStart;
+
+  /// No description provided for @waveGeneratorWavePointIncrement.
+  ///
+  /// In en, this message translates to:
+  /// **'Wave point increment (WavePointIncrement)'**
+  String get waveGeneratorWavePointIncrement;
+
+  /// No description provided for @waveGeneratorBlackHoleFieldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Built-in black hole event on this wave. Leave empty to disable.'**
+  String get waveGeneratorBlackHoleFieldHint;
+
+  /// No description provided for @waveGeneratorBlackHoleWaveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Built-in black hole on this wave — plants dragged {cols} column(s) (ColNumPlantIsDragged).'**
+  String waveGeneratorBlackHoleWaveHint(int cols);
+
+  /// No description provided for @waveGeneratorWavePoolAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to pool this wave (AddToZombiePool)'**
+  String get waveGeneratorWavePoolAdd;
+
+  /// No description provided for @waveGeneratorRowHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Row values are 1-based strings in JSON (\"?\" = random).'**
+  String get waveGeneratorRowHint;
+
+  /// No description provided for @waveGeneratorWaveScreenSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wave generator wave'**
+  String get waveGeneratorWaveScreenSubtitle;
+
+  /// No description provided for @waveGeneratorWaveScreenHelpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wave editor'**
+  String get waveGeneratorWaveScreenHelpTitle;
+
+  /// No description provided for @waveGeneratorWaveScreenHelpBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit scripted spawns and wave-specific options. Random spawns use the cumulative zombie pool and spending points.'**
+  String get waveGeneratorWaveScreenHelpBody;
+
+  /// No description provided for @waveGeneratorExpectationTapHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to view random spawn expectation'**
+  String get waveGeneratorExpectationTapHint;
+
+  /// No description provided for @waveGeneratorExpectationEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No eligible pool zombies for random spawns on this wave.'**
+  String get waveGeneratorExpectationEmpty;
+
+  /// No description provided for @waveGeneratorExpectationPoolNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Expectations are based on the cumulative AddToZombiePool. Other zombies may still appear if points are high enough.'**
+  String get waveGeneratorExpectationPoolNote;
 }
 
 class _AppLocalizationsDelegate
