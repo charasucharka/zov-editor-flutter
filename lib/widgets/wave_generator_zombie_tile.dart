@@ -485,3 +485,91 @@ class _DeleteButton extends StatelessWidget {
     );
   }
 }
+
+/// Compact zombie icon for wave list previews (icon + optional badges, tooltip).
+class WaveGeneratorZombieIconChip extends StatelessWidget {
+  const WaveGeneratorZombieIconChip({
+    super.key,
+    required this.localizedName,
+    required this.codename,
+    required this.iconPath,
+    this.rowLabel,
+    this.sourceBadge,
+  });
+
+  final String localizedName;
+  final String codename;
+  final String? iconPath;
+  final String? rowLabel;
+  final String? sourceBadge;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDesktop = isDesktopPlatform(context);
+    final iconSize = isDesktop ? 36.0 : 32.0;
+
+    Color? badgeColor;
+    Color? badgeForeground;
+    if (sourceBadge == 'G') {
+      badgeColor = waveGeneratorGlobalPoolBadgeColor(theme);
+      badgeForeground = waveGeneratorGlobalPoolBadgeForeground(theme);
+    } else if (sourceBadge == 'W') {
+      badgeColor = waveGeneratorWavePoolBadgeColor(theme);
+      badgeForeground = waveGeneratorWavePoolBadgeForeground(theme);
+    } else if (rowLabel != null) {
+      badgeColor = rowLabel == '?'
+          ? theme.colorScheme.secondaryContainer
+          : theme.colorScheme.primary;
+      badgeForeground = rowLabel == '?'
+          ? theme.colorScheme.onSecondaryContainer
+          : theme.colorScheme.onPrimary;
+    }
+
+    final tooltip = rowLabel != null && rowLabel!.isNotEmpty
+        ? '$localizedName\n$codename · R$rowLabel'
+        : '$localizedName\n$codename';
+
+    return Tooltip(
+      message: tooltip,
+      waitDuration: const Duration(milliseconds: 400),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: iconPath != null && iconPath!.isNotEmpty
+                ? AssetImageWidget(
+                    assetPath: iconPath!,
+                    altCandidates: imageAltCandidates(iconPath!),
+                    width: iconSize,
+                    height: iconSize,
+                    fit: BoxFit.cover,
+                  )
+                : Container(
+                    width: iconSize,
+                    height: iconSize,
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    child: Icon(
+                      Icons.person_outline,
+                      size: iconSize * 0.5,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+          ),
+          if ((sourceBadge != null && sourceBadge!.isNotEmpty) ||
+              (rowLabel != null && rowLabel!.isNotEmpty))
+            Positioned(
+              top: -4,
+              right: -4,
+              child: _BadgeLabel(
+                label: sourceBadge ?? rowLabel!,
+                background: badgeColor ?? theme.colorScheme.primary,
+                foreground: badgeForeground ?? theme.colorScheme.onPrimary,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}

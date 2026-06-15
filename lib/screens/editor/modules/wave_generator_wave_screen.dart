@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:c_editor/data/level_parser.dart';
 import 'package:c_editor/data/pvz_models.dart';
-import 'package:c_editor/data/repository/zombie_properties_repository.dart';
 import 'package:c_editor/data/repository/zombie_repository.dart';
 import 'package:c_editor/data/rtid_parser.dart';
 import 'package:c_editor/data/wave_generator_level_utils.dart';
 import 'package:c_editor/data/wave_generator_point_analysis.dart';
+import 'package:c_editor/data/zombie_display_utils.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
-import 'package:c_editor/l10n/resource_names.dart';
 import 'package:c_editor/widgets/asset_image.dart'
     show AssetImageWidget, imageAltCandidates;
 import 'package:c_editor/widgets/editor_components.dart';
@@ -156,18 +155,19 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
   }
 
   String _zombieDisplayName(String rtid) {
-    final alias = RtidParser.parse(rtid)?.alias ?? rtid;
-    return ResourceNames.lookup(context, alias);
+    return ZombieDisplayUtils.localizedName(
+      context,
+      typeOrRtid: rtid,
+      levelFile: widget.levelFile,
+    );
   }
 
   String _zombieCodename(String rtid) {
-    return RtidParser.parse(rtid)?.alias ?? rtid;
+    return ZombieDisplayUtils.codename(rtid);
   }
 
   String? _zombieIcon(String rtid) {
-    final alias = RtidParser.parse(rtid)?.alias ?? rtid;
-    final typeName = ZombiePropertiesRepository.getTypeNameByAlias(alias);
-    return ZombieRepository().getZombieById(typeName)?.iconAssetPath;
+    return ZombieDisplayUtils.iconPath(rtid, levelFile: widget.levelFile);
   }
 
   int? _rowValue(String? row) {
