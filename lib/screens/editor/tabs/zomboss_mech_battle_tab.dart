@@ -423,10 +423,11 @@ class _ZombossMechBattleTabState extends State<ZombossMechBattleTab> {
               baseId: currentBase.id,
               icon: currentBase.icon,
               compact: true,
-              trailing: IconButton(
-                icon: const Icon(Icons.edit_outlined),
-                tooltip: l10n?.zombossMechChangeBase ?? 'Change base ZombossMech',
-                onPressed: _openBaseSelection,
+              hideBorder: true,
+              onTap: _openBaseSelection,
+              trailing: Icon(
+                Icons.chevron_right,
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ),

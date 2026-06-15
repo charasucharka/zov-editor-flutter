@@ -41,6 +41,7 @@ class ZombossMechBaseCard extends StatelessWidget {
     required this.baseId,
     this.icon,
     this.compact = false,
+    this.hideBorder = false,
     this.selected = false,
     this.trailing,
     this.onTap,
@@ -50,6 +51,8 @@ class ZombossMechBaseCard extends StatelessWidget {
   final String? icon;
   /// Tighter padding for the battle-tab summary row.
   final bool compact;
+  /// Hides the outline (e.g. summary row on battle tabs).
+  final bool hideBorder;
   final bool selected;
   final Widget? trailing;
   final VoidCallback? onTap;
@@ -79,9 +82,11 @@ class ZombossMechBaseCard extends StatelessWidget {
         : theme.colorScheme.outlineVariant.withValues(alpha: 0.6);
 
     return Material(
-      color: selected
-          ? theme.colorScheme.primaryContainer.withValues(alpha: 0.35)
-          : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
+      color: hideBorder
+          ? Colors.transparent
+          : selected
+              ? theme.colorScheme.primaryContainer.withValues(alpha: 0.35)
+              : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: onTap,
@@ -98,10 +103,16 @@ class ZombossMechBaseCard extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: hPad, vertical: vPad),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: borderColor,
-                  width: selected ? 2 : 1,
-                ),
+                color: hideBorder
+                    ? theme.colorScheme.surfaceContainerHighest
+                        .withValues(alpha: 0.45)
+                    : null,
+                border: hideBorder
+                    ? null
+                    : Border.all(
+                        color: borderColor,
+                        width: selected ? 2 : 1,
+                      ),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,

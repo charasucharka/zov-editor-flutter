@@ -212,10 +212,11 @@ class _ZombossBattleTabState extends State<ZombossBattleTab> {
               baseId: currentBase.id,
               icon: currentBase.icon,
               compact: true,
-              trailing: IconButton(
-                icon: const Icon(Icons.edit_outlined),
-                tooltip: l10n?.zombossBattleChangeBase ?? 'Change base Zomboss',
-                onPressed: _openBaseSelection,
+              hideBorder: true,
+              onTap: _openBaseSelection,
+              trailing: Icon(
+                Icons.chevron_right,
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ),
@@ -223,7 +224,7 @@ class _ZombossBattleTabState extends State<ZombossBattleTab> {
         Tooltip(
           message: l10n?.zombossBattleVariationHint ?? '',
           child: DropdownButtonFormField<String>(
-            value: variations.contains(_data.zombossTypeName)
+            initialValue: variations.contains(_data.zombossTypeName)
                 ? _data.zombossTypeName
                 : (variations.isNotEmpty ? variations.first : null),
             decoration: editorInputDecoration(
