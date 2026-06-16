@@ -2009,16 +2009,6 @@
     "icon": "zombie_modern_newspaper.webp"
   },
   {
-    "id": "modern_newspaper_armor2",
-    "name": "zombie_modern_newspaper_armor2",
-    "tags": [
-      "Modern_Pvz1",
-      "Evildave",
-      "Basic"
-    ],
-    "icon": "zombie_modern_newspaper_armor2.webp"
-  },
-  {
     "id": "newspaper_veteran",
     "name": "zombie_newspaper_veteran",
     "tags": [
