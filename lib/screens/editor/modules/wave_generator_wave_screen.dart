@@ -365,6 +365,11 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
                   body: l10n?.waveGeneratorExpectationPoolNote ??
                       'Pool expectation shows likely random spawns from AddToZombiePool. Other zombies may still appear when points are high enough.',
                 ),
+                HelpSectionData(
+                  title: l10n?.waveGeneratorModuleHelpRow ?? 'Row',
+                  body: l10n?.waveGeneratorModuleHelpRowBody ??
+                      'Row values are 1-based strings in JSON ("?" = random).',
+                ),
               ],
             ),
           ),
@@ -752,155 +757,144 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
-      isScrollControlled: true,
       builder: (ctx) {
         var rowValue = _rowValue(zombie.row);
         return StatefulBuilder(
           builder: (ctx, setModalState) {
             return Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Row(
-                      children: [
-                        if (iconPath != null)
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: AssetImageWidget(
-                              assetPath: iconPath,
-                              altCandidates: imageAltCandidates(iconPath),
-                              width: 36,
-                              height: 36,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            displayName,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(fontWeight: FontWeight.bold),
-                            overflow: TextOverflow.ellipsis,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      if (iconPath != null)
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: AssetImageWidget(
+                            assetPath: iconPath,
+                            altCandidates: imageAltCandidates(iconPath),
+                            width: 36,
+                            height: 36,
+                            fit: BoxFit.cover,
                           ),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      l10n?.row ?? 'Row',
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          displayName,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<int>(
+                          initialValue: rowValue,
+                          decoration: InputDecoration(
+                            labelText: l10n?.row ?? 'Row',
+                            border: const OutlineInputBorder(),
                           ),
-                    ),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        FilterChip(
-                          label: Text(l10n?.random ?? 'Random'),
-                          selected: rowValue == 0,
-                          onSelected: (_) {
-                            setModalState(() => rowValue = 0);
-                            _setZombieRow(index, 0);
+                          items: [
+                            DropdownMenuItem(
+                              value: 0,
+                              child: Text(l10n?.random ?? 'Random'),
+                            ),
+                            ...List.generate(_rowCount, (i) => i + 1).map(
+                              (v) => DropdownMenuItem(
+                                value: v,
+                                child: Text(l10n?.rowN(v) ?? 'Row $v'),
+                              ),
+                            ),
+                          ],
+                          onChanged: (v) {
+                            if (v == null) return;
+                            setModalState(() => rowValue = v);
+                            _setZombieRow(index, v);
                           },
                         ),
-                        ...List.generate(_rowCount, (i) => i + 1).map(
-                          (r) => FilterChip(
-                            label: Text(l10n?.rowN(r) ?? '$r'),
-                            selected: rowValue == r,
-                            onSelected: (_) {
-                              setModalState(() => rowValue = r);
-                              _setZombieRow(index, r);
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4, bottom: 12),
-                      child: Text(
-                        l10n?.waveGeneratorRowHint ?? '',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                            ),
                       ),
-                    ),
-                    OutlinedButton.icon(
-                      onPressed: () {
-                        Navigator.pop(ctx);
-                        widget.onRequestZombieSelection((id) {
-                          final rtid = RtidParser.build(
-                            ZombieRepository().buildZombieAliases(id),
-                            'ZombieTypes',
-                          );
-                          if (RtidParser.parse(rtid)?.source == 'CurrentLevel') {
-                            return;
-                          }
-                          _updateZombie(
-                            index,
-                            WaveGeneratorZombieEntryData(
-                              type: rtid,
-                              row: zombie.row,
-                            ),
-                          );
-                        });
-                      },
-                      icon: const Icon(Icons.swap_horiz),
-                      label: Text(l10n?.change ?? 'Change'),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: () {
-                              final rowStr = rowValue == 0 ? '?' : '$rowValue';
-                              final copy = WaveGeneratorZombieEntryData(
-                                type: zombie.type,
-                                row: rowStr,
-                              );
-                              _wave = _copyWave(
-                                zombies: [
-                                  ..._wave.zombies,
-                                  copy,
-                                ],
-                              );
-                              _sync();
-                              Navigator.pop(ctx);
-                            },
-                            icon: const Icon(Icons.copy),
-                            label: Text(l10n?.copy ?? 'Copy'),
-                          ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            Navigator.pop(ctx);
+                            Future.microtask(() {
+                              widget.onRequestZombieSelection((id) {
+                                final rtid = RtidParser.build(
+                                  ZombieRepository().buildZombieAliases(id),
+                                  'ZombieTypes',
+                                );
+                                if (RtidParser.parse(rtid)?.source ==
+                                    'CurrentLevel') {
+                                  return;
+                                }
+                                _updateZombie(
+                                  index,
+                                  WaveGeneratorZombieEntryData(
+                                    type: rtid,
+                                    row: zombie.row,
+                                  ),
+                                );
+                              });
+                            });
+                          },
+                          icon: const Icon(Icons.swap_horiz),
+                          label: Text(l10n?.change ?? 'Change'),
                         ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: FilledButton.icon(
-                            style: FilledButton.styleFrom(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.error,
-                              foregroundColor:
-                                  Theme.of(context).colorScheme.onError,
-                            ),
-                            onPressed: () {
-                              Navigator.pop(ctx);
-                              _removeZombie(index);
-                            },
-                            icon: const Icon(Icons.delete_outline),
-                            label: Text(l10n?.delete ?? 'Delete'),
-                          ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            final rowStr = rowValue == 0 ? '?' : '$rowValue';
+                            final copy = WaveGeneratorZombieEntryData(
+                              type: zombie.type,
+                              row: rowStr,
+                            );
+                            _wave = _copyWave(
+                              zombies: [
+                                ..._wave.zombies,
+                                copy,
+                              ],
+                            );
+                            _sync();
+                            Navigator.pop(ctx);
+                          },
+                          icon: const Icon(Icons.copy),
+                          label: Text(l10n?.copy ?? 'Copy'),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: FilledButton.icon(
+                          style: FilledButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.error,
+                          ),
+                          onPressed: () {
+                            Navigator.pop(ctx);
+                            _removeZombie(index);
+                          },
+                          icon: const Icon(Icons.delete),
+                          label: Text(l10n?.delete ?? 'Delete'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             );
           },
