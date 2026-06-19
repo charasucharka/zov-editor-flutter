@@ -1264,7 +1264,7 @@
   },
   {
     "id": "plantwars_iceage_weaselhoarder_elite",
-    "name": "zombie_iceage_weaselhoarder_elite",
+    "name": "zombie_plantwars_iceage_weaselhoarder_elite",
     "tags": [
       "Iceage_Lostcity",
       "Elite",
@@ -3911,7 +3911,7 @@
       "Elite",
       "Imp"
     ],
-    "icon": "zombie_plantwars_bumpercar_elite.webp"
+    "icon": "zombie_bumpercar_elite.webp"
   },
   {
     "id": "bubble_machine_imp",
