@@ -5943,15 +5943,6 @@
 					"Egypt_Gravestone",
 					"Game_Tombstones_Dynamic",
 					"DelayLoad_Background_Dark",
-					"Tombstone_Dark_Effects",
-					"Tombstone_Dark_Sun",
-					"Tombstone_Dark_Special",
-					"ZombieDarkBasicGroup"
-				],
-				"ResourceGroupNames": [
-					"Egypt_Gravestone",
-					"Game_Tombstones_Dynamic",
-					"DelayLoad_Background_Dark",
 					"AudioKongfu",
 					"Music_Boss_Kongfu",
 					"KONGFU_ARMRACK",
@@ -15870,7 +15861,6 @@
 				"DirtSpawnEffectName": "POPANIM_EFFECTS_TOMB_DIRT",
 				"MusicSuffix": "DarkAges",
 				"AmbientAudioSuffix": "Amb_Tutorial_Garden_BG_LP",
-				"DirtSpawnEffectName": "POPANIM_EFFECTS_DIRT_SPAWN_GRASS",
 				"DrawMultiplierOverlay": true,
 				"DrawMultiplierLabels": false,
 				"DisabledStreetCells": [
