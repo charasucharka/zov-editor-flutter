@@ -453,11 +453,6 @@ class _ShellItemCard extends StatelessWidget {
                 typeName: item.type,
                 size: 64,
                 fit: BoxFit.contain,
-                iconScaleFactor:
-                    GridItemRepository.isRenaiStatueNonHalf(item.type)
-                        ? 3.0
-                        : 1.5,
-                badgeScaleFactor: 1.25,
               ),
             ),
             Padding(
