@@ -218,6 +218,13 @@
   "editCustomZombieProperties": "编辑自定义属性数值",
   "makeZombieAsCustom": "注入为自定义僵尸",
   "customLabel": "自定义",
+  "moduleTitle_WaveManagerProperties": "关联波次参数 (WaveManagerProps)",
+  "waveManagerPropsCurrent": "当前值：{value}",
+  "@waveManagerPropsCurrent": {
+   "placeholders": {
+     "value": { "type": "String" }
+   }
+  },
   "waveManagerGlobalParams": "波次管理器全局参数",
   "waveManagerGlobalSummary": "旗帜间隔: {interval}, 刷新血线: {minPercent}% - {maxPercent}%",
   "@waveManagerGlobalSummary": {
@@ -1487,7 +1494,7 @@
   "dropConfigPlantFood": "掉落物配置（能量豆）",
   "zombiesCarryingPlants": "携带植物卡片的僵尸数量",
   "zombiesCarryingPlantFood": "携带能量豆的僵尸数量",
-  "description": "关卡描述",
+  "description": "描述",
   "descriptiveName": "提示名称 (DescriptiveName)",
   "count": "数量 (Count)",
   "targetDistance": "花坛距离 (TargetDistance)，数值代表从左边线起的列数，数值越大离房屋越远，可输入小数",
@@ -2079,6 +2086,8 @@
       "label": { "type": "String" }
     }
   },
+  "waveGeneratorInitialPoolWarningTitle": "继续添加初始僵尸池？",
+  "waveGeneratorInitialPoolWarningContent": "在这里添加的僵尸不会被列入编辑器随机出怪期望预览，也不会在游戏中生效。是否继续添加？",
   "mechanismPlankSettings": "连体矿车设置",
   "mechanismPlankStartColumn": "起始列 (mX)",
   "mechanismPlankTrackLength": "轨道宽度 (mWidth)",

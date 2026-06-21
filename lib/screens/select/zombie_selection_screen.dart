@@ -5,6 +5,7 @@ import 'package:c_editor/theme/app_theme.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
 import 'package:c_editor/screens/select/kongfu_rocket_flick_prompt.dart';
+import 'package:c_editor/util/selection_search.dart';
 import 'package:c_editor/widgets/asset_image.dart'
     show AssetImageWidget, imageAltCandidates;
 import 'package:c_editor/widgets/editor_components.dart'
@@ -105,16 +106,43 @@ class _ZombieSelectionScreenState extends State<ZombieSelectionScreen> {
     setState(() {});
   }
 
+  List<ZombieInfo> _categoryFilteredZombies(ZombieRepository repo) {
+    if (!repo.isLoaded) return [];
+    if (_selectedCategory == ZombieCategory.collection) {
+      return repo.allZombies
+          .where((z) => repo.favoriteIds.contains(z.id))
+          .toList();
+    }
+    if (_selectedTag != ZombieTag.all) {
+      return repo.allZombies
+          .where((z) => z.tags.contains(_selectedTag))
+          .toList();
+    }
+    return repo.allZombies;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final repo = ZombieRepository();
-    final allZombies = repo.search(
+    final repositoryZombies = repo.search(
       _searchQuery,
       _selectedCategory == ZombieCategory.collection ? null : _selectedTag,
       _selectedCategory,
     );
+    final allZombies = _searchQuery.trim().isEmpty
+        ? repositoryZombies
+        : mergeUniqueSelectionResults(
+            repositoryZombies,
+            _categoryFilteredZombies(repo).where(
+              (zombie) => matchesSelectionSearch(
+                _searchQuery,
+                [ResourceNames.lookup(context, zombie.name)],
+              ),
+            ),
+            (zombie) => zombie.id,
+          );
     final excludeSet = widget.excludeIds.toSet();
     final zombies = excludeSet.isEmpty
         ? allZombies

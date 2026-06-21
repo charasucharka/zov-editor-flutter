@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:c_editor/data/registry/module_registry.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
+import 'package:c_editor/util/selection_search.dart';
 import 'package:c_editor/widgets/editor_components.dart';
 
 /// Module selection. Ported from Z-Editor-master ModuleSelectionScreen.kt
@@ -28,10 +29,15 @@ class _ModuleSelectionScreenState extends State<ModuleSelectionScreen> {
 
     final filteredModules = allModules.where((meta) {
       final categoryMatch = meta.category == _selectedCategory;
-      final searchMatch = _searchQuery.trim().isEmpty ||
-          meta.getTitle(context).toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          meta.getDescription(context).toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          meta.defaultAlias.toLowerCase().contains(_searchQuery.toLowerCase());
+      final searchMatch = matchesSelectionSearch(_searchQuery, [
+        meta.getTitle(context),
+        meta.getDescription(context),
+        meta.defaultAlias,
+        meta.objClass,
+        meta.titleKey,
+        meta.descriptionKey,
+        meta.routeId,
+      ]);
       return categoryMatch && searchMatch;
     }).toList();
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:c_editor/data/repository/rift_theme_repository.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
+import 'package:c_editor/util/selection_search.dart';
 import 'package:c_editor/widgets/editor_components.dart';
 
 /// Multi-select picker for rift themes. Tap to toggle; confirm with the check button.
@@ -35,12 +36,15 @@ class _RiftThemeSelectionScreenState extends State<RiftThemeSelectionScreen> {
   }
 
   List<String> get _filteredThemes {
-    final query = _searchQuery.trim().toLowerCase();
+    final query = normalizeSelectionSearchQuery(_searchQuery);
     if (query.isEmpty) return RiftThemeRepository.themeIds;
     return RiftThemeRepository.themeIds.where((id) {
       final nameKey = RiftThemeRepository.nameKey(id);
-      final name = ResourceNames.lookup(context, nameKey).toLowerCase();
-      return id.toLowerCase().contains(query) || name.contains(query);
+      return matchesSelectionSearch(_searchQuery, [
+        id,
+        nameKey,
+        ResourceNames.lookup(context, nameKey),
+      ]);
     }).toList();
   }
 

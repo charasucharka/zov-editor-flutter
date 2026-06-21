@@ -1654,6 +1654,18 @@ abstract class AppLocalizations {
   /// **'Custom'**
   String get customLabel;
 
+  /// No description provided for @moduleTitle_WaveManagerProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked Wave Parameters (WaveManagerProps)'**
+  String get moduleTitle_WaveManagerProperties;
+
+  /// No description provided for @waveManagerPropsCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current: {value}'**
+  String waveManagerPropsCurrent(String value);
+
   /// No description provided for @waveManagerGlobalParams.
   ///
   /// In en, this message translates to:
@@ -11463,6 +11475,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Wave {wave} - {label}'**
   String waveGeneratorGridOverrideWavePreviewTitle(int wave, String label);
+
+  /// No description provided for @waveGeneratorInitialPoolWarningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to initial zombie pool?'**
+  String get waveGeneratorInitialPoolWarningTitle;
+
+  /// No description provided for @waveGeneratorInitialPoolWarningContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Zombies added here are not included in the editor random spawn expectation preview and will not take effect in-game. Continue?'**
+  String get waveGeneratorInitialPoolWarningContent;
 
   /// No description provided for @mechanismPlankSettings.
   ///

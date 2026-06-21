@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:c_editor/data/challenge_resource_l10n.dart';
 import 'package:c_editor/data/zombie_conditions.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
+import 'package:c_editor/util/selection_search.dart';
 import 'package:c_editor/widgets/editor_components.dart';
 
 /// Multi-select zombie conditions with checkboxes (for star challenges).
@@ -38,9 +39,12 @@ class _ZombieConditionSelectionScreenState
     if (q.isEmpty) return ZombieConditions.allIds;
     return ZombieConditions.allIds
         .where((id) {
-          final label =
-              ChallengeResourceL10n.condition(context, id).toLowerCase();
-          return id.toLowerCase().contains(q) || label.contains(q);
+          return matchesSelectionSearch(_query, [
+            id,
+            'condition_$id',
+            'zombieCondition_$id',
+            ChallengeResourceL10n.condition(context, id),
+          ]);
         })
         .toList();
   }

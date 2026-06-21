@@ -7,6 +7,7 @@ import 'package:c_editor/data/zomboss_mech_action_utils.dart';
 import 'package:c_editor/data/zomboss_mech_l10n.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/screens/editor/others/custom_zomboss_mech_action_editor_screen.dart';
+import 'package:c_editor/util/selection_search.dart';
 import 'package:c_editor/widgets/animated_extended_fab.dart';
 import 'package:c_editor/widgets/editor_components.dart';
 
@@ -114,11 +115,7 @@ class _ZombossMechActionSelectionScreenState
     final q = _query.trim().toLowerCase();
     if (q.isEmpty) return items;
     return items
-        .where(
-          (e) =>
-              e.primaryLabel(context).toLowerCase().contains(q) ||
-              e.secondaryLabel(context).toLowerCase().contains(q),
-        )
+        .where((e) => matchesSelectionSearch(_query, e.searchTerms(context)))
         .toList();
   }
 
@@ -312,5 +309,16 @@ class _ActionListItem {
       return '${info.alias}@${info.source}';
     }
     return rtid;
+  }
+
+  Iterable<String> searchTerms(BuildContext context) sync* {
+    yield primaryLabel(context);
+    yield secondaryLabel(context);
+    yield alias;
+    yield objclass;
+    yield tag;
+    yield rtid;
+    yield ZombossMechL10n.actionKey(catalog.id, objclass);
+    yield ZombossMechL10n.actionImplementationKey(catalog.id, alias);
   }
 }

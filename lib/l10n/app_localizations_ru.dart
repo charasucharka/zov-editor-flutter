@@ -843,6 +843,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get customLabel => 'Пользовательский';
 
   @override
+  String get moduleTitle_WaveManagerProperties =>
+      'Linked Wave Parameters (WaveManagerProps)';
+
+  @override
+  String waveManagerPropsCurrent(String value) {
+    return 'Current: $value';
+  }
+
+  @override
   String get waveManagerGlobalParams => 'Глобальные параметры волн';
 
   @override
@@ -6351,6 +6360,14 @@ class AppLocalizationsRu extends AppLocalizations {
   String waveGeneratorGridOverrideWavePreviewTitle(int wave, String label) {
     return 'Волна $wave — $label';
   }
+
+  @override
+  String get waveGeneratorInitialPoolWarningTitle =>
+      'Add to initial zombie pool?';
+
+  @override
+  String get waveGeneratorInitialPoolWarningContent =>
+      'Zombies added here are not included in the editor random spawn expectation preview and will not take effect in-game. Continue?';
 
   @override
   String get mechanismPlankSettings => 'Connected Minecart settings';

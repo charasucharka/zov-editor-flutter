@@ -823,6 +823,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get customLabel => '自定义';
 
   @override
+  String get moduleTitle_WaveManagerProperties => '关联波次参数 (WaveManagerProps)';
+
+  @override
+  String waveManagerPropsCurrent(String value) {
+    return '当前值：$value';
+  }
+
+  @override
   String get waveManagerGlobalParams => '波次管理器全局参数';
 
   @override
@@ -1054,7 +1062,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get name => '名称';
 
   @override
-  String get description => '关卡描述';
+  String get description => '描述';
 
   @override
   String get levelNumber => '关卡序号';
@@ -6082,6 +6090,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String waveGeneratorGridOverrideWavePreviewTitle(int wave, String label) {
     return '第$wave波 - $label';
   }
+
+  @override
+  String get waveGeneratorInitialPoolWarningTitle => '继续添加初始僵尸池？';
+
+  @override
+  String get waveGeneratorInitialPoolWarningContent =>
+      '在这里添加的僵尸不会被列入编辑器随机出怪期望预览，也不会在游戏中生效。是否继续添加？';
 
   @override
   String get mechanismPlankSettings => '连体矿车设置';

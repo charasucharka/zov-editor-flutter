@@ -3,6 +3,7 @@ import 'package:c_editor/data/repository/grid_item_repository.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
 import 'package:c_editor/theme/app_theme.dart' show pvzBrownDark, pvzBrownLight;
+import 'package:c_editor/util/selection_search.dart';
 import 'package:c_editor/widgets/editor_components.dart';
 
 /// Dedicated statue selection for Renai module. Shows all Renai statue types.
@@ -26,8 +27,12 @@ class _RenaiStatueSelectionScreenState extends State<RenaiStatueSelectionScreen>
 
   List<GridItemInfo> get _displayList {
     return GridItemRepository.getRenaiStatueItems().where((item) {
-      return _searchQuery.trim().isEmpty ||
-          item.typeName.toLowerCase().contains(_searchQuery.toLowerCase());
+      final nameKey = 'griditem_${item.typeName}';
+      return matchesSelectionSearch(_searchQuery, [
+        item.typeName,
+        nameKey,
+        ResourceNames.lookup(context, nameKey),
+      ]);
     }).toList();
   }
 

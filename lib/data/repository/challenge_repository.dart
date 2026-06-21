@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:c_editor/data/pvz_models.dart';
 import 'package:c_editor/data/challenge_resource_l10n.dart';
+import 'package:c_editor/util/selection_search.dart';
 
 /// Challenge type metadata. Ported from Z-Editor-master ChallengeRepository.kt
 class ChallengeTypeInfo {
@@ -274,15 +275,16 @@ class ChallengeRepository {
 
   static List<ChallengeTypeInfo> search(String query, BuildContext context) {
     if (query.trim().isEmpty) return allChallenges;
-    final lower = query.toLowerCase();
     return allChallenges
         .where((c) {
-          final title = c.localizedTitle(context);
-          final description = c.localizedDescription(context);
-          return title.toLowerCase().contains(lower) ||
-              description.toLowerCase().contains(lower) ||
-              c.objClass.toLowerCase().contains(lower) ||
-              c.defaultAlias.toLowerCase().contains(lower);
+          return matchesSelectionSearch(query, [
+            c.localizedTitle(context),
+            c.localizedDescription(context),
+            c.objClass,
+            c.defaultAlias,
+            'starChallenge_${c.objClass}_title',
+            'starChallenge_${c.objClass}_desc',
+          ]);
         })
         .toList();
   }

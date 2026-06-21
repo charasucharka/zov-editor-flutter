@@ -62,10 +62,91 @@ class _WaveGeneratorModuleScreenState extends State<WaveGeneratorModuleScreen> {
     );
   }
 
+  int? _readJsonInt(dynamic value) {
+    if (value is int) return value;
+    if (value is num) return value.round();
+    if (value is String) return int.tryParse(value);
+    return null;
+  }
+
+  List<dynamic>? _waveJsonList(dynamic objData) {
+    if (objData is! Map) return null;
+    final waves = objData['Waves'];
+    return waves is List ? waves : null;
+  }
+
+  Map<int, Map<int, int?>> _readAllWaveZombieLevels(dynamic objData) {
+    final waves = _waveJsonList(objData);
+    if (waves == null) return {};
+    final result = <int, Map<int, int?>>{};
+    for (var waveIndex = 0; waveIndex < waves.length; waveIndex++) {
+      final wave = waves[waveIndex];
+      if (wave is! Map || wave['Zombies'] is! List) continue;
+      final zombies = wave['Zombies'] as List;
+      final levels = <int, int?>{};
+      for (var i = 0; i < zombies.length; i++) {
+        final zombie = zombies[i];
+        if (zombie is Map && zombie.containsKey('Level')) {
+          levels[i] = _readJsonInt(zombie['Level']);
+        }
+      }
+      if (levels.isNotEmpty) result[waveIndex] = levels;
+    }
+    return result;
+  }
+
+  Map<String, dynamic> _withLevelAfterType(
+    Map<dynamic, dynamic> source,
+    int? level,
+  ) {
+    final result = <String, dynamic>{};
+    var inserted = false;
+    source.forEach((key, value) {
+      final keyString = key.toString();
+      if (keyString == 'Level') return;
+      result[keyString] = value;
+      if (keyString == 'Type' && level != null) {
+        result['Level'] = level;
+        inserted = true;
+      }
+    });
+    if (!inserted && level != null) {
+      result['Level'] = level;
+    }
+    return result;
+  }
+
+  void _applyWaveZombieLevels(
+    dynamic objData,
+    Map<int, Map<int, int?>> levelsByWave,
+  ) {
+    final waves = _waveJsonList(objData);
+    if (waves == null) return;
+    levelsByWave.forEach((waveIndex, levels) {
+      if (waveIndex < 0 || waveIndex >= waves.length) return;
+      final wave = waves[waveIndex];
+      if (wave is! Map || wave['Zombies'] is! List) return;
+      final zombies = wave['Zombies'] as List;
+      for (var i = 0; i < zombies.length; i++) {
+        final zombie = zombies[i];
+        if (zombie is Map) {
+          zombies[i] = _withLevelAfterType(zombie, levels[i]);
+        }
+      }
+    });
+  }
+
   void _sync() {
+    final waveZombieLevels = _readAllWaveZombieLevels(_moduleObj.objData);
     _data.syncWaveCount();
     _moduleObj.objData = _data.toJson();
+    _applyWaveZombieLevels(_moduleObj.objData, waveZombieLevels);
     WaveGeneratorLevelUtils.writeData(widget.levelFile, _data);
+    final writtenObj = WaveGeneratorLevelUtils.findObject(widget.levelFile);
+    if (writtenObj != null) {
+      _applyWaveZombieLevels(writtenObj.objData, waveZombieLevels);
+      _moduleObj = writtenObj;
+    }
     widget.onChanged();
     setState(() {});
   }
@@ -84,6 +165,35 @@ class _WaveGeneratorModuleScreenState extends State<WaveGeneratorModuleScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _confirmAddPoolZombie() async {
+    final l10n = AppLocalizations.of(context);
+    final shouldContinue = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          l10n?.waveGeneratorInitialPoolWarningTitle ??
+              'Add to initial zombie pool?',
+        ),
+        content: Text(
+          l10n?.waveGeneratorInitialPoolWarningContent ??
+              'Zombies added here are not included in the editor random spawn expectation preview and will not take effect in-game. Continue?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n?.cancel ?? 'Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n?.addType ?? 'Add'),
+          ),
+        ],
+      ),
+    );
+    if (!mounted || shouldContinue != true) return;
+    _addPoolZombie();
   }
 
   void _addPoolZombie() {
@@ -334,7 +444,9 @@ class _WaveGeneratorModuleScreenState extends State<WaveGeneratorModuleScreen> {
                         IconButton(
                           icon: const Icon(Icons.add),
                           tooltip: l10n?.addType ?? 'Add',
-                          onPressed: _addPoolZombie,
+                          onPressed: () {
+                            _confirmAddPoolZombie();
+                          },
                         ),
                       ],
                     ),
