@@ -410,8 +410,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tagline => '穿越时空 创造无穷可能';
 
   @override
-  String version(Object version) {
-    return '版本 $version';
+  String editorVersion(String version) {
+    return '编辑器版本：$version';
+  }
+
+  @override
+  String supportedGameVersion(String version) {
+    return '支持的游戏版本：$version';
   }
 
   @override

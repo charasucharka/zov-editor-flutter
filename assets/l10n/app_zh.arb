@@ -127,7 +127,18 @@
   "zEditorQqGroupLabel": "Z-Editor QQ群：",
   "zEditorQqGroupNumber": "960722092",
   "tagline": "穿越时空 创造无穷可能",
-  "version": "版本 {version}",
+  "editorVersion": "编辑器版本：{version}",
+  "@editorVersion": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "supportedGameVersion": "支持的游戏版本：{version}",
+  "@supportedGameVersion": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
   "language": "语言",
   "languageEnglish": "English",
   "languageChinese": "中文",

@@ -856,11 +856,17 @@ abstract class AppLocalizations {
   /// **'Create infinite possibilities'**
   String get tagline;
 
-  /// No description provided for @version.
+  /// No description provided for @editorVersion.
   ///
   /// In en, this message translates to:
-  /// **'Version {version}'**
-  String version(Object version);
+  /// **'Editor version: {version}'**
+  String editorVersion(String version);
+
+  /// No description provided for @supportedGameVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Supported game version: {version}'**
+  String supportedGameVersion(String version);
 
   /// No description provided for @language.
   ///

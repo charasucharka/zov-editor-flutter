@@ -419,8 +419,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tagline => 'Create infinite possibilities';
 
   @override
-  String version(Object version) {
-    return 'Version $version';
+  String editorVersion(String version) {
+    return 'Editor version: $version';
+  }
+
+  @override
+  String supportedGameVersion(String version) {
+    return 'Supported game version: $version';
   }
 
   @override

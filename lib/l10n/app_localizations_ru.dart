@@ -422,8 +422,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get tagline => 'Создавайте бесконечные возможности';
 
   @override
-  String version(Object version) {
-    return 'Версия $version';
+  String editorVersion(String version) {
+    return 'Версия редактора: $version';
+  }
+
+  @override
+  String supportedGameVersion(String version) {
+    return 'Поддерживаемая версия игры: $version';
   }
 
   @override

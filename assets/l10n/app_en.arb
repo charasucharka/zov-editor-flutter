@@ -127,7 +127,18 @@
   "zEditorQqGroupLabel": "Z-Editor QQ group:",
   "zEditorQqGroupNumber": "960722092",
   "tagline": "Create infinite possibilities",
-  "version": "Version {version}",
+  "editorVersion": "Editor version: {version}",
+  "@editorVersion": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "supportedGameVersion": "Supported game version: {version}",
+  "@supportedGameVersion": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
   "language": "Language",
   "languageEnglish": "English",
   "languageChinese": "中文",

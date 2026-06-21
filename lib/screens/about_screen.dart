@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:c_editor/data/app_links.dart';
+import 'package:c_editor/data/app_properties.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 
 String _usageTextForPlatform(BuildContext context, AppLocalizations l10n) {
@@ -29,6 +30,8 @@ class AboutScreen extends StatefulWidget {
 
 class _AboutScreenState extends State<AboutScreen> {
   late final Future<AppLinks> _linksFuture = AppLinks.load();
+  late final Future<AppProperties> _propertiesFuture = AppProperties.load();
+  late final Future<PackageInfo> _packageInfoFuture = PackageInfo.fromPlatform();
 
   @override
   Widget build(BuildContext context) {
@@ -178,14 +181,41 @@ class _AboutScreenState extends State<AboutScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                FutureBuilder<PackageInfo>(
-                  future: PackageInfo.fromPlatform(),
+                FutureBuilder<(PackageInfo, AppProperties)>(
+                  future: Future.wait([
+                    _packageInfoFuture,
+                    _propertiesFuture,
+                  ]).then(
+                    (results) => (
+                      results[0] as PackageInfo,
+                      results[1] as AppProperties,
+                    ),
+                  ),
                   builder: (context, snapshot) {
-                    final versionStr = snapshot.data?.version ?? '0.0.0';
-                    return Text(
-                      l10n.version(versionStr),
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                    final packageInfo = snapshot.data?.$1;
+                    final properties = snapshot.data?.$2;
+                    final editorVersion =
+                        packageInfo?.version.isNotEmpty == true
+                            ? packageInfo!.version
+                            : '0.0.0';
+                    final gameVersion = properties?.supportedGameVersion ?? '0.0.0';
+                    final versionStyle = theme.textTheme.bodySmall?.copyWith(
+                      color: Colors.grey,
+                    );
+                    return Column(
+                      children: [
+                        Text(
+                          l10n.editorVersion(editorVersion),
+                          textAlign: TextAlign.center,
+                          style: versionStyle,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          l10n.supportedGameVersion(gameVersion),
+                          textAlign: TextAlign.center,
+                          style: versionStyle,
+                        ),
+                      ],
                     );
                   },
                 ),

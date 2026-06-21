@@ -127,7 +127,18 @@
   "zEditorQqGroupLabel": "Z-Editor QQ-группа:",
   "zEditorQqGroupNumber": "960722092",
   "tagline": "Создавайте бесконечные возможности",
-  "version": "Версия {version}",
+  "editorVersion": "Версия редактора: {version}",
+  "@editorVersion": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "supportedGameVersion": "Поддерживаемая версия игры: {version}",
+  "@supportedGameVersion": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
   "language": "Язык",
   "languageEnglish": "English",
   "languageChinese": "中文",

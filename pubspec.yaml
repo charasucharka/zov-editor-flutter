@@ -5,7 +5,7 @@ description: "Level Editor for Plants vs. Zombies 2 Chinese"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 
-version: 0.1.0+2
+version: 0.1.0
 
 environment:
   sdk: ^3.9.2
@@ -44,6 +44,7 @@ flutter:
     - assets/reference/template/
     - assets/meta/icon.png
     - assets/meta/links.json
+    - assets/meta/properties.json
     - assets/reference/
     - assets/resources/
     - assets/l10n/resource_en.json
