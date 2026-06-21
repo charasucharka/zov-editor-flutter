@@ -7,6 +7,7 @@ import 'package:c_editor/data/rtid_parser.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
 import 'package:c_editor/screens/select/magic_hat_spawn_preview_screen.dart';
+import 'package:c_editor/util/selection_search.dart';
 import 'package:c_editor/widgets/asset_image.dart'
     show AssetImageWidget, imageAltCandidates;
 import 'package:c_editor/widgets/editor_components.dart'
@@ -271,17 +272,44 @@ class _PlantSelectionScreenState extends State<PlantSelectionScreen> {
     );
   }
 
+  List<PlantInfo> _categoryFilteredPlants(PlantRepository repo) {
+    if (!repo.isLoaded) return [];
+    if (_selectedCategory == PlantCategory.collection) {
+      return repo.allPlants
+          .where((p) => repo.favoriteIds.contains(p.id))
+          .toList();
+    }
+    if (_selectedTag != PlantTag.all) {
+      return repo.allPlants
+          .where((p) => p.tags.contains(_selectedTag))
+          .toList();
+    }
+    return repo.allPlants;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final repo = PlantRepository();
     final levelModuleObjClasses = _levelModuleObjClasses();
-    final allPlants = repo.search(
+    final repositoryPlants = repo.search(
       _searchQuery,
       _selectedCategory == PlantCategory.collection ? null : _selectedTag,
       _selectedCategory,
     );
+    final allPlants = _searchQuery.trim().isEmpty
+        ? repositoryPlants
+        : mergeUniqueSelectionResults(
+            repositoryPlants,
+            _categoryFilteredPlants(repo).where(
+              (plant) => matchesSelectionSearch(
+                _searchQuery,
+                [ResourceNames.lookup(context, plant.name)],
+              ),
+            ),
+            (plant) => plant.id,
+          );
     final excludeSet = widget.excludeIds.toSet();
     final plants = excludeSet.isEmpty
         ? allPlants

@@ -11476,6 +11476,18 @@ abstract class AppLocalizations {
   /// **'Wave {wave} - {label}'**
   String waveGeneratorGridOverrideWavePreviewTitle(int wave, String label);
 
+  /// No description provided for @waveGeneratorInitialPoolWarningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to initial zombie pool?'**
+  String get waveGeneratorInitialPoolWarningTitle;
+
+  /// No description provided for @waveGeneratorInitialPoolWarningContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Zombies added here are not included in the editor random spawn expectation preview and will not take effect in-game. Continue?'**
+  String get waveGeneratorInitialPoolWarningContent;
+
   /// No description provided for @mechanismPlankSettings.
   ///
   /// In en, this message translates to:

@@ -44,6 +44,7 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
   late TextEditingController _pointStartCtrl;
   late TextEditingController _pointIncrementCtrl;
   late TextEditingController _blackHoleCtrl;
+  Map<int, int?> _zombieLevels = {};
 
   int get _rowCount {
     final (rows, _) = LevelParser.getGridDimensionsFromFile(widget.levelFile);
@@ -58,6 +59,169 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
         widget.waveIndex == _generatorData.waves.length;
   }
 
+
+  int? _readJsonInt(dynamic value) {
+    if (value is int) return value;
+    if (value is num) return value.round();
+    if (value is String) return int.tryParse(value);
+    return null;
+  }
+
+  List<dynamic>? _waveJsonList(dynamic objData) {
+    if (objData is! Map) return null;
+    final waves = objData['Waves'];
+    return waves is List ? waves : null;
+  }
+
+  Map<int, int?> _readWaveZombieLevels(dynamic objData, int waveIndex) {
+    final waves = _waveJsonList(objData);
+    if (waves == null || waveIndex < 0 || waveIndex >= waves.length) {
+      return {};
+    }
+    final wave = waves[waveIndex];
+    if (wave is! Map || wave['Zombies'] is! List) return {};
+    final zombies = wave['Zombies'] as List;
+    final result = <int, int?>{};
+    for (var i = 0; i < zombies.length; i++) {
+      final zombie = zombies[i];
+      if (zombie is Map && zombie.containsKey('Level')) {
+        result[i] = _readJsonInt(zombie['Level']);
+      }
+    }
+    return result;
+  }
+
+  Map<int, Map<int, int?>> _readAllWaveZombieLevels(dynamic objData) {
+    final waves = _waveJsonList(objData);
+    if (waves == null) return {};
+    final result = <int, Map<int, int?>>{};
+    for (var i = 0; i < waves.length; i++) {
+      final levels = _readWaveZombieLevels(objData, i);
+      if (levels.isNotEmpty) result[i] = levels;
+    }
+    return result;
+  }
+
+  Map<String, dynamic> _withLevelAfterType(
+    Map<dynamic, dynamic> source,
+    int? level,
+  ) {
+    final result = <String, dynamic>{};
+    var inserted = false;
+    source.forEach((key, value) {
+      final keyString = key.toString();
+      if (keyString == 'Level') return;
+      result[keyString] = value;
+      if (keyString == 'Type' && level != null) {
+        result['Level'] = level;
+        inserted = true;
+      }
+    });
+    if (!inserted && level != null) {
+      result['Level'] = level;
+    }
+    return result;
+  }
+
+  void _applyWaveZombieLevels(
+    dynamic objData,
+    Map<int, Map<int, int?>> levelsByWave,
+  ) {
+    final waves = _waveJsonList(objData);
+    if (waves == null) return;
+    levelsByWave.forEach((waveIndex, levels) {
+      if (waveIndex < 0 || waveIndex >= waves.length) return;
+      final wave = waves[waveIndex];
+      if (wave is! Map || wave['Zombies'] is! List) return;
+      final zombies = wave['Zombies'] as List;
+      for (var i = 0; i < zombies.length; i++) {
+        final zombie = zombies[i];
+        if (zombie is Map) {
+          zombies[i] = _withLevelAfterType(zombie, levels[i]);
+        }
+      }
+    });
+  }
+
+  String _zombieBaseId(String rtid) {
+    return RtidParser.parse(rtid)?.alias ?? ZombieDisplayUtils.codename(rtid);
+  }
+
+  bool _isEliteRtid(String rtid) {
+    return ZombieRepository().isElite(_zombieBaseId(rtid));
+  }
+
+  int? _normalizeZombieLevel(String rtid, int? level) {
+    if (_isEliteRtid(rtid) || level == null) return null;
+    return level < 1 ? 1 : level;
+  }
+
+  int? _levelForZombie(int index) {
+    if (index < 0 || index >= _wave.zombies.length) return null;
+    return _normalizeZombieLevel(_wave.zombies[index].type, _zombieLevels[index]);
+  }
+
+  void _setZombieLevelInMemory(int index, String rtid, int? level) {
+    final normalized = _normalizeZombieLevel(rtid, level);
+    if (normalized == null) {
+      _zombieLevels.remove(index);
+    } else {
+      _zombieLevels[index] = normalized;
+    }
+  }
+
+  void _loadZombieLevels(dynamic objData, int waveIndex) {
+    final rawLevels = _readWaveZombieLevels(objData, waveIndex);
+    _zombieLevels = {};
+    for (var i = 0; i < _wave.zombies.length; i++) {
+      _setZombieLevelInMemory(i, _wave.zombies[i].type, rawLevels[i]);
+    }
+  }
+
+  Map<int, int?> _normalizedCurrentWaveLevels() {
+    final result = <int, int?>{};
+    for (var i = 0; i < _wave.zombies.length; i++) {
+      final level = _normalizeZombieLevel(_wave.zombies[i].type, _zombieLevels[i]);
+      if (level != null) result[i] = level;
+    }
+    return result;
+  }
+
+  WaveGeneratorPropertiesData _expectationData() {
+    final scriptedTypes = <String>{};
+    for (final wave in _generatorData.waves) {
+      for (final zombie in wave.zombies) {
+        scriptedTypes.add(zombie.type);
+      }
+    }
+
+    final expectationWaves = _generatorData.waves.map((wave) {
+      return WaveGeneratorWaveData(
+        disableRandomSpawns: wave.disableRandomSpawns,
+        zombies: wave.zombies,
+        spawnPlantFoodCount: wave.spawnPlantFoodCount,
+        addToZombiePool: wave.addToZombiePool
+            .where((entry) => !scriptedTypes.contains(entry.type))
+            .toList(),
+        wavePointStart: wave.wavePointStart,
+        wavePointIncrement: wave.wavePointIncrement,
+        colNumPlantIsDragged: wave.colNumPlantIsDragged,
+        waitUntilAllZombiesDie: wave.waitUntilAllZombiesDie,
+      );
+    }).toList();
+
+    return WaveGeneratorPropertiesData(
+      addToZombiePool: scriptedTypes
+          .map((type) => WaveGeneratorPoolEntryData(type: type))
+          .toList(),
+      flagWaveInterval: _generatorData.flagWaveInterval,
+      waveCount: _generatorData.waveCount,
+      waveSpendingPoints: _generatorData.waveSpendingPoints,
+      waveSpendingPointIncrement: _generatorData.waveSpendingPointIncrement,
+      waves: expectationWaves,
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -66,6 +230,7 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
 
   void _load() {
     final obj = WaveGeneratorLevelUtils.findObject(widget.levelFile);
+    final rawObjData = obj?.objData;
     _generatorData = obj != null
         ? WaveGeneratorLevelUtils.parseObject(obj)
         : WaveGeneratorPropertiesData(waves: [WaveGeneratorWaveData()]);
@@ -75,6 +240,7 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
     } else {
       _wave = WaveGeneratorWaveData();
     }
+    _loadZombieLevels(rawObjData, idx);
     _plantFoodCtrl = TextEditingController(
       text: _wave.spawnPlantFoodCount?.toString() ?? '',
     );
@@ -103,6 +269,7 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
     if (obj == null) return;
     final idx = widget.waveIndex - 1;
     if (idx < 0 || idx >= _generatorData.waves.length) return;
+    final allLevels = _readAllWaveZombieLevels(obj.objData);
     final waves = List<WaveGeneratorWaveData>.from(_generatorData.waves);
     waves[idx] = _wave;
     _generatorData = WaveGeneratorPropertiesData(
@@ -114,7 +281,9 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
       waves: waves,
     );
     _generatorData.syncWaveCount();
+    allLevels[idx] = _normalizedCurrentWaveLevels();
     obj.objData = _generatorData.toJson();
+    _applyWaveZombieLevels(obj.objData, allLevels);
     widget.onChanged();
     setState(() {});
   }
@@ -207,16 +376,41 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
     );
   }
 
-  void _updateZombie(int index, WaveGeneratorZombieEntryData updated) {
+  void _updateZombie(
+    int index,
+    WaveGeneratorZombieEntryData updated, {
+    int? level,
+    bool replaceLevel = false,
+  }) {
     final list = List<WaveGeneratorZombieEntryData>.from(_wave.zombies);
     list[index] = updated;
+    _setZombieLevelInMemory(
+      index,
+      updated.type,
+      replaceLevel ? level : _zombieLevels[index],
+    );
     _wave = _copyWave(zombies: list);
+    _sync();
+  }
+
+  void _setZombieLevel(int index, int? level) {
+    if (index < 0 || index >= _wave.zombies.length) return;
+    _setZombieLevelInMemory(index, _wave.zombies[index].type, level);
     _sync();
   }
 
   void _removeZombie(int index) {
     final list = List<WaveGeneratorZombieEntryData>.from(_wave.zombies)
       ..removeAt(index);
+    final shiftedLevels = <int, int?>{};
+    _zombieLevels.forEach((key, value) {
+      if (key < index) {
+        shiftedLevels[key] = value;
+      } else if (key > index) {
+        shiftedLevels[key - 1] = value;
+      }
+    });
+    _zombieLevels = shiftedLevels;
     _wave = _copyWave(zombies: list);
     _sync();
   }
@@ -240,6 +434,8 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
         return;
       }
       final rowStr = rowValue == 0 ? '?' : '$rowValue';
+      final newIndex = _wave.zombies.length;
+      _setZombieLevelInMemory(newIndex, rtid, null);
       _wave = _copyWave(
         zombies: [
           ..._wave.zombies,
@@ -304,7 +500,7 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
   void _showExpectation() {
     showWaveGeneratorExpectationDialog(
       context,
-      data: _generatorData,
+      data: _expectationData(),
       waveIndex: widget.waveIndex,
       isFlagWave: _isFlagWave,
     );
@@ -314,13 +510,14 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final expectationData = _expectationData();
     final points = WaveGeneratorPointAnalysis.pointsAtWave(
-      _generatorData,
+      expectationData,
       widget.waveIndex,
       isFlagWave: _isFlagWave,
     );
     final showExpectation = WaveGeneratorPointAnalysis.showExpectationForWave(
-      _generatorData,
+      expectationData,
       widget.waveIndex,
     );
 
@@ -727,11 +924,12 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
                 ...zombies.map((entry) {
                   final idx = entry.key;
                   final z = entry.value;
+                  final isElite = _isEliteRtid(z.type);
+                  final level = _levelForZombie(idx);
                   return ZombieIconCard(
                     iconPath: _zombieIcon(z.type),
-                    levelDisplay: '',
-                    showLevelBadge: false,
-                    isElite: false,
+                    levelDisplay: isElite ? 'E' : (level == null ? '0' : '$level'),
+                    isElite: isElite,
                     isCustom: false,
                     onTap: () => _showZombieEditSheet(idx),
                   );
@@ -754,19 +952,23 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
     final zombie = _wave.zombies[index];
     final iconPath = _zombieIcon(zombie.type);
     final displayName = _zombieDisplayName(zombie.type);
+    final isElite = _isEliteRtid(zombie.type);
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
+      isScrollControlled: true,
       builder: (ctx) {
         var rowValue = _rowValue(zombie.row);
+        var levelValue = _levelForZombie(index) ?? 0;
         return StatefulBuilder(
           builder: (ctx, setModalState) {
             return Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                   Row(
                     children: [
                       if (iconPath != null)
@@ -837,12 +1039,16 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
                                     'CurrentLevel') {
                                   return;
                                 }
+                                final isEliteNew =
+                                    ZombieRepository().isElite(id);
                                 _updateZombie(
                                   index,
                                   WaveGeneratorZombieEntryData(
                                     type: rtid,
                                     row: zombie.row,
                                   ),
+                                  level: isEliteNew ? null : _levelForZombie(index),
+                                  replaceLevel: true,
                                 );
                               });
                             });
@@ -854,6 +1060,46 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
                     ],
                   ),
                   const SizedBox(height: 12),
+                  if (isElite)
+                    Text(
+                      l10n?.eliteZombiesUseDefaultLevel ??
+                          'Elite zombies use default level.',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    )
+                  else ...[
+                    SwitchListTile(
+                      title: Text(l10n?.autoLevel ?? 'Auto level'),
+                      value: levelValue == 0,
+                      onChanged: (v) {
+                        final nextLevel = v ? 0 : 1;
+                        setModalState(() => levelValue = nextLevel);
+                        _setZombieLevel(index, v ? null : 1);
+                      },
+                    ),
+                    if (levelValue != 0)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l10n?.levelFormat(levelValue) ??
+                                'Level: $levelValue',
+                          ),
+                          Slider(
+                            value: levelValue.toDouble(),
+                            min: 1,
+                            max: 10,
+                            divisions: 9,
+                            label: '$levelValue',
+                            onChanged: (v) {
+                              final newLevel = v.round();
+                              setModalState(() => levelValue = newLevel);
+                              _setZombieLevel(index, newLevel);
+                            },
+                          ),
+                        ],
+                      ),
+                  ],
+                  const SizedBox(height: 12),
                   Row(
                     children: [
                       Expanded(
@@ -863,6 +1109,12 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
                             final copy = WaveGeneratorZombieEntryData(
                               type: zombie.type,
                               row: rowStr,
+                            );
+                            final newIndex = _wave.zombies.length;
+                            _setZombieLevelInMemory(
+                              newIndex,
+                              zombie.type,
+                              isElite ? null : (levelValue == 0 ? null : levelValue),
                             );
                             _wave = _copyWave(
                               zombies: [
@@ -894,7 +1146,8 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
                       ),
                     ],
                   ),
-                ],
+                  ],
+                ),
               ),
             );
           },

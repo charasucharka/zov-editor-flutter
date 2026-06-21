@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:c_editor/data/music_suffix_catalog.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
+import 'package:c_editor/util/selection_search.dart';
 import 'package:c_editor/widgets/asset_image.dart' show AssetImageWidget, imageAltCandidates;
 import 'package:c_editor/widgets/editor_components.dart';
 
@@ -36,13 +37,14 @@ class _MusicSuffixSelectionScreenState extends State<MusicSuffixSelectionScreen>
     final theme = Theme.of(context);
     final allCodes = <String>['', ...MusicSuffixCatalog.orderedCodes];
     var items = allCodes;
-    if (_searchQuery.isNotEmpty) {
-      final q = _searchQuery.toLowerCase();
+    if (normalizeSelectionSearchQuery(_searchQuery).isNotEmpty) {
       items = allCodes.where((code) {
-        final name =
-            ResourceNames.lookup(context, MusicSuffixCatalog.resourceKey(code));
-        return name.toLowerCase().contains(q) ||
-            code.toLowerCase().contains(q);
+        final nameKey = MusicSuffixCatalog.resourceKey(code);
+        return matchesSelectionSearch(_searchQuery, [
+          code,
+          nameKey,
+          ResourceNames.lookup(context, nameKey),
+        ]);
       }).toList();
     }
 

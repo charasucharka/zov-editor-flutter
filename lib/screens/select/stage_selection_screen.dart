@@ -3,6 +3,7 @@ import 'package:c_editor/data/rtid_parser.dart';
 import 'package:c_editor/data/repository/stage_repository.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
+import 'package:c_editor/util/selection_search.dart';
 import 'package:c_editor/widgets/asset_image.dart' show AssetImageWidget, imageAltCandidates;
 import 'package:c_editor/widgets/editor_components.dart';
 
@@ -33,11 +34,14 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
     final theme = Theme.of(context);
     final currentAlias = RtidParser.parse(widget.currentStageRtid)?.alias ?? '';
     var items = StageRepository.getByType(_selectedType);
-    if (_searchQuery.isNotEmpty) {
-      final q = _searchQuery.toLowerCase();
+    if (normalizeSelectionSearchQuery(_searchQuery).isNotEmpty) {
       items = items.where((s) {
-        final name = ResourceNames.lookup(context, StageRepository.getName(s.alias));
-        return name.toLowerCase().contains(q) || s.alias.toLowerCase().contains(q);
+        final nameKey = StageRepository.getName(s.alias);
+        return matchesSelectionSearch(_searchQuery, [
+          s.alias,
+          nameKey,
+          ResourceNames.lookup(context, nameKey),
+        ]);
       }).toList();
     }
 

@@ -3,6 +3,7 @@ import 'package:c_editor/data/repository/fish_type_repository.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
 import 'package:c_editor/theme/app_theme.dart' show pvzFishDark, pvzFishLight;
+import 'package:c_editor/util/selection_search.dart';
 import 'package:c_editor/widgets/asset_image.dart' show AssetImageWidget, imageAltCandidates;
 import 'package:c_editor/widgets/editor_components.dart';
 
@@ -40,14 +41,16 @@ class _FishSelectionScreenState extends State<FishSelectionScreen> {
           .indexOf(FishInfo.normalizeFishAlias(a.alias))
           .compareTo(order.indexOf(FishInfo.normalizeFishAlias(b.alias))),
     );
-    if (_searchQuery.trim().isNotEmpty) {
-      final q = _searchQuery.toLowerCase();
-      list = list
-          .where((f) =>
-              f.typeName.toLowerCase().contains(q) ||
-              f.alias.toLowerCase().contains(q))
-          .toList();
-    }
+    list = list.where((f) {
+      final nameKey = 'creature_${f.typeName}';
+      return matchesSelectionSearch(_searchQuery, [
+        f.typeName,
+        f.alias,
+        f.creatureClass,
+        nameKey,
+        ResourceNames.lookup(context, nameKey),
+      ]);
+    }).toList();
     return list;
   }
 

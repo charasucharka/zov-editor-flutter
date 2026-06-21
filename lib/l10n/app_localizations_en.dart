@@ -6422,6 +6422,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get waveGeneratorInitialPoolWarningTitle =>
+      'Add to initial zombie pool?';
+
+  @override
+  String get waveGeneratorInitialPoolWarningContent =>
+      'Zombies added here are not included in the editor random spawn expectation preview and will not take effect in-game. Continue?';
+
+  @override
   String get mechanismPlankSettings => 'Connected Minecart settings';
 
   @override

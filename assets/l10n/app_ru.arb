@@ -2087,6 +2087,8 @@
       "label": { "type": "String" }
     }
   },
+  "waveGeneratorInitialPoolWarningTitle": "Add to initial zombie pool?",
+  "waveGeneratorInitialPoolWarningContent": "Zombies added here are not included in the editor random spawn expectation preview and will not take effect in-game. Continue?",
   "mechanismPlankSettings": "Connected Minecart settings",
   "mechanismPlankStartColumn": "Starting column (mx)",
   "mechanismPlankTrackLength": "Track length (mWidth)",

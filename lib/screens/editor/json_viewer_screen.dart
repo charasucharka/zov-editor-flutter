@@ -892,12 +892,13 @@ class _JsonViewerScreenState extends State<JsonViewerScreen> {
   /// Scrollable JSON view: wraps long logical lines; gutter shows a line number
   /// only on the first visual row, and a continuation glyph on wrapped rows.
   Widget _buildScrollLayout(String pretty, bool isDesktop, AppLocalizations? l10n) {
+    final theme = Theme.of(context);
     final baseStyle = TextStyle(
       fontFamily: _codeFontFamily,
       fontSize: _fontSize,
       height: 1.3,
+      color: theme.colorScheme.onSurface,
     );
-    final theme = Theme.of(context);
     final muted = theme.colorScheme.onSurface.withValues(alpha: 0.5);
     final logicalLines = pretty.split('\n');
     final logicalLineCount = logicalLines.isEmpty ? 1 : logicalLines.length;
@@ -1248,11 +1249,13 @@ class _HighlightedJsonText extends StatelessWidget {
           fontFamily: _ObjectCodeCard.codeFontFamily,
           fontSize: fontSize,
           height: 1.3,
+          color: theme.colorScheme.onSurface,
         ) ??
         TextStyle(
           fontFamily: _ObjectCodeCard.codeFontFamily,
           fontSize: fontSize,
           height: 1.3,
+          color: theme.colorScheme.onSurface,
         );
     if (objectMatches.isEmpty) {
       return Text(jsonContent, style: baseStyle);
