@@ -12280,41 +12280,29 @@ abstract class AppLocalizations {
   /// **' (Custom)'**
   String get customStageNameSuffix;
 
+  /// No description provided for @customStageLawnAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Lawn appearance'**
+  String get customStageLawnAppearance;
+
   /// No description provided for @selectCustomStageBase.
   ///
   /// In en, this message translates to:
   /// **'Select base lawn'**
   String get selectCustomStageBase;
 
-  /// No description provided for @searchStageObjclass.
+  /// No description provided for @searchStageBase.
   ///
   /// In en, this message translates to:
-  /// **'Search objclass'**
-  String get searchStageObjclass;
+  /// **'Search by lawn name or codename'**
+  String get searchStageBase;
 
-  /// No description provided for @noStageObjclassFound.
+  /// No description provided for @noStageBaseFound.
   ///
   /// In en, this message translates to:
-  /// **'No objclass found'**
-  String get noStageObjclassFound;
-
-  /// No description provided for @selectStageBackground.
-  ///
-  /// In en, this message translates to:
-  /// **'Select lawn appearance'**
-  String get selectStageBackground;
-
-  /// No description provided for @searchStageBackground.
-  ///
-  /// In en, this message translates to:
-  /// **'Search lawn'**
-  String get searchStageBackground;
-
-  /// No description provided for @noStageBackgroundFound.
-  ///
-  /// In en, this message translates to:
-  /// **'No lawn appearance found'**
-  String get noStageBackgroundFound;
+  /// **'No lawn found'**
+  String get noStageBaseFound;
 
   /// No description provided for @importResourceGroup.
   ///
@@ -12385,7 +12373,7 @@ abstract class AppLocalizations {
   /// No description provided for @createCustomStageHint.
   ///
   /// In en, this message translates to:
-  /// **'Pick a base stage properties type and edit it locally in this level.'**
+  /// **'Pick a base lawn appearance and edit it locally in this level.'**
   String get createCustomStageHint;
 
   /// No description provided for @customStageAliasPromptTitle.

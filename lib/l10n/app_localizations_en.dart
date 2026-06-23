@@ -6862,22 +6862,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customStageNameSuffix => ' (Custom)';
 
   @override
+  String get customStageLawnAppearance => 'Lawn appearance';
+
+  @override
   String get selectCustomStageBase => 'Select base lawn';
 
   @override
-  String get searchStageObjclass => 'Search objclass';
+  String get searchStageBase => 'Search by lawn name or codename';
 
   @override
-  String get noStageObjclassFound => 'No objclass found';
-
-  @override
-  String get selectStageBackground => 'Select lawn appearance';
-
-  @override
-  String get searchStageBackground => 'Search lawn';
-
-  @override
-  String get noStageBackgroundFound => 'No lawn appearance found';
+  String get noStageBaseFound => 'No lawn found';
 
   @override
   String get importResourceGroup => 'Import resource group';
@@ -6920,7 +6914,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get createCustomStageHint =>
-      'Pick a base stage properties type and edit it locally in this level.';
+      'Pick a base lawn appearance and edit it locally in this level.';
 
   @override
   String get customStageAliasPromptTitle => 'Custom stage alias';

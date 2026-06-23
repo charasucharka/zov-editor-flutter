@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:c_editor/data/custom_stage_level_utils.dart';
+import 'package:c_editor/data/models/stage_catalog.dart';
 import 'package:c_editor/data/repository/stage_catalog_repository.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
@@ -8,56 +8,41 @@ import 'package:c_editor/widgets/asset_image.dart'
     show AssetImageWidget, imageAltCandidates;
 import 'package:c_editor/widgets/editor_components.dart';
 
-/// Pick a base stage properties objclass when creating a custom lawn.
-class StageObjclassSelectionScreen extends StatefulWidget {
-  const StageObjclassSelectionScreen({
+/// Pick the source stage implementation for a level-local custom lawn.
+class StageBaseSelectionScreen extends StatefulWidget {
+  const StageBaseSelectionScreen({
     super.key,
-    required this.onObjclassSelected,
+    required this.onStageBaseSelected,
     required this.onBack,
   });
 
-  final void Function(String objclass) onObjclassSelected;
+  final void Function(StageBaseOption option) onStageBaseSelected;
   final VoidCallback onBack;
 
   @override
-  State<StageObjclassSelectionScreen> createState() =>
-      _StageObjclassSelectionScreenState();
+  State<StageBaseSelectionScreen> createState() =>
+      _StageBaseSelectionScreenState();
 }
 
-class _StageObjclassSelectionScreenState
-    extends State<StageObjclassSelectionScreen> {
+class _StageBaseSelectionScreenState extends State<StageBaseSelectionScreen> {
   String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    var items = StageCatalogRepository.objclassIcons.entries
-        .where(
-          (e) => !CustomStageLevelUtils.excludedCustomStageObjclasses
-              .contains(e.key),
-        )
-        .toList()
-      ..sort((a, b) {
-        final nameA = ResourceNames.lookup(
-          context,
-          StageCatalogRepository.objclassResourceKey(a.key),
-        );
-        final nameB = ResourceNames.lookup(
-          context,
-          StageCatalogRepository.objclassResourceKey(b.key),
-        );
-        return nameA.compareTo(nameB);
-      });
+    var items = StageCatalogRepository.stageBaseOptions();
     if (normalizeSelectionSearchQuery(_searchQuery).isNotEmpty) {
-      items = items.where((entry) {
-        final resourceKey =
-            StageCatalogRepository.objclassResourceKey(entry.key);
-        final name = ResourceNames.lookup(context, resourceKey);
+      items = items.where((option) {
+        final nameKey = _stageNameKey(option.alias);
+        final name = ResourceNames.lookup(context, nameKey);
         return matchesSelectionSearch(_searchQuery, [
-          entry.key,
-          resourceKey,
           name,
+          nameKey,
+          option.alias,
+          option.objclass,
+          option.backgroundImagePrefix ?? '',
+          option.backgroundResourceGroup ?? '',
         ]);
       }).toList();
     }
@@ -75,7 +60,7 @@ class _StageObjclassSelectionScreenState
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: SelectionSearchField(
-              hintText: l10n?.searchStageObjclass ?? 'Search lawn type',
+              hintText: 'Search by lawn name or codename',
               query: _searchQuery,
               onChanged: (v) => setState(() => _searchQuery = v),
               onClear: () => setState(() => _searchQuery = ''),
@@ -85,7 +70,7 @@ class _StageObjclassSelectionScreenState
             child: items.isEmpty
                 ? Center(
                     child: Text(
-                      l10n?.noStageObjclassFound ?? 'No lawn type found',
+                      'No lawn found',
                       style: theme.textTheme.bodyLarge,
                     ),
                   )
@@ -93,23 +78,23 @@ class _StageObjclassSelectionScreenState
                     padding: const EdgeInsets.all(16),
                     gridDelegate:
                         const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 200,
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 10,
-                      childAspectRatio: 0.88,
-                    ),
+                          maxCrossAxisExtent: 200,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10,
+                          childAspectRatio: 0.88,
+                        ),
                     itemCount: items.length,
                     itemBuilder: (_, i) {
-                      final entry = items[i];
-                      final resourceKey =
-                          StageCatalogRepository.objclassResourceKey(entry.key);
-                      final displayName =
-                          ResourceNames.lookup(context, resourceKey);
+                      final option = items[i];
+                      final displayName = ResourceNames.lookup(
+                        context,
+                        _stageNameKey(option.alias),
+                      );
                       final iconPath =
-                          'assets/images/round_icons/${entry.value}';
+                          'assets/images/round_icons/${option.iconName}';
                       return Card(
                         child: InkWell(
-                          onTap: () => widget.onObjclassSelected(entry.key),
+                          onTap: () => widget.onStageBaseSelected(option),
                           borderRadius: BorderRadius.circular(12),
                           child: Padding(
                             padding: const EdgeInsets.all(8),
@@ -122,8 +107,9 @@ class _StageObjclassSelectionScreenState
                                     height: 72,
                                     child: AssetImageWidget(
                                       assetPath: iconPath,
-                                      altCandidates:
-                                          imageAltCandidates(iconPath),
+                                      altCandidates: imageAltCandidates(
+                                        iconPath,
+                                      ),
                                       width: 72,
                                       height: 72,
                                       fit: BoxFit.cover,
@@ -141,7 +127,7 @@ class _StageObjclassSelectionScreenState
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 Text(
-                                  entry.key,
+                                  option.alias,
                                   style: theme.textTheme.bodySmall?.copyWith(
                                     color: theme.colorScheme.onSurfaceVariant,
                                     fontSize: 10,
@@ -162,4 +148,6 @@ class _StageObjclassSelectionScreenState
       ),
     );
   }
+
+  String _stageNameKey(String alias) => 'stage_$alias';
 }

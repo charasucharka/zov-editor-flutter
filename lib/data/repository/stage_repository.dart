@@ -46,7 +46,7 @@ class StageRepository {
         );
       }
     }
-    out.sort((a, b) => a.alias.compareTo(b.alias));
+    // Keep the same order as Stages.json / StageCatalogRepository.
     return out;
   }
 

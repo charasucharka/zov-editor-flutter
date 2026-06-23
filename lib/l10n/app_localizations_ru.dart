@@ -6804,22 +6804,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get customStageNameSuffix => ' (Пользов.)';
 
   @override
+  String get customStageLawnAppearance => 'Вид газона';
+
+  @override
   String get selectCustomStageBase => 'Выберите базовую локацию';
 
   @override
-  String get searchStageObjclass => 'Поиск objclass';
+  String get searchStageBase => 'Поиск по названию или коду газона';
 
   @override
-  String get noStageObjclassFound => 'Objclass не найден';
-
-  @override
-  String get selectStageBackground => 'Выберите внешний вид газона';
-
-  @override
-  String get searchStageBackground => 'Поиск локации';
-
-  @override
-  String get noStageBackgroundFound => 'Внешний вид не найден';
+  String get noStageBaseFound => 'Газон не найден';
 
   @override
   String get importResourceGroup => 'Импорт группы ресурсов';
@@ -6862,7 +6856,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get createCustomStageHint =>
-      'Выберите базовый тип свойств локации и отредактируйте его локально в этом уровне.';
+      'Выберите базовый вид газона и отредактируйте его локально в этом уровне.';
 
   @override
   String get customStageAliasPromptTitle =>

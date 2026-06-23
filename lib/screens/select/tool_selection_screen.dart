@@ -94,26 +94,15 @@ class _ToolSelectionScreenState extends State<ToolSelectionScreen> {
                 )
               : LayoutBuilder(
                   builder: (context, constraints) {
-                    final crossAxisCount =
-                        SelectionGridLayout.toolCrossAxisCount(
-                      constraints.maxWidth,
-                    );
-                    final iconBox = SelectionGridLayout.toolIconBox(
-                      constraints.maxWidth,
-                    );
-
+                    final isDesktop = constraints.maxWidth > 600;
+                    final crossAxisCount = isDesktop ? 6 : 3;
                     return GridView.builder(
-                      padding: const EdgeInsets.all(
-                        SelectionGridLayout.padding,
-                      ),
+                      padding: const EdgeInsets.all(16),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: crossAxisCount,
-                        childAspectRatio:
-                            SelectionGridLayout.toolChildAspectRatio(
-                          constraints.maxWidth,
-                        ),
-                        crossAxisSpacing: SelectionGridLayout.spacing,
-                        mainAxisSpacing: SelectionGridLayout.spacing,
+                        childAspectRatio: 0.85,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
                       ),
                       itemCount: tools.length,
                       itemBuilder: (context, index) {
@@ -121,13 +110,10 @@ class _ToolSelectionScreenState extends State<ToolSelectionScreen> {
                         final iconPath = tool.icon != null
                             ? 'assets/images/tools/${tool.icon}'
                             : null;
-
                         return _ToolCard(
                           id: tool.id,
                           name: ToolRepository.localizedName(context, tool.id),
                           iconPath: iconPath,
-                          iconWidth: iconBox.width,
-                          iconHeight: iconBox.height,
                           theme: theme,
                           onTap: () => widget.onToolSelected(tool.id),
                         );
@@ -146,8 +132,6 @@ class _ToolCard extends StatelessWidget {
     required this.id,
     required this.name,
     required this.iconPath,
-    required this.iconWidth,
-    required this.iconHeight,
     required this.theme,
     required this.onTap,
   });
@@ -155,8 +139,6 @@ class _ToolCard extends StatelessWidget {
   final String id;
   final String name;
   final String? iconPath;
-  final double iconWidth;
-  final double iconHeight;
   final ThemeData theme;
   final VoidCallback onTap;
 
@@ -171,12 +153,7 @@ class _ToolCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _ToolIcon(
-                iconPath: iconPath,
-                width: iconWidth,
-                height: iconHeight,
-                theme: theme,
-              ),
+              Expanded(child: _ToolIcon(iconPath: iconPath, theme: theme)),
               const SizedBox(height: 8),
               Text(
                 name,
@@ -205,32 +182,21 @@ class _ToolCard extends StatelessWidget {
 }
 
 class _ToolIcon extends StatelessWidget {
-  const _ToolIcon({
-    required this.iconPath,
-    required this.width,
-    required this.height,
-    required this.theme,
-  });
+  const _ToolIcon({required this.iconPath, required this.theme});
 
   final String? iconPath;
-  final double width;
-  final double height;
   final ThemeData theme;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: width,
-      height: height,
-      child: iconPath != null
-          ? AssetImageWidget(assetPath: iconPath!, fit: BoxFit.contain)
-          : Center(
-              child: Icon(
-                Icons.build,
-                size: height * 0.5,
-                color: theme.colorScheme.outline,
-              ),
-            ),
+    if (iconPath != null) {
+      return AssetImageWidget(assetPath: iconPath!, fit: BoxFit.contain);
+    }
+    return Center(
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Icon(Icons.build, size: 42, color: theme.colorScheme.outline),
+      ),
     );
   }
 }

@@ -6515,22 +6515,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get customStageNameSuffix => '（自定义）';
 
   @override
+  String get customStageLawnAppearance => '草坪外观';
+
+  @override
   String get selectCustomStageBase => '选择基础场地';
 
   @override
-  String get searchStageObjclass => '搜索 objclass';
+  String get searchStageBase => '按草坪名称或代号搜索';
 
   @override
-  String get noStageObjclassFound => '未找到 objclass';
-
-  @override
-  String get selectStageBackground => '选择草坪外观';
-
-  @override
-  String get searchStageBackground => '搜索场地';
-
-  @override
-  String get noStageBackgroundFound => '未找到草坪外观';
+  String get noStageBaseFound => '未找到草坪';
 
   @override
   String get importResourceGroup => '导入资源组';
@@ -6570,7 +6564,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get createCustomStage => '创建自定义草坪';
 
   @override
-  String get createCustomStageHint => '选择基础场地属性类型，并在此关卡中本地编辑。';
+  String get createCustomStageHint => '选择基础草坪外观，并在此关卡中本地编辑。';
 
   @override
   String get customStageAliasPromptTitle => '自定义场地别名';

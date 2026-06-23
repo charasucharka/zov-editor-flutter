@@ -80,9 +80,10 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
         ? Map<String, dynamic>.from(stageObj.objData as Map)
         : const <String, dynamic>{};
     final suffix =
-        l10n?.customStageNameSuffix ?? CustomStageLevelUtils.displayNameSuffixDefault;
-    final nameKey = CustomStageLevelUtils.displayNameKey(
-      backgroundImagePrefix: objdata['BackgroundImagePrefix'] as String?,
+        l10n?.customStageNameSuffix ??
+        CustomStageLevelUtils.displayNameSuffixDefault;
+    final nameKey = CustomStageLevelUtils.displayStageBaseNameKey(
+      objclass: stageObj.objClass,
       objdata: objdata,
     );
     if (nameKey.isNotEmpty) {
@@ -112,7 +113,9 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
         ),
         title: Text(l10n?.selectStage ?? 'Select lawn'),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(_tab == _StagePickerTab.builtin ? 148 : 72),
+          preferredSize: Size.fromHeight(
+            _tab == _StagePickerTab.builtin ? 148 : 72,
+          ),
           child: Column(
             children: [
               Padding(
@@ -148,7 +151,10 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
                 ),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 8,
+                  ),
                   child: Row(
                     children: StageType.values.map((t) {
                       return AccentBarChoiceChip(
@@ -216,8 +222,7 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
       itemCount: items.length,
       itemBuilder: (_, i) {
         final stage = items[i];
-        final isSelected =
-            !_isCustomCurrent && stage.alias == currentAlias;
+        final isSelected = !_isCustomCurrent && stage.alias == currentAlias;
         return _BuiltinStageGridItem(
           stage: stage,
           stageName: ResourceNames.lookup(
@@ -225,9 +230,8 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
             StageRepository.getName(stage.alias),
           ),
           isSelected: isSelected,
-          onTap: () => _selectBuiltin(
-            RtidParser.build(stage.alias, 'LevelModules'),
-          ),
+          onTap: () =>
+              _selectBuiltin(RtidParser.build(stage.alias, 'LevelModules')),
         );
       },
     );
@@ -256,8 +260,7 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
                 ),
               ),
               subtitle: Text(
-                l10n?.createCustomStageHint ??
-                    'Pick a base stage properties type and edit it locally.',
+                'Pick a base lawn appearance and edit it locally in this level.',
               ),
               onTap: widget.onCreateCustomStage,
             ),
@@ -285,8 +288,7 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
           const SizedBox(height: 8),
           ...customStages.map((stageObj) {
             final alias = stageObj.aliases?.firstOrNull ?? '';
-            final isSelected =
-                _isCustomCurrent && alias == currentAlias;
+            final isSelected = _isCustomCurrent && alias == currentAlias;
             final iconFile = _customIconFile(stageObj);
             final iconPath = iconFile == null
                 ? 'assets/images/others/unknown.webp'
@@ -357,8 +359,9 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
                             tooltip: l10n?.delete ?? 'Delete',
                             icon: const Icon(Icons.delete_outline),
                             onPressed: () async {
-                              final deleted =
-                                  await widget.onDeleteCustomStage!(alias);
+                              final deleted = await widget.onDeleteCustomStage!(
+                                alias,
+                              );
                               if (deleted && mounted) setState(() {});
                             },
                           ),
