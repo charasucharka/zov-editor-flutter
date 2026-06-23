@@ -19,7 +19,7 @@ class ModuleSelectionScreen extends StatefulWidget {
 
 class _ModuleSelectionScreenState extends State<ModuleSelectionScreen> {
   String _searchQuery = '';
-  ModuleCategory _selectedCategory = ModuleCategory.base;
+  ModuleCategory? _selectedCategory;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class _ModuleSelectionScreenState extends State<ModuleSelectionScreen> {
     final allModules = ModuleRegistry.getAllModules();
 
     final filteredModules = allModules.where((meta) {
-      final categoryMatch = meta.category == _selectedCategory;
+      final categoryMatch = _selectedCategory == null || meta.category == _selectedCategory;
       final searchMatch = matchesSelectionSearch(_searchQuery, [
         meta.getTitle(context),
         meta.getDescription(context),
@@ -65,14 +65,22 @@ class _ModuleSelectionScreenState extends State<ModuleSelectionScreen> {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 child: Row(
-                  children: ModuleCategory.values.map((cat) {
-                    return AccentBarChoiceChip(
-                      label: _categoryLabel(cat, l10n),
-                      selected: _selectedCategory == cat,
-                      onSelected: (_) => setState(() => _selectedCategory = cat),
+                  children: [
+                    AccentBarChoiceChip(
+                      label: l10n?.stageTypeAll ?? 'All',
+                      selected: _selectedCategory == null,
+                      onSelected: (_) => setState(() => _selectedCategory = null),
                       padding: const EdgeInsets.symmetric(horizontal: 4),
-                    );
-                  }).toList(),
+                    ),
+                    ...ModuleCategory.values.map((cat) {
+                      return AccentBarChoiceChip(
+                        label: _categoryLabel(cat, l10n),
+                        selected: _selectedCategory == cat,
+                        onSelected: (_) => setState(() => _selectedCategory = cat),
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                      );
+                    }),
+                  ],
                 ),
               ),
             ],

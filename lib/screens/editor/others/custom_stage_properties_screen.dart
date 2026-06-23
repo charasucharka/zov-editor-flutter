@@ -9,7 +9,6 @@ import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
 import 'package:c_editor/data/music_suffix_catalog.dart';
 import 'package:c_editor/screens/select/music_suffix_selection_screen.dart';
-import 'package:c_editor/screens/select/stage_background_selection_screen.dart';
 import 'package:c_editor/screens/select/stage_resource_group_import_screen.dart';
 import 'package:c_editor/widgets/asset_image.dart'
     show AssetImageWidget, imageAltCandidates;
@@ -45,6 +44,7 @@ class _CustomStagePropertiesScreenState
   late String _alias;
   late String _objclass;
   late Map<String, dynamic> _objdata;
+  StageBaseOption? _stageBaseOption;
   late TextEditingController _aliasCtrl;
   late TextEditingController _linkedAlphaCtrl;
   late TextEditingController _submarineHpCtrl;
@@ -79,8 +79,11 @@ class _CustomStagePropertiesScreenState
     }
     _objclass = _stageObj!.objClass;
     _objdata = Map<String, dynamic>.from(_stageObj!.objData as Map);
-    _linkedAlphaCtrl.text =
-        '${_objdata['LinkedTilePropagationAlpha'] ?? ''}';
+    _stageBaseOption = StageCatalogRepository.stageBaseOptionForObjdata(
+      objclass: _objclass,
+      objdata: _objdata,
+    );
+    _linkedAlphaCtrl.text = '${_objdata['LinkedTilePropagationAlpha'] ?? ''}';
     _submarineHpCtrl.text =
         '${CustomStageLevelUtils.readSubmarineHitpoints(_objdata)}';
     for (final key in CustomStageLevelUtils.skycityCannonFieldNames) {
@@ -96,7 +99,11 @@ class _CustomStagePropertiesScreenState
       StageCatalogRepository.sectionForObjclass(_objclass);
 
   Map<String, dynamic> get _template =>
-      StageCatalogRepository.templateObjdataForObjclass(_objclass);
+      _stageBaseOption?.objdata ??
+      StageCatalogRepository.templateObjdataForStageObject(
+        objclass: _objclass,
+        objdata: _objdata,
+      );
 
   List<String> get _resourceGroups =>
       CustomStageLevelUtils.stringList(_objdata['ResourceGroupNames']);
@@ -104,13 +111,12 @@ class _CustomStagePropertiesScreenState
   List<String> get _groupsToUnload =>
       CustomStageLevelUtils.stringList(_objdata['GroupsToUnloadForAds']);
 
-  bool get _ambientEnabled =>
-      CustomStageLevelUtils.isAmbientEnabled(_objdata);
+  bool get _ambientEnabled => CustomStageLevelUtils.isAmbientEnabled(_objdata);
 
   _DisabledStreetCellsMode get _disabledCellsMode =>
       CustomStageLevelUtils.usesDefaultDisabledStreetCells(_objdata, _objclass)
-          ? _DisabledStreetCellsMode.defaultCells
-          : _DisabledStreetCellsMode.empty;
+      ? _DisabledStreetCellsMode.defaultCells
+      : _DisabledStreetCellsMode.empty;
 
   bool get _missingKnownBackground =>
       !StageCatalogRepository.hasKnownDelayLoadBackground(
@@ -140,16 +146,16 @@ class _CustomStagePropertiesScreenState
         (o) => o.objClass == 'LevelDefinition',
       );
       if (levelDefObj?.objData is Map<String, dynamic>) {
-        final data = Map<String, dynamic>.from(
-          levelDefObj!.objData as Map,
-        );
+        final data = Map<String, dynamic>.from(levelDefObj!.objData as Map);
         final stageModule = data['StageModule'] as String?;
         if (stageModule != null) {
           final info = RtidParser.parse(stageModule);
           if (info?.source == CustomStageLevelUtils.currentLevel &&
               info?.alias == widget.alias) {
-            data['StageModule'] =
-                RtidParser.build(_alias, CustomStageLevelUtils.currentLevel);
+            data['StageModule'] = RtidParser.build(
+              _alias,
+              CustomStageLevelUtils.currentLevel,
+            );
             levelDefObj.objData = data;
           }
         }
@@ -160,11 +166,7 @@ class _CustomStagePropertiesScreenState
   }
 
   void _setResourceGroups(List<String> values) {
-    CustomStageLevelUtils.setStringList(
-      _objdata,
-      'ResourceGroupNames',
-      values,
-    );
+    CustomStageLevelUtils.setStringList(_objdata, 'ResourceGroupNames', values);
     _sync();
   }
 
@@ -208,8 +210,7 @@ class _CustomStagePropertiesScreenState
                   final unloadSource = CustomStageLevelUtils.stringList(
                     impl.objdata['GroupsToUnloadForAds'],
                   ).toSet();
-                  final toUnload =
-                      groups.where(unloadSource.contains).toList();
+                  final toUnload = groups.where(unloadSource.contains).toList();
                   if (toUnload.isNotEmpty) {
                     CustomStageLevelUtils.setStringList(
                       _objdata,
@@ -221,33 +222,6 @@ class _CustomStagePropertiesScreenState
               }
               _sync();
             }
-            Navigator.pop(ctx);
-          },
-          onBack: () => Navigator.pop(ctx),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _pickBackground() async {
-    final delayLoads = StageCatalogRepository.delayLoadGroupsInLists(
-      _resourceGroups,
-      _groupsToUnload,
-    );
-    final options =
-        StageCatalogRepository.backgroundOptionsForDelayLoads(delayLoads);
-    if (options.isEmpty) return;
-    final current = _objdata['BackgroundImagePrefix'] as String? ?? '';
-    await Navigator.push<void>(
-      context,
-      MaterialPageRoute(
-        builder: (ctx) => StageBackgroundSelectionScreen(
-          options: options,
-          currentImagePrefix: current,
-          onSelected: (option) {
-            _objdata['BackgroundImagePrefix'] = option.imagePrefix;
-            _objdata['BackgroundResourceGroup'] = option.delayLoadGroup;
-            _sync();
             Navigator.pop(ctx);
           },
           onBack: () => Navigator.pop(ctx),
@@ -280,9 +254,9 @@ class _CustomStagePropertiesScreenState
       child: Text(
         text,
         style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: _accentColor,
-            ),
+          fontWeight: FontWeight.bold,
+          color: _accentColor,
+        ),
       ),
     );
   }
@@ -343,8 +317,8 @@ class _CustomStagePropertiesScreenState
                   l10n?.customStageNoResourceGroups ??
                       'No resource groups in list',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
               )
             else
@@ -387,7 +361,8 @@ class _CustomStagePropertiesScreenState
     String? iconFileName,
     String? iconAssetPath,
   }) {
-    final iconPath = iconAssetPath ??
+    final iconPath =
+        iconAssetPath ??
         (iconFileName != null
             ? 'assets/images/round_icons/$iconFileName'
             : null);
@@ -423,21 +398,68 @@ class _CustomStagePropertiesScreenState
                     Text(
                       label,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurfaceVariant,
-                          ),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
-                    Text(
-                      value,
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
+                    Text(value, style: Theme.of(context).textTheme.titleSmall),
                   ],
                 ),
               ),
               const Icon(Icons.arrow_forward_ios, size: 16),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _lawnAppearanceSummaryCard({
+    required String label,
+    required String value,
+    String? iconFileName,
+  }) {
+    final iconPath = iconFileName == null
+        ? 'assets/images/others/unknown.webp'
+        : 'assets/images/round_icons/$iconFileName';
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            ClipOval(
+              child: SizedBox(
+                width: 64,
+                height: 64,
+                child: AssetImageWidget(
+                  assetPath: iconPath,
+                  altCandidates: imageAltCandidates(iconPath),
+                  width: 64,
+                  height: 64,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  Text(
+                    value,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -473,9 +495,17 @@ class _CustomStagePropertiesScreenState
       resourceGroupNames: _resourceGroups,
       groupsToUnloadForAds: _groupsToUnload,
     );
-    final backgroundName = backgroundDisplay == null
-        ? (_objdata['BackgroundImagePrefix'] as String? ?? '—')
-        : ResourceNames.lookup(context, backgroundDisplay.nameKey);
+    final lawnAppearanceName = _stageBaseOption == null
+        ? backgroundDisplay == null
+              ? (_objdata['BackgroundImagePrefix'] as String? ?? '-')
+              : ResourceNames.lookup(context, backgroundDisplay.nameKey)
+        : ResourceNames.lookup(context, 'stage_${_stageBaseOption!.alias}');
+    final lawnAppearanceIcon =
+        _stageBaseOption?.iconName ??
+        CustomStageLevelUtils.displayIconFileName(
+          objclass: _objclass,
+          objdata: _objdata,
+        );
     final musicSuffix = _objdata['MusicSuffix'] as String? ?? '';
     final musicName = ResourceNames.lookup(
       context,
@@ -499,6 +529,12 @@ class _CustomStagePropertiesScreenState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              _lawnAppearanceSummaryCard(
+                label: 'Lawn appearance',
+                value: lawnAppearanceName,
+                iconFileName: lawnAppearanceIcon,
+              ),
+              const SizedBox(height: 16),
               _sectionTitle(l10n?.customStageSectionGeneral ?? 'General'),
               Card(
                 child: Padding(
@@ -533,7 +569,9 @@ class _CustomStagePropertiesScreenState
                   child: Column(
                     children: [
                       for (final field
-                          in CustomStageLevelUtils.editableZombieFields(_section))
+                          in CustomStageLevelUtils.editableZombieFields(
+                            _section,
+                          ))
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8),
                           child: StageZombieTypePickerRow(
@@ -581,16 +619,6 @@ class _CustomStagePropertiesScreenState
               const SizedBox(height: 16),
               _sectionTitle(l10n?.customStageSectionAppearance ?? 'Appearance'),
               _pickerTile(
-                label: _fieldLabel(context, 'BackgroundImagePrefix'),
-                value: backgroundName,
-                iconFileName: CustomStageLevelUtils.displayIconFileName(
-                  objclass: _objclass,
-                  objdata: _objdata,
-                ),
-                onTap: _pickBackground,
-              ),
-              const SizedBox(height: 8),
-              _pickerTile(
                 label: _fieldLabel(context, 'MusicSuffix'),
                 value: musicName,
                 iconAssetPath: MusicSuffixCatalog.iconAsset(musicSuffix),
@@ -599,7 +627,9 @@ class _CustomStagePropertiesScreenState
               const SizedBox(height: 8),
               Card(
                 child: SwitchListTile(
-                  title: Text(l10n?.customStageEnableAmbient ?? 'Enable ambient'),
+                  title: Text(
+                    l10n?.customStageEnableAmbient ?? 'Enable ambient',
+                  ),
                   value: _ambientEnabled,
                   activeThumbColor: accent,
                   onChanged: (enabled) {
@@ -617,8 +647,10 @@ class _CustomStagePropertiesScreenState
                   child: Padding(
                     padding: const EdgeInsets.all(12),
                     child: DropdownButtonFormField<String>(
-                      initialValue: CustomStageLevelUtils.ambientAudioOptions
-                              .contains(_objdata['AmbientAudioSuffix'])
+                      initialValue:
+                          CustomStageLevelUtils.ambientAudioOptions.contains(
+                            _objdata['AmbientAudioSuffix'],
+                          )
                           ? _objdata['AmbientAudioSuffix'] as String
                           : CustomStageLevelUtils.ambientAudioOptions.first,
                       decoration: customStageInputDecoration(
@@ -723,8 +755,9 @@ class _CustomStagePropertiesScreenState
                     title: Text(
                       l10n?.customStageBeachMinigame ?? 'Use minigame version',
                     ),
-                    value:
-                        CustomStageLevelUtils.isBeachMinigameEnabled(_objdata),
+                    value: CustomStageLevelUtils.isBeachMinigameEnabled(
+                      _objdata,
+                    ),
                     activeThumbColor: accent,
                     onChanged: (enabled) {
                       CustomStageLevelUtils.applyBeachMinigame(
@@ -763,7 +796,8 @@ class _CustomStagePropertiesScreenState
                         controller: _submarineHpCtrl,
                         decoration: customStageInputDecoration(
                           context,
-                          labelText: l10n?.customStageSubmarineHitpoints ??
+                          labelText:
+                              l10n?.customStageSubmarineHitpoints ??
                               'Submarine hitpoints',
                         ),
                         keyboardType: const TextInputType.numberWithOptions(
@@ -787,9 +821,7 @@ class _CustomStagePropertiesScreenState
                 const SizedBox(height: 8),
                 Card(
                   child: SwitchListTile(
-                    title: Text(
-                      _fieldLabel(context, 'HasGridItemAirShip'),
-                    ),
+                    title: Text(_fieldLabel(context, 'HasGridItemAirShip')),
                     value: CustomStageLevelUtils.readBool(
                       _objdata,
                       'HasGridItemAirShip',
@@ -827,8 +859,7 @@ class _CustomStagePropertiesScreenState
                             key,
                             () => TextEditingController(),
                           );
-                          _skycityCtrls[key]!.text =
-                              '${_objdata[key] ?? ''}';
+                          _skycityCtrls[key]!.text = '${_objdata[key] ?? ''}';
                         }
                         _sync();
                       },
@@ -840,8 +871,9 @@ class _CustomStagePropertiesScreenState
                         padding: const EdgeInsets.all(12),
                         child: Column(
                           children: [
-                            for (final key in CustomStageLevelUtils
-                                .skycityCannonFieldNames)
+                            for (final key
+                                in CustomStageLevelUtils
+                                    .skycityCannonFieldNames)
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 8),
                                 child: TextField(
@@ -857,8 +889,8 @@ class _CustomStagePropertiesScreenState
                                   ),
                                   keyboardType:
                                       const TextInputType.numberWithOptions(
-                                    decimal: true,
-                                  ),
+                                        decimal: true,
+                                      ),
                                   onChanged: (value) {
                                     final parsed = num.tryParse(value);
                                     if (parsed == null) return;

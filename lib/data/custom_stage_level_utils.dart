@@ -94,19 +94,85 @@ abstract final class CustomStageLevelUtils {
     return display?.nameKey ?? '';
   }
 
+  static String displayStageBaseNameKey({
+    required String objclass,
+    required Map<String, dynamic> objdata,
+  }) {
+    final option = StageCatalogRepository.stageBaseOptionForObjdata(
+      objclass: objclass,
+      objdata: objdata,
+    );
+    if (option != null) return 'stage_${option.alias}';
+    return displayNameKey(
+      backgroundImagePrefix: objdata['BackgroundImagePrefix'] as String?,
+      objdata: objdata,
+    );
+  }
+
   static String createCustomStage({
     required PvzLevelFile levelFile,
     required String alias,
-    required String baseObjclass,
+    required StageBaseOption baseOption,
   }) {
-    final template = StageCatalogRepository.templateObjdataForObjclass(baseObjclass);
+    final objdata = cloneJson(baseOption.objdata) as Map<String, dynamic>;
+    final objclass = baseOption.objclass;
     final obj = PvzObject(
-      objClass: baseObjclass,
+      objClass: objclass,
       aliases: [alias],
-      objData: _sanitizeForEditor(template, baseObjclass),
+      objData: objdata,
     );
     levelFile.objects.add(obj);
     return RtidParser.build(alias, currentLevel);
+  }
+
+  static String createCustomStageFromTemplate({
+    required PvzLevelFile levelFile,
+    required String alias,
+    required String objclass,
+    required Map<String, dynamic> objdata,
+    bool prepend = false,
+  }) {
+    final obj = PvzObject(
+      objClass: objclass,
+      aliases: [alias],
+      objData: cloneJson(objdata),
+    );
+    if (prepend) {
+      final insertIndex = levelFile.objects.indexWhere(
+        (o) =>
+            o.aliases != null &&
+            o.aliases!.isNotEmpty &&
+            isStagePropertiesObjclass(o.objClass),
+      );
+      if (insertIndex == -1) {
+        levelFile.objects.add(obj);
+      } else {
+        levelFile.objects.insert(insertIndex, obj);
+      }
+    } else {
+      levelFile.objects.add(obj);
+    }
+    return RtidParser.build(alias, currentLevel);
+  }
+
+  static String uniqueCustomStageAlias(
+    PvzLevelFile levelFile,
+    String suggestedAlias,
+  ) {
+    final base = suggestedAlias.trim().isEmpty
+        ? 'CustomStage'
+        : suggestedAlias.trim();
+    if (!_hasAlias(levelFile, base)) return base;
+
+    var index = 2;
+    while (_hasAlias(levelFile, '$base$index')) {
+      index++;
+    }
+    return '$base$index';
+  }
+
+  static bool _hasAlias(PvzLevelFile levelFile, String alias) {
+    return levelFile.objects.any((o) => o.aliases?.contains(alias) == true);
   }
 
   static List<String> stringList(dynamic raw) {
@@ -166,8 +232,9 @@ abstract final class CustomStageLevelUtils {
   ) {
     final current = objdata['DisabledStreetCells'];
     if (current is! List) return false;
-    final defaults =
-        StageCatalogRepository.defaultDisabledStreetCells(objclass);
+    final defaults = StageCatalogRepository.defaultDisabledStreetCells(
+      objclass,
+    );
     return const DeepCollectionEquality().equals(current, defaults);
   }
 
@@ -207,7 +274,8 @@ abstract final class CustomStageLevelUtils {
   }) {
     if (enabled) {
       final current = objdata['InitSubmarineInfo'];
-      final hp = hitpoints ??
+      final hp =
+          hitpoints ??
           (current is Map ? current['Hitpoints'] : null) ??
           submarineEnabledInfoTemplate['Hitpoints'];
       objdata['InitSubmarineInfo'] = {
@@ -215,8 +283,9 @@ abstract final class CustomStageLevelUtils {
         'Hitpoints': hp,
       };
     } else {
-      objdata['InitSubmarineInfo'] =
-          Map<String, dynamic>.from(submarineDisabledInfo);
+      objdata['InitSubmarineInfo'] = Map<String, dynamic>.from(
+        submarineDisabledInfo,
+      );
     }
   }
 
@@ -271,28 +340,6 @@ abstract final class CustomStageLevelUtils {
     return skycityCannonFieldNames.any(objdata.containsKey);
   }
 
-  static Map<String, dynamic> _sanitizeForEditor(
-    Map<String, dynamic> template,
-    String objclass,
-  ) {
-    final data = Map<String, dynamic>.from(template);
-    data.remove('AmbientAudioSuffix');
-    if (supportsSubmarine(objclass)) {
-      applySubmarineEnabled(data, enabled: true);
-    }
-    if (supportsSkyCityAirship(objclass)) {
-      final hasCannon = hasSkyCityCannonFields(data);
-      data['HasGridItemAirShip'] = hasCannon;
-      data['HasCannon'] = hasCannon;
-      if (!hasCannon) {
-        for (final key in skycityCannonFieldNames) {
-          data.remove(key);
-        }
-      }
-    }
-    return data;
-  }
-
   static void syncHiddenFieldsFromTemplate({
     required Map<String, dynamic> objdata,
     required String objclass,
@@ -302,18 +349,16 @@ abstract final class CustomStageLevelUtils {
       final key = entry.key;
       if (editableFieldNames.contains(key)) continue;
       if (key == 'FlagVeteranZombieTypeNames') continue;
-      objdata[key] = _cloneJson(entry.value);
+      objdata[key] = cloneJson(entry.value);
     }
   }
 
-  static dynamic _cloneJson(dynamic value) {
+  static dynamic cloneJson(dynamic value) {
     if (value is Map) {
-      return value.map(
-        (key, val) => MapEntry(key.toString(), _cloneJson(val)),
-      );
+      return value.map((key, val) => MapEntry(key.toString(), cloneJson(val)));
     }
     if (value is List) {
-      return value.map(_cloneJson).toList();
+      return value.map(cloneJson).toList();
     }
     return value;
   }
@@ -322,6 +367,11 @@ abstract final class CustomStageLevelUtils {
     required String objclass,
     required Map<String, dynamic> objdata,
   }) {
+    final option = StageCatalogRepository.stageBaseOptionForObjdata(
+      objclass: objclass,
+      objdata: objdata,
+    );
+    if (option != null) return option.iconName;
     if (supportsBeachMinigame(objclass, objdata) &&
         isBeachMinigameEnabled(objdata)) {
       return 'Stage_BeachSnake.webp';
@@ -337,9 +387,7 @@ abstract final class CustomStageLevelUtils {
   static const displayNameSuffixDefault = ' (Custom)';
 
   /// Objclasses that must not be offered when creating a custom lawn.
-  static const excludedCustomStageObjclasses = {
-    'AtlantisStageProperties',
-  };
+  static const excludedCustomStageObjclasses = {'AtlantisStageProperties'};
 
   static const _zombieFieldOrder = [
     'BasicZombieTypeName',

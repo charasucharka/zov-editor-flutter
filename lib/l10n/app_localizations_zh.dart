@@ -6406,7 +6406,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get waveGeneratorBlackHoleFieldHint =>
-      '填写列数以在本波结束时召唤时空黑洞，将所有植物向右吸动。\n注意：只有开启“在上一波僵尸全部死亡后再生成此波僵尸”时，才能召唤成功。';
+      '填写列数以在本波结束时召唤时空黑洞，将所有植物向右吸动。\n注意：只有本波不是关卡的最后一波，且开启“在上一波僵尸全部死亡后再生成此波僵尸”时，才能召唤成功。';
 
   @override
   String waveGeneratorBlackHoleWaveHint(int cols) {
@@ -6515,22 +6515,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get customStageNameSuffix => '（自定义）';
 
   @override
+  String get customStageLawnAppearance => '草坪外观';
+
+  @override
   String get selectCustomStageBase => '选择基础场地';
 
   @override
-  String get searchStageObjclass => '搜索 objclass';
+  String get searchStageBase => '按草坪名称或代号搜索';
 
   @override
-  String get noStageObjclassFound => '未找到 objclass';
-
-  @override
-  String get selectStageBackground => '选择草坪外观';
-
-  @override
-  String get searchStageBackground => '搜索场地';
-
-  @override
-  String get noStageBackgroundFound => '未找到草坪外观';
+  String get noStageBaseFound => '未找到草坪';
 
   @override
   String get importResourceGroup => '导入资源组';
@@ -6567,10 +6561,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get importResourceGroupsFromStageAllPresent => '该场地的所有资源组已在本关卡中。';
 
   @override
-  String get createCustomStage => '创建自定义草坪';
+  String get createCustomStage => '创建自定义地图';
 
   @override
-  String get createCustomStageHint => '选择基础场地属性类型，并在此关卡中本地编辑。';
+  String get createCustomStageHint => '选择基础草坪外观，并在此关卡中本地编辑。';
 
   @override
   String get customStageAliasPromptTitle => '自定义场地别名';
@@ -6585,10 +6579,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get stageSelectionTabCustom => '自定义';
 
   @override
-  String get customStageSelectionEmpty => '此关卡中尚无自定义草坪。';
+  String get customStageSelectionEmpty => '此关卡中尚无自定义地图。';
 
   @override
-  String get customStageSelectionInLevel => '此关卡中的自定义草坪';
+  String get customStageSelectionInLevel => '此关卡中的自定义地图';
 
   @override
   String get customStageSwitchToBuiltinTitle => '切换为内置草坪？';
@@ -6597,12 +6591,36 @@ class AppLocalizationsZh extends AppLocalizations {
   String get customStageSwitchToBuiltinMessage => '这将永久删除此关卡中的自定义场地数据，且无法撤销。';
 
   @override
-  String get customStageDeleteTitle => '删除自定义草坪？';
+  String get customStageDeleteTitle => '删除自定义地图？';
 
   @override
   String get customStageDeleteMessage =>
       '这将永久删除此关卡中的自定义场地数据。若其为当前草坪，关卡将切换为默认内置草坪。';
 
   @override
-  String get editCustomStage => '编辑自定义草坪';
+  String get customStagePresetSectionTitle => '预设自定义地图';
+
+  @override
+  String get customStagePreset_bigWaveNight => '巨浪黑夜';
+
+  @override
+  String get customStagePreset_mixtapeSummerNight => '摇滚夏夜';
+
+  @override
+  String get customStagePreset_oneSidedAtlantis => '单面海底';
+
+  @override
+  String get customStagePresetSource_memoryLaneS25Week6Boss =>
+      '出自回忆之旅25赛季第六周BOSS关';
+
+  @override
+  String get customStagePresetSource_memoryLaneS26HardLevel1 =>
+      '出自回忆之旅26赛季困难模式第1关';
+
+  @override
+  String get customStagePresetSource_memoryLaneS28Week3Original5_8 =>
+      '出自回忆之旅28赛季第三周原5~8关';
+
+  @override
+  String get editCustomStage => '编辑自定义地图';
 }

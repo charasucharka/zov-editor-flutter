@@ -3,12 +3,15 @@ import 'package:flutter/services.dart';
 import 'package:c_editor/data/custom_stage_level_utils.dart';
 import 'package:c_editor/data/pvz_models.dart';
 import 'package:c_editor/data/rtid_parser.dart';
+import 'package:c_editor/data/repository/custom_stage_preset_repository.dart';
 import 'package:c_editor/data/repository/stage_repository.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
-import 'package:c_editor/widgets/asset_image.dart' show AssetImageWidget, imageAltCandidates;
+import 'package:c_editor/widgets/asset_image.dart'
+    show AssetImageWidget, imageAltCandidates;
 import 'package:c_editor/widgets/custom_stage_editor_widgets.dart';
 import 'package:c_editor/widgets/editor_components.dart';
+
 // Options matching LevelDefinitionEP.kt (keep codenames)
 const _musicTypeOptions = [
   ('MainPath', 'MainPath'),
@@ -39,7 +42,7 @@ class BasicInfoScreen extends StatefulWidget {
     required this.levelFile,
     required this.levelDef,
     required this.onBack,
-    required     this.onStageTap,
+    required this.onStageTap,
     required this.onChanged,
   });
 
@@ -49,7 +52,8 @@ class BasicInfoScreen extends StatefulWidget {
   final Future<void> Function(
     LevelDefinitionData levelDef,
     VoidCallback onStagePicked,
-  )? onStageTap;
+  )?
+  onStageTap;
   final VoidCallback onChanged;
 
   @override
@@ -67,8 +71,12 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
     super.initState();
     _nameCtrl = TextEditingController(text: widget.levelDef.name);
     _descCtrl = TextEditingController(text: widget.levelDef.description);
-    _levelNumCtrl = TextEditingController(text: '${widget.levelDef.levelNumber ?? 1}');
-    _sunCtrl = TextEditingController(text: '${widget.levelDef.startingSun ?? 200}');
+    _levelNumCtrl = TextEditingController(
+      text: '${widget.levelDef.levelNumber ?? 1}',
+    );
+    _sunCtrl = TextEditingController(
+      text: '${widget.levelDef.startingSun ?? 200}',
+    );
   }
 
   @override
@@ -108,7 +116,9 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
     def.description = _descCtrl.text;
     def.levelNumber = int.tryParse(_levelNumCtrl.text) ?? 1;
     def.startingSun = int.tryParse(_sunCtrl.text) ?? 200;
-    final obj = widget.levelFile.objects.where((o) => o.objClass == 'LevelDefinition').firstOrNull;
+    final obj = widget.levelFile.objects
+        .where((o) => o.objClass == 'LevelDefinition')
+        .firstOrNull;
     if (obj != null) obj.objData = def.toJson();
     widget.onChanged();
   }
@@ -119,21 +129,29 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
     final def = widget.levelDef;
     final theme = Theme.of(context);
     final stageInfo = RtidParser.parse(def.stageModule);
-    final isCustomStage =
-        CustomStageLevelUtils.isCustomStageRtid(def.stageModule);
+    final isCustomStage = CustomStageLevelUtils.isCustomStageRtid(
+      def.stageModule,
+    );
     PvzObject? customStageObj;
     Map<String, dynamic>? customStageData;
     if (isCustomStage && stageInfo != null) {
-      customStageObj =
-          CustomStageLevelUtils.findStageObject(widget.levelFile, stageInfo.alias);
+      customStageObj = CustomStageLevelUtils.findStageObject(
+        widget.levelFile,
+        stageInfo.alias,
+      );
       if (customStageObj?.objData is Map) {
-        customStageData =
-            Map<String, dynamic>.from(customStageObj!.objData as Map);
+        customStageData = Map<String, dynamic>.from(
+          customStageObj!.objData as Map,
+        );
       }
     }
-    final customSuffix = l10n?.customStageNameSuffix ??
+    final isPresetCustomStage = stageInfo != null &&
+        CustomStagePresetRepository.isPresetCustomStageAlias(stageInfo.alias);
+    final customSuffix =
+        l10n?.customStageNameSuffix ??
         CustomStageLevelUtils.displayNameSuffixDefault;
-    final isDesktop = theme.platform == TargetPlatform.windows ||
+    final isDesktop =
+        theme.platform == TargetPlatform.windows ||
         theme.platform == TargetPlatform.macOS ||
         theme.platform == TargetPlatform.linux;
     final sectionStyle = theme.textTheme.titleMedium?.copyWith(
@@ -196,7 +214,8 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
                     _rectangularTextField(
                       context,
                       controller: _descCtrl,
-                      label: '${l10n?.description ?? 'Description'} (Description)',
+                      label:
+                          '${l10n?.description ?? 'Description'} (Description)',
                       maxLines: 2,
                       onChanged: _sync,
                     ),
@@ -205,7 +224,10 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            Text(l10n?.sceneSettingsSection ?? 'Scene settings', style: sectionStyle),
+            Text(
+              l10n?.sceneSettingsSection ?? 'Scene settings',
+              style: sectionStyle,
+            ),
             const SizedBox(height: 12),
             Card(
               child: InkWell(
@@ -236,9 +258,9 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
                             if (isCustomStage && customStageData != null) {
                               final iconFile =
                                   CustomStageLevelUtils.displayIconFileName(
-                                objclass: customStageObj!.objClass,
-                                objdata: customStageData,
-                              );
+                                    objclass: customStageObj!.objClass,
+                                    objdata: customStageData,
+                                  );
                               final iconPath = iconFile == null
                                   ? 'assets/images/others/unknown.webp'
                                   : 'assets/images/round_icons/$iconFile';
@@ -247,16 +269,17 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
                                 children: [
                                   AssetImageWidget(
                                     assetPath: iconPath,
-                                    altCandidates:
-                                        imageAltCandidates(iconPath),
+                                    altCandidates: imageAltCandidates(iconPath),
                                     width: 96,
                                     height: 96,
                                     fit: BoxFit.cover,
                                   ),
-                                  const Positioned(
+                                  Positioned(
                                     top: 4,
                                     left: 4,
-                                    child: CustomStageBadge(),
+                                    child: _CurrentCustomStageBadge(
+                                      fromPreset: isPresetCustomStage,
+                                    ),
                                   ),
                                 ],
                               );
@@ -267,8 +290,11 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
                             final iconName = stageItem?.iconName;
                             if (iconName != null) {
                               return AssetImageWidget(
-                                assetPath: 'assets/images/round_icons/$iconName',
-                                altCandidates: imageAltCandidates('assets/images/round_icons/$iconName'),
+                                assetPath:
+                                    'assets/images/round_icons/$iconName',
+                                altCandidates: imageAltCandidates(
+                                  'assets/images/round_icons/$iconName',
+                                ),
                                 width: 96,
                                 height: 96,
                                 fit: BoxFit.cover,
@@ -295,28 +321,24 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
                                 color: theme.colorScheme.onSurfaceVariant,
                               ),
                             ),
-                            Text(
-                              () {
-                                if (stageInfo == null) return def.stageModule;
-                                if (isCustomStage && customStageData != null) {
-                                  final nameKey =
-                                      CustomStageLevelUtils.displayNameKey(
-                                    backgroundImagePrefix: customStageData[
-                                        'BackgroundImagePrefix'] as String?,
-                                    objdata: customStageData,
-                                  );
-                                  if (nameKey.isNotEmpty) {
-                                    return '${ResourceNames.lookup(context, nameKey)}$customSuffix';
-                                  }
-                                  return '${stageInfo.alias}$customSuffix';
+                            Text(() {
+                              if (stageInfo == null) return def.stageModule;
+                              if (isCustomStage && customStageData != null) {
+                                final nameKey =
+                                    CustomStageLevelUtils.displayStageBaseNameKey(
+                                      objclass: customStageObj!.objClass,
+                                      objdata: customStageData,
+                                    );
+                                if (nameKey.isNotEmpty) {
+                                  return '${ResourceNames.lookup(context, nameKey)}$customSuffix';
                                 }
-                                return ResourceNames.lookup(
-                                  context,
-                                  StageRepository.getName(stageInfo.alias),
-                                );
-                              }(),
-                              style: theme.textTheme.titleMedium,
-                            ),
+                                return '${stageInfo.alias}$customSuffix';
+                              }
+                              return ResourceNames.lookup(
+                                context,
+                                StageRepository.getName(stageInfo.alias),
+                              );
+                            }(), style: theme.textTheme.titleMedium),
                           ],
                         ),
                       ),
@@ -331,7 +353,8 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: DropdownButtonFormField<String>(
-                  initialValue: _musicTypeOptions.map((e) => e.$1).contains(def.musicType)
+                  initialValue:
+                      _musicTypeOptions.map((e) => e.$1).contains(def.musicType)
                       ? def.musicType
                       : 'MainPath',
                   decoration: editorInputDecoration(
@@ -339,10 +362,11 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
                     labelText: '${l10n?.musicType ?? 'Music type'} (MusicType)',
                     focusColor: theme.colorScheme.primary,
                   ),
-                  items: _musicTypeOptions.map((e) => DropdownMenuItem(
-                    value: e.$1,
-                    child: Text(e.$2),
-                  )).toList(),
+                  items: _musicTypeOptions
+                      .map(
+                        (e) => DropdownMenuItem(value: e.$1, child: Text(e.$2)),
+                      )
+                      .toList(),
                   onChanged: (v) {
                     if (v != null) {
                       setState(() {
@@ -367,10 +391,11 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
                     labelText: '${l10n?.loot ?? 'Loot'} (Loot)',
                     focusColor: theme.colorScheme.primary,
                   ),
-                  items: _lootOptions.map((e) => DropdownMenuItem(
-                    value: e.$1,
-                    child: Text(e.$2),
-                  )).toList(),
+                  items: _lootOptions
+                      .map(
+                        (e) => DropdownMenuItem(value: e.$1, child: Text(e.$2)),
+                      )
+                      .toList(),
                   onChanged: (v) {
                     if (v != null) {
                       setState(() {
@@ -387,18 +412,23 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: DropdownButtonFormField<String>(
-                  initialValue: _victoryOptions.map((e) => e.$1).contains(def.victoryModule)
+                  initialValue:
+                      _victoryOptions
+                          .map((e) => e.$1)
+                          .contains(def.victoryModule)
                       ? def.victoryModule
                       : _victoryOptions.first.$1,
                   decoration: editorInputDecoration(
                     context,
-                    labelText: '${l10n?.victoryModule ?? 'Victory module'} (VictoryModule)',
+                    labelText:
+                        '${l10n?.victoryModule ?? 'Victory module'} (VictoryModule)',
                     focusColor: theme.colorScheme.primary,
                   ),
-                  items: _victoryOptions.map((e) => DropdownMenuItem(
-                    value: e.$1,
-                    child: Text(e.$2),
-                  )).toList(),
+                  items: _victoryOptions
+                      .map(
+                        (e) => DropdownMenuItem(value: e.$1, child: Text(e.$2)),
+                      )
+                      .toList(),
                   onChanged: (v) {
                     if (v != null) {
                       setState(() {
@@ -413,15 +443,22 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
             const SizedBox(height: 8),
             EditorWarningBanner(
               margin: EdgeInsets.zero,
-              message: l10n?.victoryModuleWarning ??
+              message:
+                  l10n?.victoryModuleWarning ??
                   'Using non-default victory modules may cause level crashes due to module conflicts. Use with caution.',
             ),
             const SizedBox(height: 24),
-            Text(l10n?.restrictionsSection ?? 'Restrictions', style: sectionStyle),
+            Text(
+              l10n?.restrictionsSection ?? 'Restrictions',
+              style: sectionStyle,
+            ),
             const SizedBox(height: 12),
             Card(
               child: SwitchListTile(
-                title: Text(l10n?.disablePeavine ?? 'Disable peavine', style: theme.textTheme.bodyMedium),
+                title: Text(
+                  l10n?.disablePeavine ?? 'Disable peavine',
+                  style: theme.textTheme.bodyMedium,
+                ),
                 value: def.disablePeavine ?? false,
                 onChanged: (v) {
                   setState(() {
@@ -433,7 +470,10 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
             ),
             Card(
               child: SwitchListTile(
-                title: Text(l10n?.disableArtifact ?? 'Disable artifact', style: theme.textTheme.bodyMedium),
+                title: Text(
+                  l10n?.disableArtifact ?? 'Disable artifact',
+                  style: theme.textTheme.bodyMedium,
+                ),
                 value: def.isArtifactDisabled ?? false,
                 onChanged: (v) {
                   setState(() {
@@ -470,10 +510,43 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
   }
 }
 
+class _CurrentCustomStageBadge extends StatelessWidget {
+  const _CurrentCustomStageBadge({required this.fromPreset});
+
+  final bool fromPreset;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: customStageBadgePadding(context),
+      decoration: BoxDecoration(
+        color: _badgeColor(context),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        'C',
+        style: TextStyle(
+          fontSize: customStageBadgeFontSize(context),
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Color _badgeColor(BuildContext context) {
+    if (fromPreset) {
+      return Theme.of(context).brightness == Brightness.dark
+          ? const Color(0xFFE65100)
+          : const Color(0xFFFF9800);
+    }
+    return customStageBadgeColor(context);
+  }
+}
+
 extension _FirstOrNull<E> on Iterable<E> {
   E? get firstOrNull {
     final it = iterator;
     return it.moveNext() ? it.current : null;
   }
 }
-

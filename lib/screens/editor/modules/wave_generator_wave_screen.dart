@@ -264,6 +264,39 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
     super.dispose();
   }
 
+  Widget _buildLabeledNumberField({
+    required TextEditingController controller,
+    required String label,
+    String? helperText,
+    int? helperMaxLines,
+    required ValueChanged<String> onChanged,
+  }) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          label,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+          softWrap: true,
+        ),
+        const SizedBox(height: 6),
+        TextFormField(
+          controller: controller,
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
+            helperText: helperText,
+            helperMaxLines: helperMaxLines,
+          ),
+          keyboardType: TextInputType.number,
+          onChanged: onChanged,
+        ),
+      ],
+    );
+  }
+
   void _sync() {
     final obj = WaveGeneratorLevelUtils.findObject(widget.levelFile);
     if (obj == null) return;
@@ -676,14 +709,10 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      TextFormField(
+                      _buildLabeledNumberField(
                         controller: _plantFoodCtrl,
-                        decoration: InputDecoration(
-                          labelText: l10n?.waveGeneratorSpawnPlantFood ??
-                              'Plant food drops (SpawnPlantFoodCount)',
-                          border: const OutlineInputBorder(),
-                        ),
-                        keyboardType: TextInputType.number,
+                        label: l10n?.waveGeneratorSpawnPlantFood ??
+                            'Plant food drops (SpawnPlantFoodCount)',
                         onChanged: (v) {
                           final trimmed = v.trim();
                           if (trimmed.isEmpty) {
@@ -698,70 +727,48 @@ class _WaveGeneratorWaveScreenState extends State<WaveGeneratorWaveScreen> {
                         },
                       ),
                       const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              controller: _pointStartCtrl,
-                              decoration: InputDecoration(
-                                labelText: l10n?.waveGeneratorWavePointStart ??
-                                    'Wave point start (WavePointStart)',
-                                border: const OutlineInputBorder(),
-                              ),
-                              keyboardType: TextInputType.number,
-                              onChanged: (v) {
-                                final trimmed = v.trim();
-                                if (trimmed.isEmpty) {
-                                  _wave = _copyWave(clearWavePointStart: true);
-                                } else {
-                                  final n = int.tryParse(trimmed);
-                                  if (n != null) {
-                                    _wave = _copyWave(wavePointStart: n);
-                                  }
-                                }
-                                _sync();
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: TextFormField(
-                              controller: _pointIncrementCtrl,
-                              decoration: InputDecoration(
-                                labelText:
-                                    l10n?.waveGeneratorWavePointIncrement ??
-                                        'Wave point increment (WavePointIncrement)',
-                                border: const OutlineInputBorder(),
-                              ),
-                              keyboardType: TextInputType.number,
-                              onChanged: (v) {
-                                final trimmed = v.trim();
-                                if (trimmed.isEmpty) {
-                                  _wave =
-                                      _copyWave(clearWavePointIncrement: true);
-                                } else {
-                                  final n = int.tryParse(trimmed);
-                                  if (n != null) {
-                                    _wave = _copyWave(wavePointIncrement: n);
-                                  }
-                                }
-                                _sync();
-                              },
-                            ),
-                          ),
-                        ],
+                      _buildLabeledNumberField(
+                        controller: _pointStartCtrl,
+                        label: l10n?.waveGeneratorWavePointStart ??
+                            'Wave point start (WavePointStart)',
+                        onChanged: (v) {
+                          final trimmed = v.trim();
+                          if (trimmed.isEmpty) {
+                            _wave = _copyWave(clearWavePointStart: true);
+                          } else {
+                            final n = int.tryParse(trimmed);
+                            if (n != null) {
+                              _wave = _copyWave(wavePointStart: n);
+                            }
+                          }
+                          _sync();
+                        },
                       ),
                       const SizedBox(height: 12),
-                      TextFormField(
+                      _buildLabeledNumberField(
+                        controller: _pointIncrementCtrl,
+                        label: l10n?.waveGeneratorWavePointIncrement ??
+                            'Wave point increment (WavePointIncrement)',
+                        onChanged: (v) {
+                          final trimmed = v.trim();
+                          if (trimmed.isEmpty) {
+                            _wave = _copyWave(clearWavePointIncrement: true);
+                          } else {
+                            final n = int.tryParse(trimmed);
+                            if (n != null) {
+                              _wave = _copyWave(wavePointIncrement: n);
+                            }
+                          }
+                          _sync();
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      _buildLabeledNumberField(
                         controller: _blackHoleCtrl,
-                        decoration: InputDecoration(
-                          labelText: l10n?.columnsDragged ??
-                              'Columns dragged (ColNumPlantIsDragged)',
-                          border: const OutlineInputBorder(),
-                          helperText: l10n?.waveGeneratorBlackHoleFieldHint,
-                          helperMaxLines: 4,
-                        ),
-                        keyboardType: TextInputType.number,
+                        label: l10n?.columnsDragged ??
+                            'Columns dragged (ColNumPlantIsDragged)',
+                        helperText: l10n?.waveGeneratorBlackHoleFieldHint,
+                        helperMaxLines: 10,
                         onChanged: (v) {
                           final trimmed = v.trim();
                           if (trimmed.isEmpty) {

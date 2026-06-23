@@ -12079,7 +12079,7 @@ abstract class AppLocalizations {
   /// No description provided for @waveGeneratorBlackHoleFieldHint.
   ///
   /// In en, this message translates to:
-  /// **'Enter the number of columns to summon a black hole at the end of this wave, pulling all plants to the right.\nNote: Black hole can only be summoned if \"Spawn this wave only after all zombies from the previous wave have been defeated\" is enabled.'**
+  /// **'Enter the number of columns to summon a black hole at the end of this wave, pulling all plants to the right.\nNote: Black hole can only be summoned if this wave is not the final wave of the level and \"Spawn this wave only after all zombies from the previous wave have been defeated\" is enabled.'**
   String get waveGeneratorBlackHoleFieldHint;
 
   /// No description provided for @waveGeneratorBlackHoleWaveHint.
@@ -12280,41 +12280,29 @@ abstract class AppLocalizations {
   /// **' (Custom)'**
   String get customStageNameSuffix;
 
+  /// No description provided for @customStageLawnAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Lawn appearance'**
+  String get customStageLawnAppearance;
+
   /// No description provided for @selectCustomStageBase.
   ///
   /// In en, this message translates to:
   /// **'Select base lawn'**
   String get selectCustomStageBase;
 
-  /// No description provided for @searchStageObjclass.
+  /// No description provided for @searchStageBase.
   ///
   /// In en, this message translates to:
-  /// **'Search objclass'**
-  String get searchStageObjclass;
+  /// **'Search by lawn name or codename'**
+  String get searchStageBase;
 
-  /// No description provided for @noStageObjclassFound.
+  /// No description provided for @noStageBaseFound.
   ///
   /// In en, this message translates to:
-  /// **'No objclass found'**
-  String get noStageObjclassFound;
-
-  /// No description provided for @selectStageBackground.
-  ///
-  /// In en, this message translates to:
-  /// **'Select lawn appearance'**
-  String get selectStageBackground;
-
-  /// No description provided for @searchStageBackground.
-  ///
-  /// In en, this message translates to:
-  /// **'Search lawn'**
-  String get searchStageBackground;
-
-  /// No description provided for @noStageBackgroundFound.
-  ///
-  /// In en, this message translates to:
-  /// **'No lawn appearance found'**
-  String get noStageBackgroundFound;
+  /// **'No lawn found'**
+  String get noStageBaseFound;
 
   /// No description provided for @importResourceGroup.
   ///
@@ -12385,7 +12373,7 @@ abstract class AppLocalizations {
   /// No description provided for @createCustomStageHint.
   ///
   /// In en, this message translates to:
-  /// **'Pick a base stage properties type and edit it locally in this level.'**
+  /// **'Pick a base lawn appearance and edit it locally in this level.'**
   String get createCustomStageHint;
 
   /// No description provided for @customStageAliasPromptTitle.
@@ -12447,6 +12435,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This permanently removes the custom stage data from this level. If it is the active lawn, the level will switch to the default built-in lawn.'**
   String get customStageDeleteMessage;
+
+  /// No description provided for @customStagePresetSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Preset custom lawns'**
+  String get customStagePresetSectionTitle;
+
+  /// No description provided for @customStagePreset_bigWaveNight.
+  ///
+  /// In en, this message translates to:
+  /// **'Big Wave Night'**
+  String get customStagePreset_bigWaveNight;
+
+  /// No description provided for @customStagePreset_mixtapeSummerNight.
+  ///
+  /// In en, this message translates to:
+  /// **'Mixtape Summer Night'**
+  String get customStagePreset_mixtapeSummerNight;
+
+  /// No description provided for @customStagePreset_oneSidedAtlantis.
+  ///
+  /// In en, this message translates to:
+  /// **'One-Sided Atlantis'**
+  String get customStagePreset_oneSidedAtlantis;
+
+  /// No description provided for @customStagePresetSource_memoryLaneS25Week6Boss.
+  ///
+  /// In en, this message translates to:
+  /// **'From Memory Lane Season 25 Week 6 Boss level'**
+  String get customStagePresetSource_memoryLaneS25Week6Boss;
+
+  /// No description provided for @customStagePresetSource_memoryLaneS26HardLevel1.
+  ///
+  /// In en, this message translates to:
+  /// **'From Memory Lane Season 26 Hard Mode Level 1'**
+  String get customStagePresetSource_memoryLaneS26HardLevel1;
+
+  /// No description provided for @customStagePresetSource_memoryLaneS28Week3Original5_8.
+  ///
+  /// In en, this message translates to:
+  /// **'From Memory Lane Season 28 Week 3, original Levels 5-8'**
+  String get customStagePresetSource_memoryLaneS28Week3Original5_8;
 
   /// No description provided for @editCustomStage.
   ///

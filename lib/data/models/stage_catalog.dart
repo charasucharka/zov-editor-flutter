@@ -10,8 +10,7 @@ class StageFieldSpec {
   final String type;
   final dynamic defaultValue;
 
-  bool get isZombieType =>
-      type == 'zombieType' || type == 'List<zombieType>';
+  bool get isZombieType => type == 'zombieType' || type == 'List<zombieType>';
 
   factory StageFieldSpec.fromJson(Map<String, dynamic> json) {
     return StageFieldSpec(
@@ -36,6 +35,26 @@ class StageImplementation {
   final Map<String, dynamic> objdata;
   final String? image;
   final String? tag;
+}
+
+class StageBaseOption {
+  const StageBaseOption({
+    required this.alias,
+    required this.objclass,
+    required this.iconName,
+    required this.type,
+    required this.objdata,
+    this.backgroundImagePrefix,
+    this.backgroundResourceGroup,
+  });
+
+  final String alias;
+  final String objclass;
+  final String iconName;
+  final String type;
+  final Map<String, dynamic> objdata;
+  final String? backgroundImagePrefix;
+  final String? backgroundResourceGroup;
 }
 
 class StageCatalogSection {
@@ -66,12 +85,12 @@ class StageCatalogSection {
       objclass: json['objclass'] as String,
       fields: fieldsRaw is List
           ? fieldsRaw
-              .map(
-                (e) => StageFieldSpec.fromJson(
-                  Map<String, dynamic>.from(e as Map),
-                ),
-              )
-              .toList()
+                .map(
+                  (e) => StageFieldSpec.fromJson(
+                    Map<String, dynamic>.from(e as Map),
+                  ),
+                )
+                .toList()
           : const [],
       implementations: implRaw is List
           ? implRaw.map((e) {

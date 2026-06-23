@@ -1,0 +1,104 @@
+[
+  {
+    "id": "pvz1_s26_boss_robot_6_big_wave_night",
+    "alias": "BigWaveNightCustom",
+    "nameKey": "customStagePreset_bigWaveNight",
+    "sourceKey": "customStagePresetSource_memoryLaneS25Week6Boss",
+    "iconName": "Stage_Night.webp",
+    "objclass": "BeachStageProperties",
+    "objdata": {
+      "ResourceGroupNames": ["Egypt_Gravestone", "Game_Tombstones_Dynamic", "DelayLoad_Background_Beach", "DelayLoad_Background_Beach_Compressed", "Dirt_Spawn_Beach", "Tombstone_Dark_Effects", "DelayLoad_Background_Night", "AudioTutorial"],
+      "GroupsToUnloadForAds": ["DelayLoad_Background_Night"],
+      "BelongsToWorld": "beach",
+      "StagePrefix": "beach",
+      "BackgroundResourceGroup": "DelayLoad_Background_Night",
+      "BackgroundImagePrefix": "IMAGE_BACKGROUNDS_NIGHT",
+      "LevelPowerupSet": "LevelPowerupsDefault",
+      "BasicZombieTypeName": "tutorial",
+      "FlagZombieTypeName": "tutorial_flag",
+      "Armor1ZombieTypeName": "tutorial_armor1",
+      "Armor2ZombieTypeName": "tutorial_armor2",
+      "MusicSuffix": "Twister",
+      "AmbientAudioSuffix": "Amb_Tutorial_Garden_BG_LP",
+      "RailcartDefaultTypeName": "railcart_tutotial",
+      "GravestoneDefaultTypeName": "gravestone_tutorial",
+      "DisabledStreetCells": [
+        {"mX": 0, "mY": 0}, {"mX": 0, "mY": 1}, {"mX": 0, "mY": 2}, {"mX": 0, "mY": 3}, {"mX": 0, "mY": 4}, {"mX": 0, "mY": 5}, {"mX": 0, "mY": 6}, {"mX": 0, "mY": 7}, {"mX": 0, "mY": 8}, {"mX": 0, "mY": 9},
+        {"mX": 1, "mY": 0}, {"mX": 1, "mY": 1}, {"mX": 1, "mY": 2}, {"mX": 1, "mY": 3}, {"mX": 1, "mY": 4}, {"mX": 1, "mY": 5}, {"mX": 1, "mY": 6}, {"mX": 1, "mY": 7}, {"mX": 1, "mY": 8}, {"mX": 1, "mY": 9},
+        {"mX": 2, "mY": 0}, {"mX": 2, "mY": 1}, {"mX": 2, "mY": 2}, {"mX": 2, "mY": 3}, {"mX": 2, "mY": 4}, {"mX": 2, "mY": 5}, {"mX": 2, "mY": 6}, {"mX": 2, "mY": 7}, {"mX": 2, "mY": 8}, {"mX": 2, "mY": 9},
+        {"mX": 3, "mY": 9}, {"mX": 5, "mY": 9}, {"mX": 7, "mY": 9}, {"mX": 7, "mY": 8}, {"mX": 7, "mY": 7}, {"mX": 8, "mY": 9}, {"mX": 8, "mY": 8}, {"mX": 8, "mY": 7}
+      ]
+    }
+  },
+  {
+    "id": "pvz1_s27_1_h_mixtape_summer_night",
+    "alias": "MixtapeSummerNightCustom",
+    "nameKey": "customStagePreset_mixtapeSummerNight",
+    "sourceKey": "customStagePresetSource_memoryLaneS26HardLevel1",
+    "iconName": "Stage_SummerNight.webp",
+    "objclass": "EightiesStageProperties",
+    "objdata": {
+      "ResourceGroupNames": ["DelayLoad_Background_Summer_Night", "Dirt_Spawn_Eighties", "AudioEighties", "Eighties_Background_Effects"],
+      "ResourceGroupNames-Need for fix": ["DelayLoad_Background_Eighties_Compressed", "Dirt_Spawn_Eighties", "EightiesGroansAudio", "Eighties_Background_Effects", "EightiesLootPinatas"],
+      "GroupsToUnloadForAds": ["DelayLoad_Background_Eighties_Compressed"],
+      "BelongsToWorld": "eighties",
+      "StagePrefix": "summer_night",
+      "BackgroundResourceGroup": "DelayLoad_Background_Summer_Night",
+      "BackgroundImagePrefix": "IMAGE_BACKGROUNDS_SUMMER_NIGHT",
+      "LevelPowerupSet": "LevelPowerupsDefault",
+      "BasicZombieTypeName": "summer_basic",
+      "FlagZombieTypeName": "future_flag",
+      "Armor1ZombieTypeName": "summer_armor1",
+      "Armor2ZombieTypeName": "summer_armor2",
+      "RailcartDefaultTypeName": "railcart_egypt",
+      "GravestoneDefaultTypeName": "gravestone_eighties",
+      "DirtSpawnEffectName": "POPANIM_EFFECTS_DIRT_SPAWN_EIGHTIES",
+      "MusicSuffix": "Eighties",
+      "DisabledStreetCells": []
+    }
+  },
+  {
+    "id": "pvz1_s29_21_n_one_sided_atlantis",
+    "alias": "OneSidedAtlantisCustom",
+    "nameKey": "customStagePreset_oneSidedAtlantis",
+    "sourceKey": "customStagePresetSource_memoryLaneS28Week3Original5_8",
+    "iconName": "Stage_Atlantis.webp",
+    "objclass": "DeepseaStageLandProperties",
+    "objdata": {
+      "ResourceGroupNames": ["Dirt_Spawn_Eighties", "Submarine_Atlantis", "Environment_Atlantis", "AtlantisSpermWhaleGroup", "DelayLoad_Background_Deepsea", "TideWave_Atlantis", "AudioAtlantics", "PlantOxygenAlgae"],
+      "GroupsToUnloadForAds": ["DelayLoad_Background_Deepsea"],
+      "StagePrefix": "atlantis",
+      "BackgroundResourceGroup": "DelayLoad_Background_Deepsea",
+      "BackgroundImagePrefix": "IMAGE_BACKGROUNDS_DEEPSEALAND",
+      "LevelPowerupSet": "LevelPowerupsDefault",
+      "BasicZombieTypeName": "atlantis_land_basic",
+      "FlagZombieTypeName": "atlantis_land_flag",
+      "Armor1ZombieTypeName": "atlantis_land_armor1",
+      "Armor2ZombieTypeName": "atlantis_land_armor2",
+      "RailcartDefaultTypeName": "railcart_egypt",
+      "GravestoneDefaultTypeName": "gravestone_eighties",
+      "DirtSpawnEffectName": "POPANIM_EFFECTS_DIRT_SPAWN_EIGHTIES",
+      "MusicSuffix": "Atlantis",
+      "AmbientAudioSuffix": "Atlantis_Currents_BG",
+      "InitSubmarineInfo": {"Width": 0, "Height": 0, "Hitpoints": 32000, "InitialLocation": {"mX": -10, "mY": -6}},
+      "ProjectileConverterProps": {
+        "ConvertProjectiles": [
+          {"InputType": "FirePeaDefault", "OutputType": "GatlingPeaDefault", "AdvOutputType": "GatlingPeaDefault", "AudioEventName": ""},
+          {"InputType": "UltraFirePeaDefault", "OutputType": "GatlingPeaDefault", "AdvOutputType": "GatlingPeaDefault", "AudioEventName": ""},
+          {"InputType": "AvatarUltraFirePeaDefault", "OutputType": "GatlingPeaDefault", "AdvOutputType": "GatlingPeaDefault", "AudioEventName": ""},
+          {"InputType": "AvatarUltraFirePeaAvatarDefault", "OutputType": "PeaAvatarDefault", "AdvOutputType": "PeaAvatarDefault", "AudioEventName": ""},
+          {"InputType": "UltraFirePeaAvatarDefault", "OutputType": "PeaAvatarDefault", "AdvOutputType": "PeaAvatarDefault", "AudioEventName": ""},
+          {"InputType": "FirePeaAvatarDefault", "OutputType": "PeaAvatarDefault", "AdvOutputType": "PeaAvatarDefault", "AudioEventName": ""},
+          {"InputType": "PeapodGiantUltraFirePeaDefault", "OutputType": "PeapodPlantfoodPea", "AdvOutputType": "PeapodPlantfoodPea", "AudioEventName": ""},
+          {"InputType": "BearberryAvatarProjectile", "OutputType": "BearberryPlantfoodProjectile", "AdvOutputType": "BearberryPlantfoodProjectile", "AudioEventName": ""},
+          {"InputType": "StephaniaAvatarPlantfoodProjectileDefault", "OutputType": "StephaniaPlantfoodProjectileDefault", "AdvOutputType": "StephaniaPlantfoodProjectileDefault", "AudioEventName": ""},
+          {"InputType": "pineconePlantFoodAvatar", "OutputType": "pineconePlantFoodDefault", "AdvOutputType": "pineconePlantFoodDefault", "AudioEventName": ""},
+          {"InputType": "SlingPeaPlantfoodBlueFireDefault", "OutputType": "SlingPeaBounceDefault", "AdvOutputType": "SlingPeaBounceDefault", "AudioEventName": ""},
+          {"InputType": "SlingPeaPlantfoodFireDefault", "OutputType": "SlingPeaBounceDefault", "AdvOutputType": "SlingPeaBounceDefault", "AudioEventName": ""},
+          {"InputType": "HomingThistlePlantfoodFire", "OutputType": "HomingThistlePlantfood", "AdvOutputType": "HomingThistlePlantfood", "AudioEventName": ""}
+        ]
+      },
+      "DisabledStreetCells": []
+    }
+  }
+]

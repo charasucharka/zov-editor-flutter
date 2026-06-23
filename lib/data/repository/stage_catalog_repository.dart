@@ -5,26 +5,24 @@ import 'package:flutter/widgets.dart';
 import 'package:c_editor/data/asset_loader.dart';
 import 'package:c_editor/data/models/stage_catalog.dart';
 
-/// Loads `Stages.json`, `Stages_helper.json`, and `Stages_objclass_helper.json`.
+/// Loads `Stages.json`, `Stages_helper.json`, and `Stages_tags.json`.
 abstract final class StageCatalogRepository {
   static const _catalogPath = 'assets/resources/Stages.json';
   static const _helperPath = 'assets/resources/Stages_helper.json';
-  static const _objclassHelperPath = 'assets/resources/Stages_objclass_helper.json';
+  static const _tagsPath = 'assets/resources/Stages_tags.json';
+
+  static const stageTagAliasRemap = <String, String>{
+    'RunningNormalStage': 'RunningSubwayStage',
+  };
 
   static final List<StageCatalogSection> _sections = [];
   static final Map<String, StageCatalogSection> _byObjclass = {};
-  static final Map<String, String> _objclassIcons = {};
+  static final List<Map<String, dynamic>> _stageTags = [];
   static final Map<String, dynamic> _helperTree = {};
   static final Set<String> _knownResourceGroups = {};
   static bool _isLoaded = false;
 
   static List<StageCatalogSection> get sections => List.unmodifiable(_sections);
-
-  static Map<String, String> get objclassIcons =>
-      Map.unmodifiable(_objclassIcons);
-
-  static String objclassResourceKey(String objclass) =>
-      'stageObjclass_$objclass';
 
   static Set<String> get knownResourceGroups =>
       Set.unmodifiable(_knownResourceGroups);
@@ -34,7 +32,7 @@ abstract final class StageCatalogRepository {
     _isLoaded = false;
     _sections.clear();
     _byObjclass.clear();
-    _objclassIcons.clear();
+    _stageTags.clear();
     _helperTree.clear();
     _knownResourceGroups.clear();
   }
@@ -43,7 +41,7 @@ abstract final class StageCatalogRepository {
     if (_isLoaded) return;
     final catalogRaw = json.decode(await loadJsonString(_catalogPath));
     final helperRaw = json.decode(await loadJsonString(_helperPath));
-    final objclassRaw = json.decode(await loadJsonString(_objclassHelperPath));
+    final tagsRaw = json.decode(await loadJsonString(_tagsPath));
 
     if (catalogRaw is! List<dynamic>) {
       throw FormatException('Expected array in $_catalogPath');
@@ -51,33 +49,24 @@ abstract final class StageCatalogRepository {
     if (helperRaw is! Map<String, dynamic>) {
       throw FormatException('Expected object in $_helperPath');
     }
-    if (objclassRaw is! Map<String, dynamic>) {
-      throw FormatException('Expected object in $_objclassHelperPath');
+    if (tagsRaw is! List<dynamic>) {
+      throw FormatException('Expected array in $_tagsPath');
     }
 
     _sections
       ..clear()
       ..addAll(
         catalogRaw.map(
-          (e) => StageCatalogSection.fromJson(
-            Map<String, dynamic>.from(e as Map),
-          ),
+          (e) =>
+              StageCatalogSection.fromJson(Map<String, dynamic>.from(e as Map)),
         ),
       );
     _byObjclass
       ..clear()
       ..addEntries(_sections.map((s) => MapEntry(s.objclass, s)));
-    _objclassIcons
+    _stageTags
       ..clear()
-      ..addAll(
-        objclassRaw.map((k, v) {
-          if (v is String) return MapEntry(k, v);
-          if (v is Map && v['image'] is String) {
-            return MapEntry(k, v['image'] as String);
-          }
-          return MapEntry(k, 'unknown.webp');
-        }),
-      );
+      ..addAll(tagsRaw.map((e) => Map<String, dynamic>.from(e as Map)));
     _helperTree
       ..clear()
       ..addAll(helperRaw);
@@ -109,6 +98,106 @@ abstract final class StageCatalogRepository {
       if (impl != null) return impl;
     }
     return null;
+  }
+
+  static List<StageBaseOption> stageBaseOptions() {
+    final out = <StageBaseOption>[];
+    for (final tag in _stageTags) {
+      final alias = tag['alias'] as String? ?? '';
+      if (alias.isEmpty) continue;
+      final resolvedAlias = stageTagAliasRemap[alias] ?? alias;
+      final match = _implementationWithSection(resolvedAlias);
+      if (match == null) continue;
+      final objdata = _cloneJson(match.implementation.objdata);
+      if (objdata is! Map<String, dynamic>) continue;
+      out.add(
+        StageBaseOption(
+          alias: alias,
+          objclass: match.section.objclass,
+          iconName: tag['iconName'] as String? ?? 'unknown.webp',
+          type: tag['type'] as String? ?? 'main',
+          objdata: objdata,
+          backgroundImagePrefix:
+              match.implementation.objdata['BackgroundImagePrefix'] as String?,
+          backgroundResourceGroup:
+              match.implementation.objdata['BackgroundResourceGroup']
+                  as String?,
+        ),
+      );
+    }
+    return out;
+  }
+
+  static StageBaseOption? stageBaseOptionForObjdata({
+    required String objclass,
+    required Map<String, dynamic> objdata,
+  }) {
+    StageBaseOption? best;
+    var bestScore = 0;
+    for (final option in stageBaseOptions()) {
+      if (option.objclass != objclass) continue;
+      final score = _stageBaseMatchScore(option.objdata, objdata);
+      if (score > bestScore) {
+        best = option;
+        bestScore = score;
+      }
+    }
+    return best;
+  }
+
+  static Map<String, dynamic> templateObjdataForStageObject({
+    required String objclass,
+    required Map<String, dynamic> objdata,
+  }) {
+    final option = stageBaseOptionForObjdata(
+      objclass: objclass,
+      objdata: objdata,
+    );
+    if (option != null) {
+      final clone = _cloneJson(option.objdata);
+      if (clone is Map<String, dynamic>) return clone;
+    }
+    return templateObjdataForObjclass(objclass);
+  }
+
+  static _StageImplementationMatch? _implementationWithSection(String alias) {
+    for (final section in _sections) {
+      final impl = section.implementationFor(alias);
+      if (impl != null) return _StageImplementationMatch(section, impl);
+    }
+    return null;
+  }
+
+  static int _stageBaseMatchScore(
+    Map<String, dynamic> expected,
+    Map<String, dynamic> actual,
+  ) {
+    const equality = DeepCollectionEquality();
+    var score = 0;
+    for (final entry in expected.entries) {
+      if (!actual.containsKey(entry.key)) continue;
+      if (!equality.equals(actual[entry.key], entry.value)) continue;
+      score += _stageBaseMatchWeight(entry.key, entry.value);
+    }
+    return score;
+  }
+
+  static int _stageBaseMatchWeight(String key, dynamic value) {
+    switch (key) {
+      case 'BackgroundImagePrefix':
+      case 'BackgroundResourceGroup':
+        return 100;
+      case 'ResourceGroupNames':
+      case 'GroupsToUnloadForAds':
+      case 'DisabledStreetCells':
+        return 40;
+      case 'StagePrefix':
+      case 'LevelPowerupSet':
+      case 'MusicSuffix':
+        return 25;
+      default:
+        return value is List || value is Map ? 12 : 8;
+    }
   }
 
   static List<StageImplementation> catalogStagesWithIcon() {
@@ -263,13 +352,18 @@ abstract final class StageCatalogRepository {
 
   static dynamic _cloneJson(dynamic value) {
     if (value is Map) {
-      return value.map(
-        (key, val) => MapEntry(key.toString(), _cloneJson(val)),
-      );
+      return value.map((key, val) => MapEntry(key.toString(), _cloneJson(val)));
     }
     if (value is List) {
       return value.map(_cloneJson).toList();
     }
     return value;
   }
+}
+
+class _StageImplementationMatch {
+  const _StageImplementationMatch(this.section, this.implementation);
+
+  final StageCatalogSection section;
+  final StageImplementation implementation;
 }

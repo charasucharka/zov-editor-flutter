@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:c_editor/data/custom_stage_level_utils.dart';
+import 'package:c_editor/data/models/custom_stage_preset.dart';
 import 'package:c_editor/data/pvz_models.dart';
+import 'package:c_editor/data/repository/custom_stage_preset_repository.dart';
 import 'package:c_editor/data/repository/stage_repository.dart';
 import 'package:c_editor/data/rtid_parser.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
@@ -22,6 +24,7 @@ class StageSelectionScreen extends StatefulWidget {
     required this.onStageSelected,
     required this.onBack,
     this.onCreateCustomStage,
+    this.onCreateCustomStageFromPreset,
     this.onOpenCustomStageEditor,
     this.onDeleteCustomStage,
     this.onSwitchFromCustomToBuiltin,
@@ -32,6 +35,8 @@ class StageSelectionScreen extends StatefulWidget {
   final void Function(String rtid) onStageSelected;
   final VoidCallback onBack;
   final VoidCallback? onCreateCustomStage;
+  final Future<String?> Function(CustomStagePreset preset)?
+      onCreateCustomStageFromPreset;
   final void Function(String alias)? onOpenCustomStageEditor;
   final Future<bool> Function(String alias)? onDeleteCustomStage;
   final Future<bool> Function(String customAlias)? onSwitchFromCustomToBuiltin;
@@ -44,6 +49,7 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
   late _StagePickerTab _tab;
   StageType _selectedType = StageType.all;
   String _searchQuery = '';
+  String? _currentStageRtidOverride;
 
   @override
   void initState() {
@@ -54,10 +60,14 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
         : _StagePickerTab.builtin;
   }
 
-  bool get _isCustomCurrent =>
-      CustomStageLevelUtils.isCustomStageRtid(widget.currentStageRtid);
+  String get _effectiveCurrentStageRtid =>
+      _currentStageRtidOverride ?? widget.currentStageRtid;
 
-  String? get _currentAlias => RtidParser.parse(widget.currentStageRtid)?.alias;
+  bool get _isCustomCurrent =>
+      CustomStageLevelUtils.isCustomStageRtid(_effectiveCurrentStageRtid);
+
+  String? get _currentAlias =>
+      RtidParser.parse(_effectiveCurrentStageRtid)?.alias;
 
   List<PvzObject> get _customStages =>
       CustomStageLevelUtils.customStageObjectsInLevel(widget.levelFile);
@@ -73,6 +83,19 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
     widget.onStageSelected(rtid);
   }
 
+  Future<void> _copyPreset(CustomStagePreset preset) async {
+    final createPreset = widget.onCreateCustomStageFromPreset;
+    if (createPreset == null) return;
+    final alias = await createPreset(preset);
+    if (!mounted || alias == null || alias.isEmpty) return;
+    setState(() {
+      _currentStageRtidOverride = RtidParser.build(
+        alias,
+        CustomStageLevelUtils.currentLevel,
+      );
+    });
+  }
+
   String _customDisplayName(BuildContext context, PvzObject stageObj) {
     final l10n = AppLocalizations.of(context);
     final alias = stageObj.aliases?.firstOrNull ?? '';
@@ -80,9 +103,10 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
         ? Map<String, dynamic>.from(stageObj.objData as Map)
         : const <String, dynamic>{};
     final suffix =
-        l10n?.customStageNameSuffix ?? CustomStageLevelUtils.displayNameSuffixDefault;
-    final nameKey = CustomStageLevelUtils.displayNameKey(
-      backgroundImagePrefix: objdata['BackgroundImagePrefix'] as String?,
+        l10n?.customStageNameSuffix ??
+        CustomStageLevelUtils.displayNameSuffixDefault;
+    final nameKey = CustomStageLevelUtils.displayStageBaseNameKey(
+      objclass: stageObj.objClass,
       objdata: objdata,
     );
     if (nameKey.isNotEmpty) {
@@ -112,7 +136,9 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
         ),
         title: Text(l10n?.selectStage ?? 'Select lawn'),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(_tab == _StagePickerTab.builtin ? 148 : 72),
+          preferredSize: Size.fromHeight(
+            _tab == _StagePickerTab.builtin ? 148 : 72,
+          ),
           child: Column(
             children: [
               Padding(
@@ -148,7 +174,10 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
                 ),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 8,
+                  ),
                   child: Row(
                     children: StageType.values.map((t) {
                       return AccentBarChoiceChip(
@@ -216,8 +245,7 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
       itemCount: items.length,
       itemBuilder: (_, i) {
         final stage = items[i];
-        final isSelected =
-            !_isCustomCurrent && stage.alias == currentAlias;
+        final isSelected = !_isCustomCurrent && stage.alias == currentAlias;
         return _BuiltinStageGridItem(
           stage: stage,
           stageName: ResourceNames.lookup(
@@ -225,9 +253,8 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
             StageRepository.getName(stage.alias),
           ),
           isSelected: isSelected,
-          onTap: () => _selectBuiltin(
-            RtidParser.build(stage.alias, 'LevelModules'),
-          ),
+          onTap: () =>
+              _selectBuiltin(RtidParser.build(stage.alias, 'LevelModules')),
         );
       },
     );
@@ -239,6 +266,7 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
     ThemeData theme,
   ) {
     final customStages = _customStages;
+    final presets = CustomStagePresetRepository.presets;
     final currentAlias = _currentAlias;
 
     return ListView(
@@ -257,7 +285,7 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
               ),
               subtitle: Text(
                 l10n?.createCustomStageHint ??
-                    'Pick a base stage properties type and edit it locally.',
+                    'Pick a base lawn appearance and edit it locally in this level.',
               ),
               onTap: widget.onCreateCustomStage,
             ),
@@ -285,8 +313,9 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
           const SizedBox(height: 8),
           ...customStages.map((stageObj) {
             final alias = stageObj.aliases?.firstOrNull ?? '';
-            final isSelected =
-                _isCustomCurrent && alias == currentAlias;
+            final isSelected = _isCustomCurrent && alias == currentAlias;
+            final isPresetCopy =
+                CustomStagePresetRepository.isPresetCustomStageAlias(alias);
             final iconFile = _customIconFile(stageObj);
             final iconPath = iconFile == null
                 ? 'assets/images/others/unknown.webp'
@@ -323,10 +352,12 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
                                 ),
                               ),
                             ),
-                            const Positioned(
+                            Positioned(
                               top: 2,
                               left: 2,
-                              child: CustomStageBadge(),
+                              child: _CurrentCustomStageBadge(
+                                fromPreset: isPresetCopy,
+                              ),
                             ),
                           ],
                         ),
@@ -357,8 +388,9 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
                             tooltip: l10n?.delete ?? 'Delete',
                             icon: const Icon(Icons.delete_outline),
                             onPressed: () async {
-                              final deleted =
-                                  await widget.onDeleteCustomStage!(alias);
+                              final deleted = await widget.onDeleteCustomStage!(
+                                alias,
+                              );
                               if (deleted && mounted) setState(() {});
                             },
                           ),
@@ -370,8 +402,65 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
             );
           }),
         ],
+        if (presets.isNotEmpty) ...[
+          SizedBox(height: customStages.isEmpty ? 32 : 16),
+          Text(
+            l10n?.customStagePresetSectionTitle ??
+                'Preset custom lawn templates',
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          ...presets.map(
+            (preset) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: _PresetCustomStageCard(
+                preset: preset,
+                displayName: _localizedPresetText(
+                  context,
+                  l10n,
+                  preset.nameKey,
+                ),
+                source: _localizedPresetText(context, l10n, preset.sourceKey),
+                onTap: widget.onCreateCustomStageFromPreset == null
+                    ? null
+                    : () => _copyPreset(preset),
+              ),
+            ),
+          ),
+        ],
       ],
     );
+  }
+
+  String _localizedPresetText(
+    BuildContext context,
+    AppLocalizations? l10n,
+    String key,
+  ) {
+    switch (key) {
+      case 'customStagePreset_bigWaveNight':
+        return Localizations.localeOf(context).languageCode == 'zh'
+            ? '巨浪黑夜'
+            : 'Big Wave Night';
+      case 'customStagePreset_mixtapeSummerNight':
+        return l10n?.customStagePreset_mixtapeSummerNight ??
+            'Mixtape Summer Night';
+      case 'customStagePreset_oneSidedAtlantis':
+        return l10n?.customStagePreset_oneSidedAtlantis ??
+            'One-Sided Atlantis';
+      case 'customStagePresetSource_memoryLaneS25Week6Boss':
+        return l10n?.customStagePresetSource_memoryLaneS25Week6Boss ??
+            'From Memory Lane Season 25 Week 6 BOSS level';
+      case 'customStagePresetSource_memoryLaneS26HardLevel1':
+        return l10n?.customStagePresetSource_memoryLaneS26HardLevel1 ??
+            'From Memory Lane Season 26 Hard Mode Level 1';
+      case 'customStagePresetSource_memoryLaneS28Week3Original5_8':
+        return l10n?.customStagePresetSource_memoryLaneS28Week3Original5_8 ??
+            'From Memory Lane Season 28 Week 3, original 5-8';
+    }
+    return key;
   }
 
   String _typeLabel(StageType t, AppLocalizations? l10n) {
@@ -387,6 +476,128 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
       case StageType.special:
         return l10n?.stageTypeSpecial ?? 'Special';
     }
+  }
+}
+
+class _CurrentCustomStageBadge extends StatelessWidget {
+  const _CurrentCustomStageBadge({required this.fromPreset});
+
+  final bool fromPreset;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: customStageBadgePadding(context),
+      decoration: BoxDecoration(
+        color: _badgeColor(context),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        'C',
+        style: TextStyle(
+          fontSize: customStageBadgeFontSize(context),
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Color _badgeColor(BuildContext context) {
+    if (fromPreset) {
+      return Theme.of(context).brightness == Brightness.dark
+          ? const Color(0xFFE65100)
+          : const Color(0xFFFF9800);
+    }
+    return customStageBadgeColor(context);
+  }
+}
+
+class _PresetCustomStageCard extends StatelessWidget {
+  const _PresetCustomStageCard({
+    required this.preset,
+    required this.displayName,
+    required this.source,
+    required this.onTap,
+  });
+
+  final CustomStagePreset preset;
+  final String displayName;
+  final String source;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
+    final iconPath = 'assets/images/round_icons/${preset.iconName}';
+
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              ClipOval(
+                child: SizedBox(
+                  width: 96,
+                  height: 96,
+                  child: AssetImageWidget(
+                    assetPath: iconPath,
+                    altCandidates: imageAltCandidates(iconPath),
+                    width: 96,
+                    height: 96,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      displayName,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      source,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      preset.alias,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              IconButton(
+                tooltip: l10n?.createCustomStage ?? 'Create custom lawn',
+                icon: const Icon(Icons.add_circle_outline),
+                onPressed: onTap,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

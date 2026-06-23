@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:c_editor/data/level_parser.dart';
 import 'package:c_editor/data/module_open_hint.dart';
 import 'package:c_editor/data/registry/module_registry.dart';
+import 'package:c_editor/data/models/custom_stage_preset.dart';
 import 'package:c_editor/data/pvz_models.dart';
 import 'package:c_editor/data/repository/reference_repository.dart';
 import 'package:c_editor/data/rtid_parser.dart';
@@ -118,9 +120,9 @@ import 'package:c_editor/screens/select/plant_selection_screen.dart';
 import 'package:c_editor/screens/select/zombie_selection_screen.dart';
 import 'package:c_editor/screens/select/tool_selection_screen.dart';
 import 'package:c_editor/screens/select/stage_selection_screen.dart';
-import 'package:c_editor/screens/select/stage_objclass_selection_screen.dart';
+import 'package:c_editor/screens/select/stage_base_selection_screen.dart';
 import 'package:c_editor/data/custom_stage_level_utils.dart';
-import 'package:c_editor/data/repository/stage_catalog_repository.dart';
+import 'package:c_editor/data/models/stage_catalog.dart';
 import 'package:c_editor/screens/editor/others/custom_stage_properties_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:c_editor/bloc/editor/editor_cubit.dart';
@@ -326,8 +328,9 @@ class _EditorScreenState extends State<EditorScreen> {
     final isZombossMechBattle =
         existingClasses.contains('ZombossBattleModuleProperties') ||
         existingClasses.contains('ZombossBattleIntroProperties');
-    final isZombossBattle = existingClasses
-        .contains('ZombossLastStandMinigameProperties');
+    final isZombossBattle = existingClasses.contains(
+      'ZombossLastStandMinigameProperties',
+    );
     final isLastStand = existingClasses.contains('LastStandMinigameProperties');
     final isEvilDave = existingClasses.contains('EvilDaveProperties');
 
@@ -579,13 +582,8 @@ class _EditorScreenState extends State<EditorScreen> {
     );
   }
 
-  String _suggestCustomStageAlias(String objclass) {
-    final section = StageCatalogRepository.sectionForObjclass(objclass);
-    final primary = section?.primaryImplementation?.alias;
-    if (primary != null && primary.isNotEmpty) {
-      return '${primary}Custom';
-    }
-    return 'CustomStage';
+  String _suggestCustomStageAlias(StageBaseOption option) {
+    return option.alias.isEmpty ? 'CustomStage' : '${option.alias}Custom';
   }
 
   Future<String?> _promptCustomStageAlias(String suggested) async {
@@ -627,9 +625,7 @@ class _EditorScreenState extends State<EditorScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(
-          l10n?.customStageDeleteTitle ?? 'Delete custom lawn?',
-        ),
+        title: Text(l10n?.customStageDeleteTitle ?? 'Delete custom lawn?'),
         content: Text(
           l10n?.customStageDeleteMessage ??
               'This permanently removes the custom stage data from this level. If it is the active lawn, the level will switch to the default built-in lawn.',
@@ -654,7 +650,7 @@ class _EditorScreenState extends State<EditorScreen> {
     final currentAlias = RtidParser.parse(levelDef.stageModule)?.alias;
     final wasActive =
         CustomStageLevelUtils.isCustomStageRtid(levelDef.stageModule) &&
-            currentAlias == alias;
+        currentAlias == alias;
 
     CustomStageLevelUtils.removeCustomStageFromLevel(
       _ec.state.levelFile!,
@@ -680,26 +676,27 @@ class _EditorScreenState extends State<EditorScreen> {
     VoidCallback? onStagePicked,
   }) async {
     if (_ec.state.levelFile == null) return;
-    if (CustomStageLevelUtils.customStageObjectsInLevel(_ec.state.levelFile!)
-        .isNotEmpty) {
+    if (CustomStageLevelUtils.customStageObjectsInLevel(
+      _ec.state.levelFile!,
+    ).isNotEmpty) {
       return;
     }
-    String? objclass;
+    StageBaseOption? baseOption;
     await Navigator.push<void>(
       context,
       MaterialPageRoute(
-        builder: (ctx) => StageObjclassSelectionScreen(
-          onObjclassSelected: (value) {
-            objclass = value;
+        builder: (ctx) => StageBaseSelectionScreen(
+          onStageBaseSelected: (option) {
+            baseOption = option;
             Navigator.pop(ctx);
           },
           onBack: () => Navigator.pop(ctx),
         ),
       ),
     );
-    if (objclass == null || !mounted) return;
+    if (baseOption == null || !mounted) return;
 
-    var suggested = _suggestCustomStageAlias(objclass!);
+    var suggested = _suggestCustomStageAlias(baseOption!);
     while (_ec.state.levelFile!.objects.any(
       (o) => o.aliases?.contains(suggested) == true,
     )) {
@@ -726,7 +723,7 @@ class _EditorScreenState extends State<EditorScreen> {
     final rtid = CustomStageLevelUtils.createCustomStage(
       levelFile: _ec.state.levelFile!,
       alias: alias,
-      baseObjclass: objclass!,
+      baseOption: baseOption!,
     );
     levelDef.stageModule = rtid;
     for (final o in _ec.state.levelFile!.objects) {
@@ -738,6 +735,46 @@ class _EditorScreenState extends State<EditorScreen> {
     _markDirty();
     onStagePicked?.call();
     await _handleEditCustomStage(alias);
+  }
+
+  Future<String?> _createCustomStageFromPreset({
+    required LevelDefinitionData levelDef,
+    required CustomStagePreset preset,
+    VoidCallback? onStagePicked,
+  }) {
+    if (_ec.state.levelFile == null) return Future<String?>.value();
+    final levelFile = _ec.state.levelFile!;
+    final alias = CustomStageLevelUtils.uniqueCustomStageAlias(
+      levelFile,
+      preset.alias,
+    );
+    final rtid = CustomStageLevelUtils.createCustomStageFromTemplate(
+      levelFile: levelFile,
+      alias: alias,
+      objclass: preset.objclass,
+      objdata: preset.objdata,
+      prepend: true,
+    );
+    levelDef.stageModule = rtid;
+    for (final o in levelFile.objects) {
+      if (o.objClass == 'LevelDefinition') {
+        o.objData = levelDef.toJson();
+        break;
+      }
+    }
+
+    final stageObj = CustomStageLevelUtils.findStageObject(levelFile, alias);
+    if (stageObj != null) {
+      _ec.state.parsedData?.objectMap[alias] = stageObj;
+    }
+    _markDirty();
+    onStagePicked?.call();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      unawaited(_handleEditCustomStage(alias));
+    });
+    return Future.value(alias);
   }
 
   Future<void> _openStageSelection({
@@ -760,6 +797,12 @@ class _EditorScreenState extends State<EditorScreen> {
               onStagePicked: onStagePicked,
             );
           },
+          onCreateCustomStageFromPreset: (preset) =>
+              _createCustomStageFromPreset(
+                levelDef: levelDef,
+                preset: preset,
+                onStagePicked: onStagePicked,
+              ),
           onOpenCustomStageEditor: (alias) async {
             final rtid = RtidParser.build(
               alias,
@@ -779,10 +822,8 @@ class _EditorScreenState extends State<EditorScreen> {
             Navigator.pop(stageRouteContext);
             await _handleEditCustomStage(alias);
           },
-          onDeleteCustomStage: (alias) => _handleDeleteCustomStage(
-            levelDef: levelDef,
-            alias: alias,
-          ),
+          onDeleteCustomStage: (alias) =>
+              _handleDeleteCustomStage(levelDef: levelDef, alias: alias),
           onSwitchFromCustomToBuiltin: (alias) async {
             final l10n = AppLocalizations.of(context);
             final confirmed = await showDialog<bool>(
@@ -922,8 +963,9 @@ class _EditorScreenState extends State<EditorScreen> {
       final objData = Map<String, dynamic>.from(meta.initialData ?? {});
       if (meta.objClass == 'TunnelDefendModuleProperties') {
         final stageAlias = RtidParser.parse(def.stageModule)?.alias ?? '';
-        objData['BrickMapIndex'] =
-            stageAlias == 'UnchartedMausoleum2Stage' ? 2 : 1;
+        objData['BrickMapIndex'] = stageAlias == 'UnchartedMausoleum2Stage'
+            ? 2
+            : 1;
       }
       _ec.state.levelFile!.objects.add(
         PvzObject(aliases: [alias], objClass: meta.objClass, objData: objData),
@@ -2359,7 +2401,8 @@ class _EditorScreenState extends State<EditorScreen> {
       );
       return;
     }
-    if (info.source == 'CurrentLevel' &&objClass == 'MechanismPlankProperties') {
+    if (info.source == 'CurrentLevel' &&
+        objClass == 'MechanismPlankProperties') {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -2640,37 +2683,38 @@ class _EditorScreenState extends State<EditorScreen> {
             levelFile: _ec.state.levelFile!,
             onChanged: _markDirty,
             onBack: () => Navigator.pop(context),
-            onRequestPlantSelection: (
-              onSelected, {
-              excludeIds,
-              initialSelectedIds,
-              blockRealmExclusiveInChooser = false,
-              allowDuplicateSelection = false,
-            }) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => PlantSelectionScreen(
-                    isMultiSelect: true,
-                    excludeIds: excludeIds ?? const [],
-                    initialSelectedIds: initialSelectedIds ?? const [],
-                    blockRealmExclusiveInChooser:
-                        blockRealmExclusiveInChooser,
-                    allowDuplicateSelection: allowDuplicateSelection,
-                    onPlantSelected: (_) {},
-                    onMultiPlantSelected: (ids) {
-                      Navigator.pop(context);
-                      onSelected(ids);
-                    },
-                    onBack: () => Navigator.pop(context),
-                    levelFile: _ec.state.levelFile,
-                    onAddModule: (objClass) {
-                      _addModule(ModuleRegistry.getMetadata(objClass));
-                    },
-                  ),
-                ),
-              );
-            },
+            onRequestPlantSelection:
+                (
+                  onSelected, {
+                  excludeIds,
+                  initialSelectedIds,
+                  blockRealmExclusiveInChooser = false,
+                  allowDuplicateSelection = false,
+                }) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => PlantSelectionScreen(
+                        isMultiSelect: true,
+                        excludeIds: excludeIds ?? const [],
+                        initialSelectedIds: initialSelectedIds ?? const [],
+                        blockRealmExclusiveInChooser:
+                            blockRealmExclusiveInChooser,
+                        allowDuplicateSelection: allowDuplicateSelection,
+                        onPlantSelected: (_) {},
+                        onMultiPlantSelected: (ids) {
+                          Navigator.pop(context);
+                          onSelected(ids);
+                        },
+                        onBack: () => Navigator.pop(context),
+                        levelFile: _ec.state.levelFile,
+                        onAddModule: (objClass) {
+                          _addModule(ModuleRegistry.getMetadata(objClass));
+                        },
+                      ),
+                    ),
+                  );
+                },
             onRequestZombieSelection: (onSelected) {
               Navigator.push(
                 context,
@@ -3310,7 +3354,8 @@ class _EditorScreenState extends State<EditorScreen> {
                                   break;
                                 case EditorTabType.waveGenerator:
                                   icon = Icons.waves;
-                                  label = l10n?.waveGeneratorTabLabel ?? 'Waves';
+                                  label =
+                                      l10n?.waveGeneratorTabLabel ?? 'Waves';
                                   break;
                                 case EditorTabType.iZombie:
                                   icon = Icons.groups;
@@ -3322,11 +3367,13 @@ class _EditorScreenState extends State<EditorScreen> {
                                   break;
                                 case EditorTabType.zombossMech:
                                   icon = Icons.warning_amber;
-                                  label = l10n?.zombossMech ?? 'ZombossMech Battle';
+                                  label =
+                                      l10n?.zombossMech ?? 'ZombossMech Battle';
                                   break;
                                 case EditorTabType.zombossBattle:
                                   icon = Icons.castle;
-                                  label = l10n?.zombossBattle ?? 'Zomboss Battle';
+                                  label =
+                                      l10n?.zombossBattle ?? 'Zomboss Battle';
                                   break;
                               }
                               return Tab(text: label, icon: Icon(icon));

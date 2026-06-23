@@ -7,6 +7,7 @@ import 'package:c_editor/bloc/settings/settings_cubit.dart';
 import 'package:c_editor/data/repository/grid_item_repository.dart';
 import 'package:c_editor/data/ambient_audio_catalog.dart';
 import 'package:c_editor/data/music_suffix_catalog.dart';
+import 'package:c_editor/data/repository/custom_stage_preset_repository.dart';
 import 'package:c_editor/data/repository/stage_repository.dart';
 import 'package:c_editor/data/repository/zomboss_battle_repository.dart';
 import 'package:c_editor/data/repository/zomboss_mech_repository.dart';
@@ -34,6 +35,7 @@ void main() async {
 
   await ResourceNames.ensureLoaded();
   await StageRepository.init();
+  await CustomStagePresetRepository.init();
   await MusicSuffixCatalog.init();
   await AmbientAudioCatalog.init();
   await GridItemRepository.init();

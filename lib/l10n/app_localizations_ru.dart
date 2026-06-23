@@ -6804,22 +6804,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get customStageNameSuffix => ' (Пользов.)';
 
   @override
+  String get customStageLawnAppearance => 'Вид газона';
+
+  @override
   String get selectCustomStageBase => 'Выберите базовую локацию';
 
   @override
-  String get searchStageObjclass => 'Поиск objclass';
+  String get searchStageBase => 'Поиск по названию или коду газона';
 
   @override
-  String get noStageObjclassFound => 'Objclass не найден';
-
-  @override
-  String get selectStageBackground => 'Выберите внешний вид газона';
-
-  @override
-  String get searchStageBackground => 'Поиск локации';
-
-  @override
-  String get noStageBackgroundFound => 'Внешний вид не найден';
+  String get noStageBaseFound => 'Газон не найден';
 
   @override
   String get importResourceGroup => 'Импорт группы ресурсов';
@@ -6862,7 +6856,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get createCustomStageHint =>
-      'Выберите базовый тип свойств локации и отредактируйте его локально в этом уровне.';
+      'Выберите базовый вид газона и отредактируйте его локально в этом уровне.';
 
   @override
   String get customStageAliasPromptTitle =>
@@ -6899,6 +6893,30 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get customStageDeleteMessage =>
       'Это навсегда удалит данные пользовательского газона из этого уровня. Если он сейчас активен, уровень переключится на встроенный газон по умолчанию.';
+
+  @override
+  String get customStagePresetSectionTitle => 'Preset custom lawns';
+
+  @override
+  String get customStagePreset_bigWaveNight => 'Big Wave Night';
+
+  @override
+  String get customStagePreset_mixtapeSummerNight => 'Mixtape Summer Night';
+
+  @override
+  String get customStagePreset_oneSidedAtlantis => 'One-Sided Atlantis';
+
+  @override
+  String get customStagePresetSource_memoryLaneS25Week6Boss =>
+      'From Memory Lane Season 25 Week 6 Boss level';
+
+  @override
+  String get customStagePresetSource_memoryLaneS26HardLevel1 =>
+      'From Memory Lane Season 26 Hard Mode Level 1';
+
+  @override
+  String get customStagePresetSource_memoryLaneS28Week3Original5_8 =>
+      'From Memory Lane Season 28 Week 3, original Levels 5-8';
 
   @override
   String get editCustomStage => 'Редактировать пользовательский газон';

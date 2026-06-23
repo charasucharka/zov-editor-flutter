@@ -34,19 +34,20 @@ class StageRepository {
   static List<StageItem> _buildItemsFromCatalog() {
     final out = <StageItem>[];
     final seen = <String>{};
-    for (final section in StageCatalogRepository.sections) {
-      for (final impl in section.implementations) {
-        if (impl.tag == null || !seen.add(impl.alias)) continue;
-        out.add(
-          StageItem(
-            alias: impl.alias,
-            iconName: impl.image,
-            type: _parseType(impl.tag),
-          ),
-        );
-      }
+
+    // Keep the same order as Stages_tags.json by reusing the alias-ordered
+    // base stage options from StageCatalogRepository.
+    for (final option in StageCatalogRepository.stageBaseOptions()) {
+      if (!seen.add(option.alias)) continue;
+      out.add(
+        StageItem(
+          alias: option.alias,
+          iconName: option.iconName,
+          type: _parseType(option.type),
+        ),
+      );
     }
-    out.sort((a, b) => a.alias.compareTo(b.alias));
+
     return out;
   }
 
@@ -60,9 +61,11 @@ class StageRepository {
   /// Localization key for stage name. Use ResourceNames.lookup(context, getName(alias)).
   static String getName(String alias) => 'stage_$alias';
 
-  static StageType _parseType(String? raw) {
+  static StageType _parseType(Object? raw) {
+    if (raw is StageType) return raw;
+    final value = raw?.toString().split('.').last;
     return StageType.values.firstWhere(
-      (e) => e.name == raw,
+      (e) => e.name == value,
       orElse: () => StageType.main,
     );
   }

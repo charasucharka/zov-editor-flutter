@@ -3,7 +3,8 @@ import 'package:c_editor/data/music_suffix_catalog.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
 import 'package:c_editor/utils/selection_search.dart';
-import 'package:c_editor/widgets/asset_image.dart' show AssetImageWidget, imageAltCandidates;
+import 'package:c_editor/widgets/asset_image.dart'
+    show AssetImageWidget, imageAltCandidates;
 import 'package:c_editor/widgets/editor_components.dart';
 
 /// Picker for `MusicSuffix` (codename + icon + localized title).
@@ -29,7 +30,7 @@ class MusicSuffixSelectionScreen extends StatefulWidget {
 class _MusicSuffixSelectionScreenState extends State<MusicSuffixSelectionScreen> {
   String _searchQuery = '';
 
-  static const double _iconLogicalSize = 52;
+  static const double _iconLogicalSize = 96;
 
   @override
   Widget build(BuildContext context) {
@@ -83,10 +84,10 @@ class _MusicSuffixSelectionScreenState extends State<MusicSuffixSelectionScreen>
           : GridView.builder(
               padding: const EdgeInsets.all(16),
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 200,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-                childAspectRatio: 0.88,
+                maxCrossAxisExtent: 180,
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                childAspectRatio: 0.85,
               ),
               itemCount: items.length,
               itemBuilder: (_, i) {
