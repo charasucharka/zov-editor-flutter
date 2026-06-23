@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:c_editor/data/level_parser.dart';
 import 'package:c_editor/data/module_open_hint.dart';
 import 'package:c_editor/data/registry/module_registry.dart';
+import 'package:c_editor/data/models/custom_stage_preset.dart';
 import 'package:c_editor/data/pvz_models.dart';
 import 'package:c_editor/data/repository/reference_repository.dart';
 import 'package:c_editor/data/rtid_parser.dart';
@@ -735,6 +737,46 @@ class _EditorScreenState extends State<EditorScreen> {
     await _handleEditCustomStage(alias);
   }
 
+  Future<String?> _createCustomStageFromPreset({
+    required LevelDefinitionData levelDef,
+    required CustomStagePreset preset,
+    VoidCallback? onStagePicked,
+  }) {
+    if (_ec.state.levelFile == null) return Future<String?>.value();
+    final levelFile = _ec.state.levelFile!;
+    final alias = CustomStageLevelUtils.uniqueCustomStageAlias(
+      levelFile,
+      preset.alias,
+    );
+    final rtid = CustomStageLevelUtils.createCustomStageFromTemplate(
+      levelFile: levelFile,
+      alias: alias,
+      objclass: preset.objclass,
+      objdata: preset.objdata,
+      prepend: true,
+    );
+    levelDef.stageModule = rtid;
+    for (final o in levelFile.objects) {
+      if (o.objClass == 'LevelDefinition') {
+        o.objData = levelDef.toJson();
+        break;
+      }
+    }
+
+    final stageObj = CustomStageLevelUtils.findStageObject(levelFile, alias);
+    if (stageObj != null) {
+      _ec.state.parsedData?.objectMap[alias] = stageObj;
+    }
+    _markDirty();
+    onStagePicked?.call();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      unawaited(_handleEditCustomStage(alias));
+    });
+    return Future.value(alias);
+  }
+
   Future<void> _openStageSelection({
     required LevelDefinitionData levelDef,
     VoidCallback? onStagePicked,
@@ -755,6 +797,12 @@ class _EditorScreenState extends State<EditorScreen> {
               onStagePicked: onStagePicked,
             );
           },
+          onCreateCustomStageFromPreset: (preset) =>
+              _createCustomStageFromPreset(
+                levelDef: levelDef,
+                preset: preset,
+                onStagePicked: onStagePicked,
+              ),
           onOpenCustomStageEditor: (alias) async {
             final rtid = RtidParser.build(
               alias,

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:c_editor/data/custom_stage_level_utils.dart';
 import 'package:c_editor/data/pvz_models.dart';
 import 'package:c_editor/data/rtid_parser.dart';
+import 'package:c_editor/data/repository/custom_stage_preset_repository.dart';
 import 'package:c_editor/data/repository/stage_repository.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
@@ -144,6 +145,8 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
         );
       }
     }
+    final isPresetCustomStage = stageInfo != null &&
+        CustomStagePresetRepository.isPresetCustomStageAlias(stageInfo.alias);
     final customSuffix =
         l10n?.customStageNameSuffix ??
         CustomStageLevelUtils.displayNameSuffixDefault;
@@ -271,10 +274,12 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
                                     height: 96,
                                     fit: BoxFit.cover,
                                   ),
-                                  const Positioned(
+                                  Positioned(
                                     top: 4,
                                     left: 4,
-                                    child: CustomStageBadge(),
+                                    child: _CurrentCustomStageBadge(
+                                      fromPreset: isPresetCustomStage,
+                                    ),
                                   ),
                                 ],
                               );
@@ -502,6 +507,40 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
       );
     }
     return scaffold;
+  }
+}
+
+class _CurrentCustomStageBadge extends StatelessWidget {
+  const _CurrentCustomStageBadge({required this.fromPreset});
+
+  final bool fromPreset;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: customStageBadgePadding(context),
+      decoration: BoxDecoration(
+        color: _badgeColor(context),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        'C',
+        style: TextStyle(
+          fontSize: customStageBadgeFontSize(context),
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Color _badgeColor(BuildContext context) {
+    if (fromPreset) {
+      return Theme.of(context).brightness == Brightness.dark
+          ? const Color(0xFFE65100)
+          : const Color(0xFFFF9800);
+    }
+    return customStageBadgeColor(context);
   }
 }
 

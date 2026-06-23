@@ -25,13 +25,21 @@ class StageBaseSelectionScreen extends StatefulWidget {
 }
 
 class _StageBaseSelectionScreenState extends State<StageBaseSelectionScreen> {
+  static const _typeTabs = ['all', 'main', 'extra', 'seasons', 'special'];
+
   String _searchQuery = '';
+  String _selectedType = 'all';
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     var items = StageCatalogRepository.stageBaseOptions();
+
+    if (_selectedType != 'all') {
+      items = items.where((option) => _optionTypeName(option) == _selectedType).toList();
+    }
+
     if (normalizeSelectionSearchQuery(_searchQuery).isNotEmpty) {
       items = items.where((option) {
         final nameKey = _stageNameKey(option.alias);
@@ -54,100 +62,162 @@ class _StageBaseSelectionScreenState extends State<StageBaseSelectionScreen> {
           onPressed: widget.onBack,
         ),
         title: Text(l10n?.selectCustomStageBase ?? 'Select base lawn'),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-            child: SelectionSearchField(
-              hintText: 'Search by lawn name or codename',
-              query: _searchQuery,
-              onChanged: (v) => setState(() => _searchQuery = v),
-              onClear: () => setState(() => _searchQuery = ''),
-            ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(100),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: SelectionSearchField(
+                  hintText: 'Search by lawn name or codename',
+                  query: _searchQuery,
+                  onChanged: (v) => setState(() => _searchQuery = v),
+                  onClear: () => setState(() => _searchQuery = ''),
+                ),
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                child: Row(
+                  children: _typeTabs.map((type) {
+                    return AccentBarChoiceChip(
+                      label: _typeLabel(type, l10n),
+                      selected: _selectedType == type,
+                      onSelected: (_) => setState(() => _selectedType = type),
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
           ),
-          Expanded(
-            child: items.isEmpty
-                ? Center(
-                    child: Text(
-                      'No lawn found',
-                      style: theme.textTheme.bodyLarge,
-                    ),
-                  )
-                : GridView.builder(
-                    padding: const EdgeInsets.all(16),
-                    gridDelegate:
-                        const SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 200,
-                          mainAxisSpacing: 10,
-                          crossAxisSpacing: 10,
-                          childAspectRatio: 0.88,
-                        ),
-                    itemCount: items.length,
-                    itemBuilder: (_, i) {
-                      final option = items[i];
-                      final displayName = ResourceNames.lookup(
-                        context,
-                        _stageNameKey(option.alias),
-                      );
-                      final iconPath =
-                          'assets/images/round_icons/${option.iconName}';
-                      return Card(
-                        child: InkWell(
-                          onTap: () => widget.onStageBaseSelected(option),
-                          borderRadius: BorderRadius.circular(12),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ClipOval(
-                                  child: SizedBox(
-                                    width: 72,
-                                    height: 72,
-                                    child: AssetImageWidget(
-                                      assetPath: iconPath,
-                                      altCandidates: imageAltCandidates(
-                                        iconPath,
-                                      ),
-                                      width: 72,
-                                      height: 72,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  displayName,
-                                  style: theme.textTheme.titleSmall?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                Text(
-                                  option.alias,
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: theme.colorScheme.onSurfaceVariant,
-                                    fontSize: 10,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
+        ),
+      ),
+      body: items.isEmpty
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.search_off, size: 64, color: theme.colorScheme.outline),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No lawn found',
+                    style: theme.textTheme.bodyLarge,
                   ),
-          ),
-        ],
-      ),
+                ],
+              ),
+            )
+          : GridView.builder(
+              padding: const EdgeInsets.all(16),
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 180,
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                childAspectRatio: 0.85,
+              ),
+              itemCount: items.length,
+              itemBuilder: (_, i) {
+                final option = items[i];
+                return _StageBaseGridItem(
+                  option: option,
+                  stageName: ResourceNames.lookup(
+                    context,
+                    _stageNameKey(option.alias),
+                  ),
+                  onTap: () => widget.onStageBaseSelected(option),
+                );
+              },
+            ),
     );
   }
 
+  String _optionTypeName(StageBaseOption option) {
+    final raw = option.type.toString();
+    final dot = raw.lastIndexOf('.');
+    return dot < 0 ? raw : raw.substring(dot + 1);
+  }
+
+  String _typeLabel(String type, AppLocalizations? l10n) {
+    switch (type) {
+      case 'all':
+        return l10n?.stageTypeAll ?? 'All';
+      case 'main':
+        return l10n?.stageTypeMain ?? 'Main';
+      case 'extra':
+        return l10n?.stageTypeExtra ?? 'Extra';
+      case 'seasons':
+        return l10n?.stageTypeSeasons ?? 'Seasons';
+      case 'special':
+        return l10n?.stageTypeSpecial ?? 'Special';
+    }
+    return type;
+  }
+
   String _stageNameKey(String alias) => 'stage_$alias';
+}
+
+class _StageBaseGridItem extends StatelessWidget {
+  const _StageBaseGridItem({
+    required this.option,
+    required this.stageName,
+    required this.onTap,
+  });
+
+  final StageBaseOption option;
+  final String stageName;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final iconPath = 'assets/images/round_icons/${option.iconName}';
+
+    return Card(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ClipOval(
+                child: SizedBox(
+                  width: 96,
+                  height: 96,
+                  child: AssetImageWidget(
+                    assetPath: iconPath,
+                    altCandidates: imageAltCandidates(iconPath),
+                    width: 96,
+                    height: 96,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                stageName,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                option.alias,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

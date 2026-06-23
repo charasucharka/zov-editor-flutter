@@ -2272,5 +2272,12 @@
   "customStageSwitchToBuiltinMessage": "Это навсегда удалит данные пользовательского газона из этого уровня. Отменить будет нельзя.",
   "customStageDeleteTitle": "Удалить пользовательский газон?",
   "customStageDeleteMessage": "Это навсегда удалит данные пользовательского газона из этого уровня. Если он сейчас активен, уровень переключится на встроенный газон по умолчанию.",
+  "customStagePresetSectionTitle": "Preset custom lawns",
+  "customStagePreset_bigWaveNight": "Big Wave Night",
+  "customStagePreset_mixtapeSummerNight": "Mixtape Summer Night",
+  "customStagePreset_oneSidedAtlantis": "One-Sided Atlantis",
+  "customStagePresetSource_memoryLaneS25Week6Boss": "From Memory Lane Season 25 Week 6 Boss level",
+  "customStagePresetSource_memoryLaneS26HardLevel1": "From Memory Lane Season 26 Hard Mode Level 1",
+  "customStagePresetSource_memoryLaneS28Week3Original5_8": "From Memory Lane Season 28 Week 3, original Levels 5-8",
   "editCustomStage": "Редактировать пользовательский газон"
 }

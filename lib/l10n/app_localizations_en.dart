@@ -6950,5 +6950,29 @@ class AppLocalizationsEn extends AppLocalizations {
       'This permanently removes the custom stage data from this level. If it is the active lawn, the level will switch to the default built-in lawn.';
 
   @override
+  String get customStagePresetSectionTitle => 'Preset custom lawns';
+
+  @override
+  String get customStagePreset_bigWaveNight => 'Big Wave Night';
+
+  @override
+  String get customStagePreset_mixtapeSummerNight => 'Mixtape Summer Night';
+
+  @override
+  String get customStagePreset_oneSidedAtlantis => 'One-Sided Atlantis';
+
+  @override
+  String get customStagePresetSource_memoryLaneS25Week6Boss =>
+      'From Memory Lane Season 25 Week 6 Boss level';
+
+  @override
+  String get customStagePresetSource_memoryLaneS26HardLevel1 =>
+      'From Memory Lane Season 26 Hard Mode Level 1';
+
+  @override
+  String get customStagePresetSource_memoryLaneS28Week3Original5_8 =>
+      'From Memory Lane Season 28 Week 3, original Levels 5-8';
+
+  @override
   String get editCustomStage => 'Edit custom lawn';
 }

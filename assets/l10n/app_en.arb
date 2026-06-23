@@ -2273,5 +2273,12 @@
   "customStageSwitchToBuiltinMessage": "This permanently removes the custom stage data from this level. This cannot be undone.",
   "customStageDeleteTitle": "Delete custom lawn?",
   "customStageDeleteMessage": "This permanently removes the custom stage data from this level. If it is the active lawn, the level will switch to the default built-in lawn.",
+  "customStagePresetSectionTitle": "Preset custom lawns",
+  "customStagePreset_bigWaveNight": "Big Wave Night",
+  "customStagePreset_mixtapeSummerNight": "Mixtape Summer Night",
+  "customStagePreset_oneSidedAtlantis": "One-Sided Atlantis",
+  "customStagePresetSource_memoryLaneS25Week6Boss": "From Memory Lane Season 25 Week 6 Boss level",
+  "customStagePresetSource_memoryLaneS26HardLevel1": "From Memory Lane Season 26 Hard Mode Level 1",
+  "customStagePresetSource_memoryLaneS28Week3Original5_8": "From Memory Lane Season 28 Week 3, original Levels 5-8",
   "editCustomStage": "Edit custom lawn"
 }

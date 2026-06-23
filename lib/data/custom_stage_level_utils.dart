@@ -114,7 +114,7 @@ abstract final class CustomStageLevelUtils {
     required String alias,
     required StageBaseOption baseOption,
   }) {
-    final objdata = _cloneJson(baseOption.objdata) as Map<String, dynamic>;
+    final objdata = cloneJson(baseOption.objdata) as Map<String, dynamic>;
     final objclass = baseOption.objclass;
     final obj = PvzObject(
       objClass: objclass,
@@ -123,6 +123,56 @@ abstract final class CustomStageLevelUtils {
     );
     levelFile.objects.add(obj);
     return RtidParser.build(alias, currentLevel);
+  }
+
+  static String createCustomStageFromTemplate({
+    required PvzLevelFile levelFile,
+    required String alias,
+    required String objclass,
+    required Map<String, dynamic> objdata,
+    bool prepend = false,
+  }) {
+    final obj = PvzObject(
+      objClass: objclass,
+      aliases: [alias],
+      objData: cloneJson(objdata),
+    );
+    if (prepend) {
+      final insertIndex = levelFile.objects.indexWhere(
+        (o) =>
+            o.aliases != null &&
+            o.aliases!.isNotEmpty &&
+            isStagePropertiesObjclass(o.objClass),
+      );
+      if (insertIndex == -1) {
+        levelFile.objects.add(obj);
+      } else {
+        levelFile.objects.insert(insertIndex, obj);
+      }
+    } else {
+      levelFile.objects.add(obj);
+    }
+    return RtidParser.build(alias, currentLevel);
+  }
+
+  static String uniqueCustomStageAlias(
+    PvzLevelFile levelFile,
+    String suggestedAlias,
+  ) {
+    final base = suggestedAlias.trim().isEmpty
+        ? 'CustomStage'
+        : suggestedAlias.trim();
+    if (!_hasAlias(levelFile, base)) return base;
+
+    var index = 2;
+    while (_hasAlias(levelFile, '$base$index')) {
+      index++;
+    }
+    return '$base$index';
+  }
+
+  static bool _hasAlias(PvzLevelFile levelFile, String alias) {
+    return levelFile.objects.any((o) => o.aliases?.contains(alias) == true);
   }
 
   static List<String> stringList(dynamic raw) {
@@ -299,16 +349,16 @@ abstract final class CustomStageLevelUtils {
       final key = entry.key;
       if (editableFieldNames.contains(key)) continue;
       if (key == 'FlagVeteranZombieTypeNames') continue;
-      objdata[key] = _cloneJson(entry.value);
+      objdata[key] = cloneJson(entry.value);
     }
   }
 
-  static dynamic _cloneJson(dynamic value) {
+  static dynamic cloneJson(dynamic value) {
     if (value is Map) {
-      return value.map((key, val) => MapEntry(key.toString(), _cloneJson(val)));
+      return value.map((key, val) => MapEntry(key.toString(), cloneJson(val)));
     }
     if (value is List) {
-      return value.map(_cloneJson).toList();
+      return value.map(cloneJson).toList();
     }
     return value;
   }
