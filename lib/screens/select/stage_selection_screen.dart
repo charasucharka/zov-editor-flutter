@@ -361,34 +361,34 @@ class _StageSelectionScreenState extends State<StageSelectionScreen> {
                   onTap: () => widget.onOpenCustomStageEditor?.call(alias),
                   borderRadius: BorderRadius.circular(12),
                   child: Padding(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(14),
                     child: Row(
                       children: [
                         Stack(
                           children: [
                             ClipOval(
                               child: SizedBox(
-                                width: 72,
-                                height: 72,
+                                width: 96,
+                                height: 96,
                                 child: AssetImageWidget(
                                   assetPath: iconPath,
                                   altCandidates: imageAltCandidates(iconPath),
-                                  width: 72,
-                                  height: 72,
+                                  width: 96,
+                                  height: 96,
                                   fit: BoxFit.cover,
                                 ),
                               ),
                             ),
                             Positioned(
-                              top: 2,
-                              left: 2,
+                              top: 4,
+                              left: 4,
                               child: _CurrentCustomStageBadge(
                                 fromPreset: isPresetCopy,
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 16),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -567,17 +567,18 @@ class _PresetCustomStageCard extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
     final iconPath = 'assets/images/round_icons/${preset.iconName}';
-    final effectiveOnTap = disabled ? null : onTap;
+    final effectiveOnTap = disabled || selected ? null : onTap;
+    final visualDisabled = disabled && !selected;
 
     return Opacity(
-      opacity: disabled ? 0.48 : 1,
+      opacity: visualDisabled ? 0.48 : 1,
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         child: InkWell(
           onTap: effectiveOnTap,
           borderRadius: BorderRadius.circular(8),
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(14),
             child: Row(
               children: [
                 ClipOval(
