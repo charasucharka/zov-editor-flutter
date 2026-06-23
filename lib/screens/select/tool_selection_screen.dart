@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:c_editor/data/repository/tool_repository.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
-import 'package:c_editor/util/selection_search.dart';
+import 'package:c_editor/utils/selection_search.dart';
 import 'package:c_editor/widgets/asset_image.dart' show AssetImageWidget;
 import 'package:c_editor/widgets/editor_components.dart';
 
@@ -94,15 +94,26 @@ class _ToolSelectionScreenState extends State<ToolSelectionScreen> {
                 )
               : LayoutBuilder(
                   builder: (context, constraints) {
-                    final isDesktop = constraints.maxWidth > 600;
-                    final crossAxisCount = isDesktop ? 6 : 3;
+                    final crossAxisCount =
+                        SelectionGridLayout.toolCrossAxisCount(
+                      constraints.maxWidth,
+                    );
+                    final iconBox = SelectionGridLayout.toolIconBox(
+                      constraints.maxWidth,
+                    );
+
                     return GridView.builder(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(
+                        SelectionGridLayout.padding,
+                      ),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: crossAxisCount,
-                        childAspectRatio: 0.85,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
+                        childAspectRatio:
+                            SelectionGridLayout.toolChildAspectRatio(
+                          constraints.maxWidth,
+                        ),
+                        crossAxisSpacing: SelectionGridLayout.spacing,
+                        mainAxisSpacing: SelectionGridLayout.spacing,
                       ),
                       itemCount: tools.length,
                       itemBuilder: (context, index) {
@@ -110,10 +121,13 @@ class _ToolSelectionScreenState extends State<ToolSelectionScreen> {
                         final iconPath = tool.icon != null
                             ? 'assets/images/tools/${tool.icon}'
                             : null;
+
                         return _ToolCard(
                           id: tool.id,
                           name: ToolRepository.localizedName(context, tool.id),
                           iconPath: iconPath,
+                          iconWidth: iconBox.width,
+                          iconHeight: iconBox.height,
                           theme: theme,
                           onTap: () => widget.onToolSelected(tool.id),
                         );
@@ -132,6 +146,8 @@ class _ToolCard extends StatelessWidget {
     required this.id,
     required this.name,
     required this.iconPath,
+    required this.iconWidth,
+    required this.iconHeight,
     required this.theme,
     required this.onTap,
   });
@@ -139,6 +155,8 @@ class _ToolCard extends StatelessWidget {
   final String id;
   final String name;
   final String? iconPath;
+  final double iconWidth;
+  final double iconHeight;
   final ThemeData theme;
   final VoidCallback onTap;
 
@@ -153,7 +171,12 @@ class _ToolCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(child: _ToolIcon(iconPath: iconPath, theme: theme)),
+              _ToolIcon(
+                iconPath: iconPath,
+                width: iconWidth,
+                height: iconHeight,
+                theme: theme,
+              ),
               const SizedBox(height: 8),
               Text(
                 name,
@@ -182,21 +205,32 @@ class _ToolCard extends StatelessWidget {
 }
 
 class _ToolIcon extends StatelessWidget {
-  const _ToolIcon({required this.iconPath, required this.theme});
+  const _ToolIcon({
+    required this.iconPath,
+    required this.width,
+    required this.height,
+    required this.theme,
+  });
 
   final String? iconPath;
+  final double width;
+  final double height;
   final ThemeData theme;
 
   @override
   Widget build(BuildContext context) {
-    if (iconPath != null) {
-      return AssetImageWidget(assetPath: iconPath!, fit: BoxFit.contain);
-    }
-    return Center(
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Icon(Icons.build, size: 42, color: theme.colorScheme.outline),
-      ),
+    return SizedBox(
+      width: width,
+      height: height,
+      child: iconPath != null
+          ? AssetImageWidget(assetPath: iconPath!, fit: BoxFit.contain)
+          : Center(
+              child: Icon(
+                Icons.build,
+                size: height * 0.5,
+                color: theme.colorScheme.outline,
+              ),
+            ),
     );
   }
 }
