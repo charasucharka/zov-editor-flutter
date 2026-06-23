@@ -1,9 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/widgets.dart';
-import 'package:c_editor/data/asset_loader.dart';
+import 'package:c_editor/data/repository/stage_catalog_repository.dart';
 
-/// Stage data for level editor.
+/// Stage data for level editor selection UI.
 enum StageType { all, main, extra, seasons, special }
 
 class StageItem {
@@ -17,31 +15,40 @@ class StageItem {
 class StageRepository {
   StageRepository._();
 
-  static const String _resourcePath = 'assets/resources/Stages.json';
   static final List<StageItem> _database = [];
   static bool _isLoaded = false;
 
   static Future<void> init() async {
     if (_isLoaded) return;
     try {
-      final jsonString = await loadJsonString(_resourcePath);
-      final List<dynamic> jsonList = json.decode(jsonString) as List<dynamic>;
+      await StageCatalogRepository.init();
       _database
         ..clear()
-        ..addAll(
-          jsonList.map((raw) {
-            final item = raw as Map<String, dynamic>;
-            return StageItem(
-              alias: item['alias'] as String,
-              iconName: item['iconName'] as String?,
-              type: _parseType(item['type'] as String?),
-            );
-          }),
-        );
+        ..addAll(_buildItemsFromCatalog());
       _isLoaded = true;
     } catch (e) {
       debugPrint('Error loading stages: $e');
     }
+  }
+
+  static List<StageItem> _buildItemsFromCatalog() {
+    final out = <StageItem>[];
+    final seen = <String>{};
+
+    // Keep the same order as Stages_tags.json by reusing the alias-ordered
+    // base stage options from StageCatalogRepository.
+    for (final option in StageCatalogRepository.stageBaseOptions()) {
+      if (!seen.add(option.alias)) continue;
+      out.add(
+        StageItem(
+          alias: option.alias,
+          iconName: option.iconName,
+          type: _parseType(option.type),
+        ),
+      );
+    }
+
+    return out;
   }
 
   static List<StageItem> get allItems => List.unmodifiable(_database);
@@ -54,9 +61,11 @@ class StageRepository {
   /// Localization key for stage name. Use ResourceNames.lookup(context, getName(alias)).
   static String getName(String alias) => 'stage_$alias';
 
-  static StageType _parseType(String? raw) {
+  static StageType _parseType(Object? raw) {
+    if (raw is StageType) return raw;
+    final value = raw?.toString().split('.').last;
     return StageType.values.firstWhere(
-      (e) => e.name == raw,
+      (e) => e.name == value,
       orElse: () => StageType.main,
     );
   }

@@ -155,6 +155,7 @@
   "templateCustomZombieExample": "Custom zombie level template",
   "templateIPlantExample": "I, Plant level template",
   "templateOldStyleExample": "Old-style level",
+  "templateCustomStageExample": "Custom stage level template",
   "unsavedChanges": "Unsaved changes",
   "saveBeforeLeaving": "Save before leaving?",
   "discard": "Discard",
@@ -2190,7 +2191,7 @@
   "waveGeneratorSpawnPlantFood": "Plant food drops (SpawnPlantFoodCount)",
   "waveGeneratorWavePointStart": "Wave point start (WavePointStart)",
   "waveGeneratorWavePointIncrement": "Wave point increment (WavePointIncrement)",
-  "waveGeneratorBlackHoleFieldHint": "Enter the number of columns to summon a black hole at the end of this wave, pulling all plants to the right.\nNote: Black hole can only be summoned if \"Spawn this wave only after all zombies from the previous wave have been defeated\" is enabled.",
+  "waveGeneratorBlackHoleFieldHint": "Enter the number of columns to summon a black hole at the end of this wave, pulling all plants to the right.\nNote: Black hole can only be summoned if this wave is not the final wave of the level and \"Spawn this wave only after all zombies from the previous wave have been defeated\" is enabled.",
   "waveGeneratorBlackHoleWaveHint": "A black hole appears at the end of this wave and pulls plants {cols} columns to the right",
   "@waveGeneratorBlackHoleWaveHint": {"placeholders": {"cols": {"type": "int"}}},
   "waveGeneratorWavePoolAdd": "Add to pool this wave (AddToZombiePool)",
@@ -2215,5 +2216,70 @@
         "type": "int"
       }
     }
-  }
+  },
+  "customStageProperties": "Custom stage properties",
+  "customStageNotFound": "Custom stage object not found.",
+  "customStageSectionGeneral": "General",
+  "customStageSectionZombies": "Zombie types",
+  "customStageSectionResourceGroups": "Resource groups",
+  "customStageSectionAppearance": "Appearance",
+  "customStageSectionAdvanced": "Advanced",
+  "customStageAlias": "Stage alias",
+  "customStageNoResourceGroups": "No resource groups in list",
+  "customStageMissingBackgroundWarning": "Import at least one DelayLoad_Background group listed in the stage helper, or the lawn may appear completely black.",
+  "customStageEnableAmbient": "Enable ambient",
+  "customStageDisabledCellsEmpty": "Empty",
+  "customStageDisabledCellsDefault": "Default",
+  "customStageBeachMinigame": "Use minigame version",
+  "customStageEnableSubmarine": "Enable submarine",
+  "customStageSubmarineHitpoints": "Submarine hitpoints",
+  "customStageNameSuffix": " (Custom)",
+  "customStageLawnAppearance": "Lawn appearance",
+  "selectCustomStageBase": "Select base lawn",
+  "searchStageBase": "Search by lawn name or codename",
+  "noStageBaseFound": "No lawn found",
+  "importResourceGroup": "Import resource group",
+  "importResourceGroupGlobal": "From global list",
+  "importResourceGroupFromStage": "From stage",
+  "importResourceGroupSourceStage": "Source stage",
+  "searchResourceGroup": "Search resource group",
+  "noResourceGroupFound": "No resource group found",
+  "importResourceGroupsFromStageTitle": "Add resource groups from stage?",
+  "importResourceGroupsFromStageMessage": "The following resource groups from {stageName} will be added:",
+  "@importResourceGroupsFromStageMessage": {
+    "placeholders": {
+      "stageName": {
+        "type": "String"
+      }
+    }
+  },
+  "importResourceGroupsFromStageSkipped": "{count} resource group(s) already in this level will be skipped.",
+  "@importResourceGroupsFromStageSkipped": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importResourceGroupsFromStageAllPresent": "All resource groups from this stage are already in this level.",
+  "createCustomStage": "Create custom lawn",
+  "createCustomStageHint": "Pick a base lawn appearance and edit it locally in this level.",
+  "customStageAliasPromptTitle": "Custom stage alias",
+  "customStageAliasTaken": "That alias is already used in this level.",
+  "stageSelectionTabBuiltin": "Built-in",
+  "stageSelectionTabCustom": "Custom",
+  "customStageSelectionEmpty": "No custom lawn in this level yet.",
+  "customStageSelectionInLevel": "Custom lawns in this level",
+  "customStageSwitchToBuiltinTitle": "Switch to built-in lawn?",
+  "customStageSwitchToBuiltinMessage": "This permanently removes the custom stage data from this level. This cannot be undone.",
+  "customStageDeleteTitle": "Delete custom lawn?",
+  "customStageDeleteMessage": "This permanently removes the custom stage data from this level. If it is the active lawn, the level will switch to the default built-in lawn.",
+  "customStagePresetSectionTitle": "Preset custom lawns",
+  "customStagePreset_bigWaveNight": "Big Wave Night",
+  "customStagePreset_mixtapeSummerNight": "Mixtape Summer Night",
+  "customStagePreset_oneSidedAtlantis": "One-Sided Atlantis",
+  "customStagePresetSource_memoryLaneS25Week6Boss": "From Memory Lane Season 25 Week 6 Boss level",
+  "customStagePresetSource_memoryLaneS26HardLevel1": "From Memory Lane Season 26 Hard Mode Level 1",
+  "customStagePresetSource_memoryLaneS28Week3Original5_8": "From Memory Lane Season 28 Week 3, original Levels 5-8",
+  "editCustomStage": "Edit custom lawn"
 }

@@ -155,6 +155,7 @@
   "templateCustomZombieExample": "自定义僵尸示例",
   "templateIPlantExample": "我是植物示例",
   "templateOldStyleExample": "旧式关卡",
+  "templateCustomStageExample": "自定义场地示例",
   "unsavedChanges": "有未保存的更改",
   "saveBeforeLeaving": "离开前是否保存更改？",
   "discard": "放弃",
@@ -2188,7 +2189,7 @@
   "waveGeneratorSpawnPlantFood": "植物食物掉落 (SpawnPlantFoodCount)",
   "waveGeneratorWavePointStart": "波次点数起始 (WavePointStart)",
   "waveGeneratorWavePointIncrement": "波次点数增量 (WavePointIncrement)",
-  "waveGeneratorBlackHoleFieldHint": "填写列数以在本波结束时召唤时空黑洞，将所有植物向右吸动。\n注意：只有开启“在上一波僵尸全部死亡后再生成此波僵尸”时，才能召唤成功。",
+  "waveGeneratorBlackHoleFieldHint": "填写列数以在本波结束时召唤时空黑洞，将所有植物向右吸动。\n注意：只有本波不是关卡的最后一波，且开启“在上一波僵尸全部死亡后再生成此波僵尸”时，才能召唤成功。",
   "waveGeneratorBlackHoleWaveHint": "时空黑洞在本波结束时出现，将植物向右吸动{cols}列",
   "@waveGeneratorBlackHoleWaveHint": {"placeholders": {"cols": {"type": "int"}}},
   "waveGeneratorWavePoolAdd": "本波扩展僵尸池 (AddToZombiePool)",
@@ -2213,5 +2214,70 @@
         "type": "int"
       }
     }
-  }
+  },
+  "customStageProperties": "自定义场地属性",
+  "customStageNotFound": "未找到自定义场地对象。",
+  "customStageSectionGeneral": "常规",
+  "customStageSectionZombies": "僵尸类型",
+  "customStageSectionResourceGroups": "资源组",
+  "customStageSectionAppearance": "外观",
+  "customStageSectionAdvanced": "高级",
+  "customStageAlias": "场地别名",
+  "customStageNoResourceGroups": "列表中没有资源组",
+  "customStageMissingBackgroundWarning": "请至少导入一个在场地助手中列出的 DelayLoad_Background 资源组，否则草坪可能完全显示为黑色。",
+  "customStageEnableAmbient": "启用环境音",
+  "customStageDisabledCellsEmpty": "空",
+  "customStageDisabledCellsDefault": "默认",
+  "customStageBeachMinigame": "使用小游戏版本",
+  "customStageEnableSubmarine": "启用潜艇",
+  "customStageSubmarineHitpoints": "潜艇生命值",
+  "customStageNameSuffix": "（自定义）",
+  "customStageLawnAppearance": "草坪外观",
+  "selectCustomStageBase": "选择基础场地",
+  "searchStageBase": "按草坪名称或代号搜索",
+  "noStageBaseFound": "未找到草坪",
+  "importResourceGroup": "导入资源组",
+  "importResourceGroupGlobal": "从全局列表",
+  "importResourceGroupFromStage": "从场地导入",
+  "importResourceGroupSourceStage": "来源场地",
+  "searchResourceGroup": "搜索资源组",
+  "noResourceGroupFound": "未找到资源组",
+  "importResourceGroupsFromStageTitle": "从场地添加资源组？",
+  "importResourceGroupsFromStageMessage": "将添加以下来自 {stageName} 的资源组：",
+  "@importResourceGroupsFromStageMessage": {
+    "placeholders": {
+      "stageName": {
+        "type": "String"
+      }
+    }
+  },
+  "importResourceGroupsFromStageSkipped": "已有 {count} 个资源组在本关卡中，将跳过。",
+  "@importResourceGroupsFromStageSkipped": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importResourceGroupsFromStageAllPresent": "该场地的所有资源组已在本关卡中。",
+  "createCustomStage": "创建自定义地图",
+  "createCustomStageHint": "选择基础草坪外观，并在此关卡中本地编辑。",
+  "customStageAliasPromptTitle": "自定义场地别名",
+  "customStageAliasTaken": "该别名已在此关卡中使用。",
+  "stageSelectionTabBuiltin": "内置",
+  "stageSelectionTabCustom": "自定义",
+  "customStageSelectionEmpty": "此关卡中尚无自定义地图。",
+  "customStageSelectionInLevel": "此关卡中的自定义地图",
+  "customStageSwitchToBuiltinTitle": "切换为内置草坪？",
+  "customStageSwitchToBuiltinMessage": "这将永久删除此关卡中的自定义场地数据，且无法撤销。",
+  "customStageDeleteTitle": "删除自定义地图？",
+  "customStageDeleteMessage": "这将永久删除此关卡中的自定义场地数据。若其为当前草坪，关卡将切换为默认内置草坪。",
+  "customStagePresetSectionTitle": "预设自定义地图",
+  "customStagePreset_bigWaveNight": "巨浪黑夜",
+  "customStagePreset_mixtapeSummerNight": "摇滚夏夜",
+  "customStagePreset_oneSidedAtlantis": "单面海底",
+  "customStagePresetSource_memoryLaneS25Week6Boss": "出自回忆之旅25赛季第六周BOSS关",
+  "customStagePresetSource_memoryLaneS26HardLevel1": "出自回忆之旅26赛季困难模式第1关",
+  "customStagePresetSource_memoryLaneS28Week3Original5_8": "出自回忆之旅28赛季第三周原5~8关",
+  "editCustomStage": "编辑自定义地图"
 }

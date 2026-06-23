@@ -281,6 +281,37 @@ class _WaveGeneratorModuleScreenState extends State<WaveGeneratorModuleScreen> {
     super.dispose();
   }
 
+  Widget _buildLabeledNumberField({
+    required TextEditingController controller,
+    required String label,
+    String? helperText,
+    required ValueChanged<String> onChanged,
+  }) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          label,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+          softWrap: true,
+        ),
+        const SizedBox(height: 6),
+        TextFormField(
+          controller: controller,
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
+            helperText: helperText,
+          ),
+          keyboardType: TextInputType.number,
+          onChanged: onChanged,
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -353,15 +384,11 @@ class _WaveGeneratorModuleScreenState extends State<WaveGeneratorModuleScreen> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    TextFormField(
+                    _buildLabeledNumberField(
                       controller: _flagIntervalCtrl,
-                      decoration: InputDecoration(
-                        labelText: l10n?.flagWaveInterval ??
-                            'Flag wave interval (FlagWaveInterval)',
-                        border: const OutlineInputBorder(),
-                        helperText: l10n?.waveGeneratorFlagIntervalHint,
-                      ),
-                      keyboardType: TextInputType.number,
+                      label: l10n?.flagWaveInterval ??
+                          'Flag wave interval (FlagWaveInterval)',
+                      helperText: l10n?.waveGeneratorFlagIntervalHint,
                       onChanged: (v) {
                         final n = int.tryParse(v);
                         if (n != null && n > 0) {
@@ -371,47 +398,30 @@ class _WaveGeneratorModuleScreenState extends State<WaveGeneratorModuleScreen> {
                       },
                     ),
                     const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextFormField(
-                            controller: _spendingPointsCtrl,
-                            decoration: InputDecoration(
-                              labelText: l10n?.waveGeneratorSpendingPoints ??
-                                  'Spending points (WaveSpendingPoints)',
-                              border: const OutlineInputBorder(),
-                            ),
-                            keyboardType: TextInputType.number,
-                            onChanged: (v) {
-                              final n = int.tryParse(v);
-                              if (n != null) {
-                                _data.waveSpendingPoints = n;
-                                _sync();
-                              }
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: TextFormField(
-                            controller: _spendingIncrementCtrl,
-                            decoration: InputDecoration(
-                              labelText:
-                                  l10n?.waveGeneratorSpendingPointIncrement ??
-                                      'Point increment (WaveSpendingPointIncrement)',
-                              border: const OutlineInputBorder(),
-                            ),
-                            keyboardType: TextInputType.number,
-                            onChanged: (v) {
-                              final n = int.tryParse(v);
-                              if (n != null) {
-                                _data.waveSpendingPointIncrement = n;
-                                _sync();
-                              }
-                            },
-                          ),
-                        ),
-                      ],
+                    _buildLabeledNumberField(
+                      controller: _spendingPointsCtrl,
+                      label: l10n?.waveGeneratorSpendingPoints ??
+                          'Spending points (WaveSpendingPoints)',
+                      onChanged: (v) {
+                        final n = int.tryParse(v);
+                        if (n != null) {
+                          _data.waveSpendingPoints = n;
+                          _sync();
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    _buildLabeledNumberField(
+                      controller: _spendingIncrementCtrl,
+                      label: l10n?.waveGeneratorSpendingPointIncrement ??
+                          'Point increment (WaveSpendingPointIncrement)',
+                      onChanged: (v) {
+                        final n = int.tryParse(v);
+                        if (n != null) {
+                          _data.waveSpendingPointIncrement = n;
+                          _sync();
+                        }
+                      },
                     ),
                     const SizedBox(height: 8),
                     Text(

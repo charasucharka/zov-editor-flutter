@@ -468,6 +468,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get templateOldStyleExample => '旧式关卡';
 
   @override
+  String get templateCustomStageExample => '自定义场地示例';
+
+  @override
   String get unsavedChanges => '有未保存的更改';
 
   @override
@@ -6406,7 +6409,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get waveGeneratorBlackHoleFieldHint =>
-      '填写列数以在本波结束时召唤时空黑洞，将所有植物向右吸动。\n注意：只有开启“在上一波僵尸全部死亡后再生成此波僵尸”时，才能召唤成功。';
+      '填写列数以在本波结束时召唤时空黑洞，将所有植物向右吸动。\n注意：只有本波不是关卡的最后一波，且开启“在上一波僵尸全部死亡后再生成此波僵尸”时，才能召唤成功。';
 
   @override
   String waveGeneratorBlackHoleWaveHint(int cols) {
@@ -6461,4 +6464,166 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get protectGridItemChallengeHelpOperationGuide =>
       '在上方网格中点击选择坐标，然后点击“添加目标”按钮选择要保护的物品类型。';
+
+  @override
+  String get customStageProperties => '自定义场地属性';
+
+  @override
+  String get customStageNotFound => '未找到自定义场地对象。';
+
+  @override
+  String get customStageSectionGeneral => '常规';
+
+  @override
+  String get customStageSectionZombies => '僵尸类型';
+
+  @override
+  String get customStageSectionResourceGroups => '资源组';
+
+  @override
+  String get customStageSectionAppearance => '外观';
+
+  @override
+  String get customStageSectionAdvanced => '高级';
+
+  @override
+  String get customStageAlias => '场地别名';
+
+  @override
+  String get customStageNoResourceGroups => '列表中没有资源组';
+
+  @override
+  String get customStageMissingBackgroundWarning =>
+      '请至少导入一个在场地助手中列出的 DelayLoad_Background 资源组，否则草坪可能完全显示为黑色。';
+
+  @override
+  String get customStageEnableAmbient => '启用环境音';
+
+  @override
+  String get customStageDisabledCellsEmpty => '空';
+
+  @override
+  String get customStageDisabledCellsDefault => '默认';
+
+  @override
+  String get customStageBeachMinigame => '使用小游戏版本';
+
+  @override
+  String get customStageEnableSubmarine => '启用潜艇';
+
+  @override
+  String get customStageSubmarineHitpoints => '潜艇生命值';
+
+  @override
+  String get customStageNameSuffix => '（自定义）';
+
+  @override
+  String get customStageLawnAppearance => '草坪外观';
+
+  @override
+  String get selectCustomStageBase => '选择基础场地';
+
+  @override
+  String get searchStageBase => '按草坪名称或代号搜索';
+
+  @override
+  String get noStageBaseFound => '未找到草坪';
+
+  @override
+  String get importResourceGroup => '导入资源组';
+
+  @override
+  String get importResourceGroupGlobal => '从全局列表';
+
+  @override
+  String get importResourceGroupFromStage => '从场地导入';
+
+  @override
+  String get importResourceGroupSourceStage => '来源场地';
+
+  @override
+  String get searchResourceGroup => '搜索资源组';
+
+  @override
+  String get noResourceGroupFound => '未找到资源组';
+
+  @override
+  String get importResourceGroupsFromStageTitle => '从场地添加资源组？';
+
+  @override
+  String importResourceGroupsFromStageMessage(String stageName) {
+    return '将添加以下来自 $stageName 的资源组：';
+  }
+
+  @override
+  String importResourceGroupsFromStageSkipped(int count) {
+    return '已有 $count 个资源组在本关卡中，将跳过。';
+  }
+
+  @override
+  String get importResourceGroupsFromStageAllPresent => '该场地的所有资源组已在本关卡中。';
+
+  @override
+  String get createCustomStage => '创建自定义地图';
+
+  @override
+  String get createCustomStageHint => '选择基础草坪外观，并在此关卡中本地编辑。';
+
+  @override
+  String get customStageAliasPromptTitle => '自定义场地别名';
+
+  @override
+  String get customStageAliasTaken => '该别名已在此关卡中使用。';
+
+  @override
+  String get stageSelectionTabBuiltin => '内置';
+
+  @override
+  String get stageSelectionTabCustom => '自定义';
+
+  @override
+  String get customStageSelectionEmpty => '此关卡中尚无自定义地图。';
+
+  @override
+  String get customStageSelectionInLevel => '此关卡中的自定义地图';
+
+  @override
+  String get customStageSwitchToBuiltinTitle => '切换为内置草坪？';
+
+  @override
+  String get customStageSwitchToBuiltinMessage => '这将永久删除此关卡中的自定义场地数据，且无法撤销。';
+
+  @override
+  String get customStageDeleteTitle => '删除自定义地图？';
+
+  @override
+  String get customStageDeleteMessage =>
+      '这将永久删除此关卡中的自定义场地数据。若其为当前草坪，关卡将切换为默认内置草坪。';
+
+  @override
+  String get customStagePresetSectionTitle => '预设自定义地图';
+
+  @override
+  String get customStagePreset_bigWaveNight => '巨浪黑夜';
+
+  @override
+  String get customStagePreset_mixtapeSummerNight => '摇滚夏夜';
+
+  @override
+  String get customStagePreset_oneSidedAtlantis => '单面海底';
+
+  @override
+  String get customStagePresetSource_memoryLaneS25Week6Boss =>
+      '出自回忆之旅25赛季第六周BOSS关';
+
+  @override
+  String get customStagePresetSource_memoryLaneS26HardLevel1 =>
+      '出自回忆之旅26赛季困难模式第1关';
+
+  @override
+  String get customStagePresetSource_memoryLaneS28Week3Original5_8 =>
+      '出自回忆之旅28赛季第三周原5~8关';
+
+  @override
+  String get editCustomStage => '编辑自定义地图';
 }
