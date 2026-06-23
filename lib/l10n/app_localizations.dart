@@ -1252,6 +1252,12 @@ abstract class AppLocalizations {
   /// **'By Attribute'**
   String get plantCategoryAttribute;
 
+  /// No description provided for @plantCategoryWorld.
+  ///
+  /// In en, this message translates to:
+  /// **'By World'**
+  String get plantCategoryWorld;
+
   /// No description provided for @plantCategoryOther.
   ///
   /// In en, this message translates to:
@@ -1377,6 +1383,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Physical'**
   String get plantTagPhysical;
+
+  /// No description provided for @plantTagWorldEgypt.
+  ///
+  /// In en, this message translates to:
+  /// **'Ancient Egypt'**
+  String get plantTagWorldEgypt;
+
+  /// No description provided for @plantTagWorldPirate.
+  ///
+  /// In en, this message translates to:
+  /// **'Pirate Seas'**
+  String get plantTagWorldPirate;
+
+  /// No description provided for @plantTagWorldWildWest.
+  ///
+  /// In en, this message translates to:
+  /// **'Wild West'**
+  String get plantTagWorldWildWest;
+
+  /// No description provided for @plantTagWorldKongfu.
+  ///
+  /// In en, this message translates to:
+  /// **'Kongfu World'**
+  String get plantTagWorldKongfu;
+
+  /// No description provided for @plantTagWorldFuture.
+  ///
+  /// In en, this message translates to:
+  /// **'Far Future'**
+  String get plantTagWorldFuture;
+
+  /// No description provided for @plantTagWorldDarkAges.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Ages'**
+  String get plantTagWorldDarkAges;
+
+  /// No description provided for @plantTagWorldBeach.
+  ///
+  /// In en, this message translates to:
+  /// **'Big Wave Beach'**
+  String get plantTagWorldBeach;
+
+  /// No description provided for @plantTagWorldIceage.
+  ///
+  /// In en, this message translates to:
+  /// **'Frostbite Caves'**
+  String get plantTagWorldIceage;
+
+  /// No description provided for @plantTagWorldSkycity.
+  ///
+  /// In en, this message translates to:
+  /// **'Sky City'**
+  String get plantTagWorldSkycity;
+
+  /// No description provided for @plantTagWorldLostCity.
+  ///
+  /// In en, this message translates to:
+  /// **'Lost City'**
+  String get plantTagWorldLostCity;
+
+  /// No description provided for @plantTagWorldEighties.
+  ///
+  /// In en, this message translates to:
+  /// **'Neon Mixtape Tour'**
+  String get plantTagWorldEighties;
+
+  /// No description provided for @plantTagWorldDino.
+  ///
+  /// In en, this message translates to:
+  /// **'Jurassic Marsh'**
+  String get plantTagWorldDino;
+
+  /// No description provided for @plantTagWorldModern.
+  ///
+  /// In en, this message translates to:
+  /// **'Modern Day'**
+  String get plantTagWorldModern;
+
+  /// No description provided for @plantTagWorldSteam.
+  ///
+  /// In en, this message translates to:
+  /// **'Steam Ages'**
+  String get plantTagWorldSteam;
+
+  /// No description provided for @plantTagWorldRenai.
+  ///
+  /// In en, this message translates to:
+  /// **'Renaissance Ages'**
+  String get plantTagWorldRenai;
+
+  /// No description provided for @plantTagWorldHeian.
+  ///
+  /// In en, this message translates to:
+  /// **'Heian Ages'**
+  String get plantTagWorldHeian;
+
+  /// No description provided for @plantTagWorldAtlantis.
+  ///
+  /// In en, this message translates to:
+  /// **'Atlantis'**
+  String get plantTagWorldAtlantis;
+
+  /// No description provided for @plantTagWorldFairytale.
+  ///
+  /// In en, this message translates to:
+  /// **'Fairytale Forest'**
+  String get plantTagWorldFairytale;
+
+  /// No description provided for @plantTagWorldZcorp.
+  ///
+  /// In en, this message translates to:
+  /// **'ZCorp'**
+  String get plantTagWorldZcorp;
+
+  /// No description provided for @plantTagWorldMausoleum.
+  ///
+  /// In en, this message translates to:
+  /// **'Underground Palace'**
+  String get plantTagWorldMausoleum;
 
   /// No description provided for @plantTagOriginal.
   ///

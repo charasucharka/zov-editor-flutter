@@ -613,6 +613,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get plantCategoryAttribute => '按属性';
 
   @override
+  String get plantCategoryWorld => '按世界';
+
+  @override
   String get plantCategoryOther => '其他分类';
 
   @override
@@ -674,6 +677,66 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get plantTagPhysical => '物理属性';
+
+  @override
+  String get plantTagWorldEgypt => '神秘埃及';
+
+  @override
+  String get plantTagWorldPirate => '海盗港湾';
+
+  @override
+  String get plantTagWorldWildWest => '狂野西部';
+
+  @override
+  String get plantTagWorldKongfu => '功夫世界';
+
+  @override
+  String get plantTagWorldFuture => '遥远未来';
+
+  @override
+  String get plantTagWorldDarkAges => '黑暗时代';
+
+  @override
+  String get plantTagWorldBeach => '巨浪沙滩';
+
+  @override
+  String get plantTagWorldIceage => '冰河世纪';
+
+  @override
+  String get plantTagWorldSkycity => '天空之城';
+
+  @override
+  String get plantTagWorldLostCity => '失落之城';
+
+  @override
+  String get plantTagWorldEighties => '摇滚年代';
+
+  @override
+  String get plantTagWorldDino => '恐龙危机';
+
+  @override
+  String get plantTagWorldModern => '摩登世界';
+
+  @override
+  String get plantTagWorldSteam => '蒸汽时代';
+
+  @override
+  String get plantTagWorldRenai => '复兴时代';
+
+  @override
+  String get plantTagWorldHeian => '平安时代';
+
+  @override
+  String get plantTagWorldAtlantis => '海底世界';
+
+  @override
+  String get plantTagWorldFairytale => '童话森林';
+
+  @override
+  String get plantTagWorldZcorp => 'Z公司';
+
+  @override
+  String get plantTagWorldMausoleum => '地宫遗迹';
 
   @override
   String get plantTagOriginal => '一代植物';

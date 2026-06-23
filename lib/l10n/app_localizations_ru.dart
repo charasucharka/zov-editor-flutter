@@ -625,6 +625,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get plantCategoryAttribute => 'По атрибуту';
 
   @override
+  String get plantCategoryWorld => 'По миру';
+
+  @override
   String get plantCategoryOther => 'Прочее';
 
   @override
@@ -686,6 +689,66 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get plantTagPhysical => 'Физика';
+
+  @override
+  String get plantTagWorldEgypt => 'Древний Египет';
+
+  @override
+  String get plantTagWorldPirate => 'Пиратское море';
+
+  @override
+  String get plantTagWorldWildWest => 'Дикий Запад';
+
+  @override
+  String get plantTagWorldKongfu => 'Мир Кунг-фу';
+
+  @override
+  String get plantTagWorldFuture => 'Будущее';
+
+  @override
+  String get plantTagWorldDarkAges => 'Тёмные века';
+
+  @override
+  String get plantTagWorldBeach => 'Пляж';
+
+  @override
+  String get plantTagWorldIceage => 'Ледниковый период';
+
+  @override
+  String get plantTagWorldSkycity => 'Небесный город';
+
+  @override
+  String get plantTagWorldLostCity => 'Затерянный город';
+
+  @override
+  String get plantTagWorldEighties => 'Неон 80-х';
+
+  @override
+  String get plantTagWorldDino => 'Юрские болота';
+
+  @override
+  String get plantTagWorldModern => 'Современность';
+
+  @override
+  String get plantTagWorldSteam => 'Паровая эра';
+
+  @override
+  String get plantTagWorldRenai => 'Ренессанс';
+
+  @override
+  String get plantTagWorldHeian => 'Эпоха Хэйан';
+
+  @override
+  String get plantTagWorldAtlantis => 'Атлантида';
+
+  @override
+  String get plantTagWorldFairytale => 'Сказочный лес';
+
+  @override
+  String get plantTagWorldZcorp => 'Z-Corp';
+
+  @override
+  String get plantTagWorldMausoleum => 'Мавзолей';
 
   @override
   String get plantTagOriginal => 'Оригинал PvZ1';

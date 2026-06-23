@@ -622,6 +622,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get plantCategoryAttribute => 'By Attribute';
 
   @override
+  String get plantCategoryWorld => 'By World';
+
+  @override
   String get plantCategoryOther => 'Other';
 
   @override
@@ -683,6 +686,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get plantTagPhysical => 'Physical';
+
+  @override
+  String get plantTagWorldEgypt => 'Ancient Egypt';
+
+  @override
+  String get plantTagWorldPirate => 'Pirate Seas';
+
+  @override
+  String get plantTagWorldWildWest => 'Wild West';
+
+  @override
+  String get plantTagWorldKongfu => 'Kongfu World';
+
+  @override
+  String get plantTagWorldFuture => 'Far Future';
+
+  @override
+  String get plantTagWorldDarkAges => 'Dark Ages';
+
+  @override
+  String get plantTagWorldBeach => 'Big Wave Beach';
+
+  @override
+  String get plantTagWorldIceage => 'Frostbite Caves';
+
+  @override
+  String get plantTagWorldSkycity => 'Sky City';
+
+  @override
+  String get plantTagWorldLostCity => 'Lost City';
+
+  @override
+  String get plantTagWorldEighties => 'Neon Mixtape Tour';
+
+  @override
+  String get plantTagWorldDino => 'Jurassic Marsh';
+
+  @override
+  String get plantTagWorldModern => 'Modern Day';
+
+  @override
+  String get plantTagWorldSteam => 'Steam Ages';
+
+  @override
+  String get plantTagWorldRenai => 'Renaissance Ages';
+
+  @override
+  String get plantTagWorldHeian => 'Heian Ages';
+
+  @override
+  String get plantTagWorldAtlantis => 'Atlantis';
+
+  @override
+  String get plantTagWorldFairytale => 'Fairytale Forest';
+
+  @override
+  String get plantTagWorldZcorp => 'ZCorp';
+
+  @override
+  String get plantTagWorldMausoleum => 'Underground Palace';
 
   @override
   String get plantTagOriginal => 'PvZ1 Plants';
