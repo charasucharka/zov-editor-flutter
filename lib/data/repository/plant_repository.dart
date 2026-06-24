@@ -238,6 +238,7 @@ extension PlantTagExtension on PlantTag {
       case PlantTag.electric:
       case PlantTag.physical:
         return PlantCategory.attribute;
+      case PlantTag.worldTutorial:
       case PlantTag.worldEgypt:
       case PlantTag.worldPirate:
       case PlantTag.worldWildWest:
