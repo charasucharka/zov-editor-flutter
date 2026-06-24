@@ -96,6 +96,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get download => 'Download';
 
   @override
+  String get favorite => 'Favorite';
+
+  @override
+  String get unfavorite => 'Unfavorite';
+
+  @override
   String get move => 'Move';
 
   @override
@@ -739,7 +745,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get plantTagWorldHeian => 'Heian Ages';
 
   @override
-  String get plantTagWorldAtlantis => 'Atlantis';
+  String get plantTagWorldAtlantis => 'Underwater World';
 
   @override
   String get plantTagWorldFairytale => 'Fairytale Forest';
@@ -3944,7 +3950,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get row => 'Row';
 
   @override
-  String get addType => 'Add type';
+  String get addType => 'Add';
 
   @override
   String get plantFunExperimental => 'Plant (work in progress)';
@@ -6900,14 +6906,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customStageSectionResourceGroups => 'Resource Groups';
 
   @override
-  String get customStageSectionMusicAndOther =>
-      'Lawn appearance, Music & Other';
+  String get customStageSectionMusicAndOther => 'Basic Elements';
 
   @override
   String get customStageSectionAdvanced => 'Advanced Settings';
 
   @override
-  String get customStageAlias => 'Stage alias';
+  String get customStageAlias => 'Stage alias (English only)';
 
   @override
   String get customStageNoResourceGroups => 'No resource groups in list';

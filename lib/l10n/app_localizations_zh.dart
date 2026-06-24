@@ -30,7 +30,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get clearCache => '释放缓存';
 
   @override
-  String get ultra => '极致';
+  String get ultra => '超大';
 
   @override
   String get uiSize => '界面大小';
@@ -92,6 +92,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get download => '下载';
+
+  @override
+  String get favorite => '收藏';
+
+  @override
+  String get unfavorite => '取消收藏';
 
   @override
   String get move => '移动';
@@ -3749,7 +3755,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get row => '行';
 
   @override
-  String get addType => '添加类型';
+  String get addType => '添加';
 
   @override
   String get plantFunExperimental => '植物（功能暂不完善）';
@@ -6553,13 +6559,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get customStageSectionResourceGroups => '资源组';
 
   @override
-  String get customStageSectionMusicAndOther => '地图外观、音乐与其他';
+  String get customStageSectionMusicAndOther => '基本元素';
 
   @override
   String get customStageSectionAdvanced => '高级设置';
 
   @override
-  String get customStageAlias => '地图代号';
+  String get customStageAlias => '地图代号（仅支持英文）';
 
   @override
   String get customStageNoResourceGroups => '列表中没有资源组';

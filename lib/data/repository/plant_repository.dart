@@ -275,6 +275,7 @@ class PlantInfo {
   final String name;
   final List<PlantTag> tags;
   final String? icon;
+
   /// Internal tags (e.g. _internal_no42, _internal_mausoleum) used for module gating.
   final List<String> internalTags;
 
@@ -383,13 +384,15 @@ class PlantRepository {
         }
 
         final tags = tagSet.toList();
-        _allPlants.add(PlantInfo(
-          id: id,
-          name: name,
-          icon: icon,
-          tags: tags.isEmpty ? [PlantTag.all] : tags,
-          internalTags: internalTags,
-        ));
+        _allPlants.add(
+          PlantInfo(
+            id: id,
+            name: name,
+            icon: icon,
+            tags: tags.isEmpty ? [PlantTag.all] : tags,
+            internalTags: internalTags,
+          ),
+        );
       }
 
       _isLoaded = true;
@@ -449,7 +452,9 @@ class PlantRepository {
     PlantTag? tag,
     String query,
   ) {
-    if (tag != null && tag != PlantTag.all && tag.category == PlantCategory.world) {
+    if (tag != null &&
+        tag != PlantTag.all &&
+        tag.category == PlantCategory.world) {
       _sortByWorldTag(plants, tag);
     }
 

@@ -268,6 +268,18 @@ abstract class AppLocalizations {
   /// **'Download'**
   String get download;
 
+  /// No description provided for @favorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorite'**
+  String get favorite;
+
+  /// No description provided for @unfavorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfavorite'**
+  String get unfavorite;
+
   /// No description provided for @move.
   ///
   /// In en, this message translates to:
@@ -1489,7 +1501,7 @@ abstract class AppLocalizations {
   /// No description provided for @plantTagWorldAtlantis.
   ///
   /// In en, this message translates to:
-  /// **'Atlantis'**
+  /// **'Underwater World'**
   String get plantTagWorldAtlantis;
 
   /// No description provided for @plantTagWorldFairytale.
@@ -7147,7 +7159,7 @@ abstract class AppLocalizations {
   /// No description provided for @addType.
   ///
   /// In en, this message translates to:
-  /// **'Add type'**
+  /// **'Add'**
   String get addType;
 
   /// No description provided for @plantFunExperimental.
@@ -12361,7 +12373,7 @@ abstract class AppLocalizations {
   /// No description provided for @customStageSectionMusicAndOther.
   ///
   /// In en, this message translates to:
-  /// **'Lawn appearance, Music & Other'**
+  /// **'Basic Elements'**
   String get customStageSectionMusicAndOther;
 
   /// No description provided for @customStageSectionAdvanced.
@@ -12373,7 +12385,7 @@ abstract class AppLocalizations {
   /// No description provided for @customStageAlias.
   ///
   /// In en, this message translates to:
-  /// **'Stage alias'**
+  /// **'Stage alias (English only)'**
   String get customStageAlias;
 
   /// No description provided for @customStageNoResourceGroups.

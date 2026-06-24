@@ -96,6 +96,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get download => 'Скачать';
 
   @override
+  String get favorite => 'В избранное';
+
+  @override
+  String get unfavorite => 'Убрать из избранного';
+
+  @override
   String get move => 'Переместить';
 
   @override
