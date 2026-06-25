@@ -428,7 +428,12 @@ class AppLocalizationsRu extends AppLocalizations {
       'Creative Courtyard · Recommended Levels Showcase:';
 
   @override
-  String get discordInviteLabel => 'Ссылка-приглашение на сервер:';
+  String get discordInviteLabel =>
+      'Ссылка-приглашение на Discord-сервер Plants vs. Zombies:';
+
+  @override
+  String get cEditorInviteLabel =>
+      'Ссылка-приглашение на Discord-сервер C-Editor:';
 
   @override
   String get creditsSection => 'Благодарности';

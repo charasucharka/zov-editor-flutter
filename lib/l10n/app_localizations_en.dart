@@ -425,7 +425,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Creative Courtyard · Recommended Levels Showcase:';
 
   @override
-  String get discordInviteLabel => 'Discord server invite link:';
+  String get discordInviteLabel =>
+      'Plants vs. Zombies Discord server invite link:';
+
+  @override
+  String get cEditorInviteLabel => 'C-Editor Discord server invite link:';
 
   @override
   String get creditsSection => 'Credits';

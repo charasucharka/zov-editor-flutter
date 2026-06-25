@@ -871,8 +871,14 @@ abstract class AppLocalizations {
   /// No description provided for @discordInviteLabel.
   ///
   /// In en, this message translates to:
-  /// **'Discord server invite link:'**
+  /// **'Plants vs. Zombies Discord server invite link:'**
   String get discordInviteLabel;
+
+  /// No description provided for @cEditorInviteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'C-Editor Discord server invite link:'**
+  String get cEditorInviteLabel;
 
   /// No description provided for @creditsSection.
   ///

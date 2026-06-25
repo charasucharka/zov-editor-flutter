@@ -20,10 +20,12 @@ import 'package:c_editor/widgets/app_message.dart';
 class _DesktopEscapeHandler extends StatefulWidget {
   const _DesktopEscapeHandler({
     required this.child,
+    required this.currentScreen,
     required this.onEscapeNoRouteToPop,
   });
 
   final Widget child;
+  final AppScreen currentScreen;
   final VoidCallback? onEscapeNoRouteToPop;
 
   @override
@@ -59,9 +61,16 @@ class _DesktopEscapeHandlerState extends State<_DesktopEscapeHandler> {
       return false;
     }
 
+    if (EscapeOverride.tryHandle?.call() == true) return true;
+
+    // Credits/about uses cubit navigation, not the Navigator stack.
+    if (widget.currentScreen == AppScreen.about) {
+      widget.onEscapeNoRouteToPop?.call();
+      return true;
+    }
+
     final nav = Navigator.maybeOf(context);
     if (nav != null && nav.canPop()) {
-      if (EscapeOverride.tryHandle?.call() == true) return true;
       nav.pop();
       return true;
     }
@@ -146,6 +155,7 @@ class _ZEditorAppState extends State<ZEditorApp> {
             builder: (context, nav) {
               final appNav = context.read<AppNavigationCubit>();
               return _DesktopEscapeHandler(
+                currentScreen: nav.screen,
                 onEscapeNoRouteToPop: () {
                   if (nav.screen == AppScreen.levelList) {
                     SystemNavigator.pop();

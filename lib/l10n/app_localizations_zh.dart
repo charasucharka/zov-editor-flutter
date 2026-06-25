@@ -416,7 +416,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get usageRecommendedLevelsLabel => '创意庭院·推荐关卡展示：';
 
   @override
-  String get discordInviteLabel => 'Discord服务器链接：';
+  String get discordInviteLabel => '植物大战僵尸 Discord 服务器邀请链接：';
+
+  @override
+  String get cEditorInviteLabel => 'C-Editor Discord 服务器邀请链接：';
 
   @override
   String get creditsSection => '致谢名单';

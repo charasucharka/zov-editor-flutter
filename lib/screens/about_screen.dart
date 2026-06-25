@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:c_editor/data/app_links.dart';
@@ -20,6 +21,10 @@ Future<void> _openUrl(String url) async {
   await launchUrl(uri, mode: LaunchMode.externalApplication);
 }
 
+class _AboutEscapeIntent extends Intent {
+  const _AboutEscapeIntent();
+}
+
 class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key, required this.onBack});
 
@@ -39,8 +44,12 @@ class _AboutScreenState extends State<AboutScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final isDesktop =
+        theme.platform == TargetPlatform.windows ||
+        theme.platform == TargetPlatform.macOS ||
+        theme.platform == TargetPlatform.linux;
 
-    return Scaffold(
+    Widget screen = Scaffold(
       appBar: AppBar(
         title: Text(
           l10n.softwareIntro,
@@ -128,7 +137,7 @@ class _AboutScreenState extends State<AboutScreen> {
                         const SizedBox(height: 8),
                         _LinkRow(
                           label: l10n.discordInviteLabel,
-                          url: links.discordInvite,
+                          url: links.pvzDiscordInviteLink,
                           onSurface: theme.colorScheme.onSurface,
                           linkColor: theme.colorScheme.primary,
                         ),
@@ -164,7 +173,20 @@ class _AboutScreenState extends State<AboutScreen> {
                           onSurface: theme.colorScheme.onSurface,
                           linkColor: theme.colorScheme.primary,
                         ),
-                        _Bullet('${l10n.discordLabel} ${l10n.comingSoon}'),
+                        if (l10n.discordInviteLabel.isNotEmpty)
+                          _LinkRow(
+                            label: l10n.discordInviteLabel,
+                            url: links.pvzDiscordInviteLink,
+                            onSurface: theme.colorScheme.onSurface,
+                            linkColor: theme.colorScheme.primary,
+                          ),
+                        if (l10n.cEditorInviteLabel.isNotEmpty)
+                          _LinkRow(
+                            label: l10n.cEditorInviteLabel,
+                            url: links.cEditorInviteLink,
+                            onSurface: theme.colorScheme.onSurface,
+                            linkColor: theme.colorScheme.primary,
+                          ),
                       ],
                       const SizedBox(height: 12),
                       Text(
@@ -253,6 +275,27 @@ class _AboutScreenState extends State<AboutScreen> {
         },
       ),
     );
+
+    if (isDesktop) {
+      screen = Shortcuts(
+        shortcuts: const {
+          SingleActivator(LogicalKeyboardKey.escape): _AboutEscapeIntent(),
+        },
+        child: Actions(
+          actions: {
+            _AboutEscapeIntent: CallbackAction<_AboutEscapeIntent>(
+              onInvoke: (_) {
+                widget.onBack();
+                return null;
+              },
+            ),
+          },
+          child: Focus(autofocus: true, child: screen),
+        ),
+      );
+    }
+
+    return screen;
   }
 }
 

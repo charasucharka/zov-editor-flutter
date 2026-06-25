@@ -7,7 +7,8 @@ class AppLinks {
   AppLinks({
     required this.source,
     required this.issues,
-    required this.discordInvite,
+    required this.pvzDiscordInviteLink,
+    required this.cEditorInviteLink,
     required this.recommendedLevels,
     required this.levelUpload,
   });
@@ -16,7 +17,8 @@ class AppLinks {
 
   final String source;
   final String issues;
-  final String discordInvite;
+  final String pvzDiscordInviteLink;
+  final String cEditorInviteLink;
   final String recommendedLevels;
   final String levelUpload;
 
@@ -29,7 +31,8 @@ class AppLinks {
     _cached = AppLinks(
       source: raw['source'] as String,
       issues: raw['issues'] as String,
-      discordInvite: raw['discordInvite'] as String,
+      pvzDiscordInviteLink: raw['PvZDiscordInviteLink'] as String,
+      cEditorInviteLink: raw['CEditorInviteLink'] as String,
       recommendedLevels:
           (raw['recommendedLevels'] ?? raw['levelPlaza']) as String,
       levelUpload: raw['levelUpload'] as String,
