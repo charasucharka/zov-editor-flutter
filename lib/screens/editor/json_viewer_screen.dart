@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -69,6 +70,7 @@ class _JsonViewerScreenState extends State<JsonViewerScreen> {
   int _currentMatchIndex = 0;
   final List<int?> _matchObjectIndices = [];
   final Map<int, List<JsonViewerTextMatch>> _objectMatches = {};
+  double? _pinchBaseFontSize;
 
   @override
   void initState() {
@@ -122,6 +124,52 @@ class _JsonViewerScreenState extends State<JsonViewerScreen> {
     _cachedFontSize = value;
     setState(() => _fontSize = value);
     _saveFontSize(value);
+  }
+
+  double _fontSizeMin(bool isDesktop) => isDesktop ? 12.0 : 6.0;
+
+  double _fontSizeMax(bool isDesktop) => isDesktop ? 24.0 : 18.0;
+
+  void _adjustFontSizeByStep(double step, bool isDesktop) {
+    final next = (_fontSize + step).clamp(
+      _fontSizeMin(isDesktop),
+      _fontSizeMax(isDesktop),
+    );
+    if (next != _fontSize) {
+      _setFontSize(next.roundToDouble());
+    }
+  }
+
+  Widget _wrapWithFontSizeGestures({
+    required Widget child,
+    required bool isDesktop,
+  }) {
+    return Listener(
+      onPointerSignal: (event) {
+        if (event is! PointerScrollEvent) return;
+        final keyboard = HardwareKeyboard.instance;
+        if (!keyboard.isControlPressed && !keyboard.isMetaPressed) return;
+        final step = event.scrollDelta.dy > 0 ? -1.0 : 1.0;
+        _adjustFontSizeByStep(step, isDesktop);
+      },
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onScaleStart: (_) => _pinchBaseFontSize = _fontSize,
+        onScaleUpdate: (details) {
+          final base = _pinchBaseFontSize;
+          if (base == null) return;
+          final next = (base * details.scale).clamp(
+            _fontSizeMin(isDesktop),
+            _fontSizeMax(isDesktop),
+          );
+          if (next.roundToDouble() != _fontSize.roundToDouble()) {
+            _setFontSize(next.roundToDouble());
+          }
+        },
+        onScaleEnd: (_) => _pinchBaseFontSize = null,
+        child: child,
+      ),
+    );
   }
 
   String _rawPrettyText() =>
@@ -524,11 +572,14 @@ class _JsonViewerScreenState extends State<JsonViewerScreen> {
                 ),
               ),
             Expanded(
-              child: _isEditing
-                  ? _buildEditView()
-                  : _viewMode == _JsonViewMode.structured
-                  ? _buildObjectMode(isDesktop, l10n)
-                  : _buildViewMode(pretty, isDesktop, l10n),
+              child: _wrapWithFontSizeGestures(
+                isDesktop: isDesktop,
+                child: _isEditing
+                    ? _buildEditView()
+                    : _viewMode == _JsonViewMode.structured
+                    ? _buildObjectMode(isDesktop, l10n)
+                    : _buildViewMode(pretty, isDesktop, l10n),
+              ),
             ),
           ],
         ),
