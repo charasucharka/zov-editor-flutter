@@ -772,29 +772,48 @@ class _LevelListScreenState extends State<LevelListScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: SegmentedButton<LevelViewMode>(
-                    segments: [
-                      ButtonSegment(
-                        value: LevelViewMode.all,
-                        label: Text(l10n.allLevelsCategory),
-                        icon: const Icon(Icons.folder_outlined),
-                      ),
-                      ButtonSegment(
-                        value: LevelViewMode.favorites,
-                        label: Text(l10n.favoritesCategory),
-                        icon: const Icon(Icons.favorite_outline),
-                      ),
-                    ],
-                    selected: {_viewMode},
-                    onSelectionChanged: (newSelection) {
-                      setState(() {
-                        _viewMode = newSelection.first;
-                        if (_viewMode == LevelViewMode.favorites && _pathStack.isNotEmpty) {
-                          _pathStack = [_pathStack.first];
-                          _resetListScrollToTop();
-                        }
-                        _loadCurrentDirectory();
-                      });
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final compact = constraints.maxWidth < 240;
+                      return SizedBox(
+                        width: double.infinity,
+                        child: SegmentedButton<LevelViewMode>(
+                          showSelectedIcon: false,
+                          style: SegmentedButton.styleFrom(
+                            visualDensity: VisualDensity.compact,
+                          ),
+                          segments: [
+                            ButtonSegment(
+                              value: LevelViewMode.all,
+                              icon: const Icon(Icons.folder_outlined, size: 20),
+                              label: compact
+                                  ? null
+                                  : Text(l10n.allLevelsCategory),
+                              tooltip: l10n.allLevelsCategory,
+                            ),
+                            ButtonSegment(
+                              value: LevelViewMode.favorites,
+                              icon: const Icon(Icons.favorite_outline, size: 20),
+                              label: compact
+                                  ? null
+                                  : Text(l10n.favoritesCategory),
+                              tooltip: l10n.favoritesCategory,
+                            ),
+                          ],
+                          selected: {_viewMode},
+                          onSelectionChanged: (newSelection) {
+                            setState(() {
+                              _viewMode = newSelection.first;
+                              if (_viewMode == LevelViewMode.favorites &&
+                                  _pathStack.isNotEmpty) {
+                                _pathStack = [_pathStack.first];
+                                _resetListScrollToTop();
+                              }
+                              _loadCurrentDirectory();
+                            });
+                          },
+                        ),
+                      );
                     },
                   ),
                 ),
