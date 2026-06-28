@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/data/pvz_models.dart';
-import 'package:c_editor/data/rtid_parser.dart';
+import 'package:c_editor/widgets/editor_object_alias.dart';
 import 'package:c_editor/widgets/editor_components.dart'
     show editorInputDecoration;
 
@@ -27,6 +27,8 @@ class IncreasedCostModuleScreen extends StatefulWidget {
 }
 
 class _IncreasedCostModuleScreenState extends State<IncreasedCostModuleScreen> {
+  static const _objClass = 'IncreasedCostModuleProperties';
+  late String _alias;
   late PvzObject _moduleObj;
   late IncreasedCostModulePropertiesData _data;
   late TextEditingController _baseCostCtrl;
@@ -37,6 +39,7 @@ class _IncreasedCostModuleScreenState extends State<IncreasedCostModuleScreen> {
   @override
   void initState() {
     super.initState();
+    _alias = aliasFromRtid(widget.rtid);
     _loadData();
     _baseCostFocusNode = FocusNode();
     _maxCountFocusNode = FocusNode();
@@ -45,8 +48,7 @@ class _IncreasedCostModuleScreenState extends State<IncreasedCostModuleScreen> {
   }
 
   void _loadData() {
-    final info = RtidParser.parse(widget.rtid);
-    final alias = info?.alias ?? '';
+    final alias = _alias;
     final existing = widget.levelFile.objects.firstWhereOrNull(
       (o) => o.aliases?.contains(alias) == true,
     );
@@ -55,7 +57,7 @@ class _IncreasedCostModuleScreenState extends State<IncreasedCostModuleScreen> {
     } else {
       _moduleObj = PvzObject(
         aliases: [alias],
-        objClass: 'IncreasedCostModuleProperties',
+        objClass: _objClass,
         objData: IncreasedCostModulePropertiesData().toJson(),
       );
       widget.levelFile.objects.add(_moduleObj);
@@ -86,6 +88,17 @@ class _IncreasedCostModuleScreenState extends State<IncreasedCostModuleScreen> {
     super.dispose();
   }
 
+
+  void _handleAliasChanged(String newAlias) {
+    renameLevelObjectAlias(
+      levelFile: widget.levelFile,
+      oldAlias: _alias,
+      newAlias: newAlias,
+      onChanged: widget.onChanged,
+    );
+    setState(() => _alias = newAlias);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,8 +107,11 @@ class _IncreasedCostModuleScreenState extends State<IncreasedCostModuleScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: widget.onBack,
         ),
-        title: Text(
-          AppLocalizations.of(context)?.increasedCost ?? 'Increased Cost',
+        title: buildEditorObjectAppBarTitle(
+          context: context,
+          localizedName: resolveModuleTitleByObjClass(context, _objClass),
+          isEvent: false,
+          objClass: _objClass,
         ),
       ),
       body: SingleChildScrollView(
@@ -106,6 +122,13 @@ class _IncreasedCostModuleScreenState extends State<IncreasedCostModuleScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+EditorAliasInputField(
+              alias: _alias,
+              levelFile: widget.levelFile,
+              onAliasChanged: _handleAliasChanged,
+              onChanged: widget.onChanged,
+            ),
+            const SizedBox(height: 16),
                 Text(
                   AppLocalizations.of(context)?.inflationParams ??
                       'Inflation params',

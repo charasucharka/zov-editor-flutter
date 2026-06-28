@@ -455,7 +455,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get thanksNames =>
-      'Devourdoom, Evilhack28, Chara, KL12, Haruma, nineteendo, vi_i_guess';
+      'Devourdoom, Chara, Evilhack28, Rebus, KL12, vi_i_guess, Haruma, nineteendo';
 
   @override
   String get sourceLabel => 'Исходный код:';
@@ -2708,6 +2708,22 @@ class AppLocalizationsRu extends AppLocalizations {
   String editAlias(Object alias) {
     return 'Редактировать $alias';
   }
+
+  @override
+  String editNamedEvent(Object name) {
+    return 'Редактировать событие «$name»';
+  }
+
+  @override
+  String editNamedModule(Object name) {
+    return 'Редактировать модуль «$name»';
+  }
+
+  @override
+  String get addEventAliasTitle => 'Добавить событие';
+
+  @override
+  String get addModuleAliasTitle => 'Добавить модуль';
 
   @override
   String get aliasLabel => 'Псевдоним';

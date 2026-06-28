@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:c_editor/data/level_parser.dart';
 import 'package:c_editor/data/repository/plant_repository.dart';
 import 'package:c_editor/data/pvz_models.dart';
-import 'package:c_editor/data/rtid_parser.dart';
 import 'package:c_editor/theme/app_theme.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
@@ -10,6 +9,7 @@ import 'package:c_editor/screens/select/plant_selection_screen.dart';
 import 'package:c_editor/widgets/asset_image.dart'
     show AssetImageWidget, imageAltCandidates;
 import 'package:c_editor/widgets/editor_components.dart';
+import 'package:c_editor/widgets/editor_object_alias.dart';
 
 /// Legacy preset plants (frozen plant placement). Ported from Z-Editor-master InitialPlantPropertiesEP.kt
 class InitialPlantPropertiesScreen extends StatefulWidget {
@@ -35,6 +35,8 @@ class InitialPlantPropertiesScreen extends StatefulWidget {
 
 class _InitialPlantPropertiesScreenState
     extends State<InitialPlantPropertiesScreen> {
+  static const _objClass = 'InitialPlantProperties';
+  late String _alias;
   late PvzObject _moduleObj;
   late InitialPlantPropertiesData _data;
   int _selectedX = 0;
@@ -44,12 +46,12 @@ class _InitialPlantPropertiesScreenState
   @override
   void initState() {
     super.initState();
+    _alias = aliasFromRtid(widget.rtid);
     _loadData();
   }
 
   void _loadData() {
-    final info = RtidParser.parse(widget.rtid);
-    final alias = info?.alias ?? '';
+    final alias = _alias;
     _moduleObj = widget.levelFile.objects.firstWhere(
       (o) => o.aliases?.contains(alias) == true,
       orElse: () => PvzObject(
@@ -176,6 +178,17 @@ class _InitialPlantPropertiesScreenState
     );
   }
 
+
+  void _handleAliasChanged(String newAlias) {
+    renameLevelObjectAlias(
+      levelFile: widget.levelFile,
+      oldAlias: _alias,
+      newAlias: newAlias,
+      onChanged: widget.onChanged,
+    );
+    setState(() => _alias = newAlias);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -205,9 +218,12 @@ class _InitialPlantPropertiesScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          l10n.frozenPlantPlacementTitle,
-          overflow: TextOverflow.ellipsis,
+        title: buildEditorObjectAppBarTitle(
+          context: context,
+          localizedName: resolveModuleTitleByObjClass(context, _objClass),
+          isEvent: false,
+          objClass: _objClass,
+          foregroundColor: Colors.white,
         ),
         backgroundColor: barColor,
         foregroundColor: Colors.white,
@@ -229,6 +245,14 @@ class _InitialPlantPropertiesScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+EditorAliasInputField(
+              alias: _alias,
+              levelFile: widget.levelFile,
+              onAliasChanged: _handleAliasChanged,
+              onChanged: widget.onChanged,
+              accentColor: barColor,
+            ),
+            const SizedBox(height: 16),
                 Card(
                   child: SwitchListTile(
                     title: Text(

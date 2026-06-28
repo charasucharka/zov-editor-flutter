@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:c_editor/data/level_parser.dart';
 import 'package:c_editor/data/pvz_models.dart';
-import 'package:c_editor/data/rtid_parser.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/widgets/editor_components.dart';
+import 'package:c_editor/widgets/editor_object_alias.dart';
 
 /// Bomb properties (barrel/cherry bomb fuze) editor.
 class BombPropertiesScreen extends StatefulWidget {
@@ -25,6 +25,8 @@ class BombPropertiesScreen extends StatefulWidget {
 }
 
 class _BombPropertiesScreenState extends State<BombPropertiesScreen> {
+  static const _objClass = 'BombProperties';
+  late String _alias;
   late PvzObject _moduleObj;
   late BombPropertiesData _data;
   late TextEditingController _flameSpeedCtrl;
@@ -37,6 +39,7 @@ class _BombPropertiesScreenState extends State<BombPropertiesScreen> {
   @override
   void initState() {
     super.initState();
+    _alias = aliasFromRtid(widget.rtid);
     _loadData();
   }
 
@@ -65,8 +68,7 @@ class _BombPropertiesScreenState extends State<BombPropertiesScreen> {
   }
 
   void _loadData() {
-    final info = RtidParser.parse(widget.rtid);
-    final alias = info?.alias ?? 'Bombs';
+    final alias = _alias;
     _moduleObj = widget.levelFile.objects.firstWhere(
       (o) => o.aliases?.contains(alias) == true,
       orElse: () => PvzObject(
@@ -99,6 +101,17 @@ class _BombPropertiesScreenState extends State<BombPropertiesScreen> {
     setState(() {});
   }
 
+
+  void _handleAliasChanged(String newAlias) {
+    renameLevelObjectAlias(
+      levelFile: widget.levelFile,
+      oldAlias: _alias,
+      newAlias: newAlias,
+      onChanged: widget.onChanged,
+    );
+    setState(() => _alias = newAlias);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -109,7 +122,12 @@ class _BombPropertiesScreenState extends State<BombPropertiesScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: widget.onBack,
         ),
-        title: Text(l10n?.bombProperties ?? 'Bomb properties'),
+        title: buildEditorObjectAppBarTitle(
+          context: context,
+          localizedName: resolveModuleTitleByObjClass(context, _objClass),
+          isEvent: false,
+          objClass: _objClass,
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.help_outline),
@@ -137,6 +155,13 @@ class _BombPropertiesScreenState extends State<BombPropertiesScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+EditorAliasInputField(
+              alias: _alias,
+              levelFile: widget.levelFile,
+              onAliasChanged: _handleAliasChanged,
+              onChanged: widget.onChanged,
+            ),
+            const SizedBox(height: 16),
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16),

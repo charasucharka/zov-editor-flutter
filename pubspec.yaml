@@ -57,10 +57,14 @@ flutter:
     - assets/images/zombies/
     - assets/images/round_icons/
     - assets/images/tags/
+    - assets/images/tags/plants/rarity/
+    - assets/images/tags/plants/role/
+    - assets/images/tags/attributes/
+    - assets/images/tags/zombies/type/
     - assets/images/griditems/
     - assets/images/tools/
     - assets/images/others/
-    - assets/images/fish/
+    - assets/images/fishes/
     - assets/images/tunnels/
 
 flutter_launcher_icons:

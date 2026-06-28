@@ -430,18 +430,17 @@ class _PlantSelectionScreenState extends State<PlantSelectionScreen> {
                             ),
                             tabs: visibleTags.map((tag) {
                               final isSelected = _selectedTag == tag;
-                              final iconName = tag.iconName;
+                              final iconPath = tag.iconAssetPath;
                               return Tab(
                                 child: Row(
                                   children: [
-                                    if (iconName != null) ...[
+                                    if (iconPath != null) ...[
                                       AssetImageWidget(
-                                        assetPath:
-                                            'assets/images/tags/$iconName',
+                                        assetPath: iconPath,
                                         width: 18,
                                         height: 18,
                                         altCandidates: imageAltCandidates(
-                                          'assets/images/tags/$iconName',
+                                          iconPath,
                                         ),
                                         cacheWidth: 36,
                                         cacheHeight: 36,

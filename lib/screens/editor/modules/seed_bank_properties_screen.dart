@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:c_editor/data/repository/grid_item_repository.dart';
 import 'package:c_editor/data/repository/plant_repository.dart';
 import 'package:c_editor/data/pvz_models.dart';
-import 'package:c_editor/data/rtid_parser.dart';
 import 'package:c_editor/data/repository/zombie_properties_repository.dart';
 import 'package:c_editor/data/repository/zombie_repository.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
@@ -12,6 +11,7 @@ import 'package:c_editor/theme/app_theme.dart';
 import 'package:c_editor/widgets/asset_image.dart'
     show AssetImageWidget, imageAltCandidates;
 import 'package:c_editor/widgets/preset_resource_list_tile.dart';
+import 'package:c_editor/widgets/editor_object_alias.dart';
 
 /// Seed bank properties. Ported from Z-Editor-master SeedBankPropertiesEP.kt
 class SeedBankPropertiesScreen extends StatefulWidget {
@@ -46,18 +46,20 @@ class SeedBankPropertiesScreen extends StatefulWidget {
 }
 
 class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
+  static const _objClass = 'SeedBankProperties';
+  late String _alias;
   late PvzObject _moduleObj;
   late SeedBankData _data;
 
   @override
   void initState() {
     super.initState();
+    _alias = aliasFromRtid(widget.rtid);
     _loadData();
   }
 
   void _loadData() {
-    final info = RtidParser.parse(widget.rtid);
-    final alias = info?.alias ?? '';
+    final alias = _alias;
     final existing = widget.levelFile.objects.firstWhereOrNull(
       (o) => o.aliases?.contains(alias) == true,
     );
@@ -217,6 +219,17 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
     });
   }
 
+
+  void _handleAliasChanged(String newAlias) {
+    renameLevelObjectAlias(
+      levelFile: widget.levelFile,
+      oldAlias: _alias,
+      newAlias: newAlias,
+      onChanged: widget.onChanged,
+    );
+    setState(() => _alias = newAlias);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -234,10 +247,12 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: widget.onBack,
         ),
-        title: Text(
-          isZombieMode
-              ? (l10n?.seedBankIZombie ?? 'Seed bank (I, Zombie)')
-              : (l10n?.moduleTitle_SeedBankProperties ?? 'Seed bank'),
+        title: buildEditorObjectAppBarTitle(
+          context: context,
+          localizedName: resolveModuleTitleByObjClass(context, _objClass),
+          isEvent: false,
+          objClass: _objClass,
+          foregroundColor: isZombieMode ? theme.colorScheme.surface : null,
         ),
         backgroundColor: isZombieMode ? izombieColor : null,
         foregroundColor: isZombieMode ? theme.colorScheme.surface : null,
@@ -258,6 +273,14 @@ class _SeedBankPropertiesScreenState extends State<SeedBankPropertiesScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+EditorAliasInputField(
+              alias: _alias,
+              levelFile: widget.levelFile,
+              onAliasChanged: _handleAliasChanged,
+              onChanged: widget.onChanged,
+              accentColor: isZombieMode ? izombieColor : null,
+            ),
+            const SizedBox(height: 16),
               _buildBasicRulesCard(context, isZombieMode, l10n),
               const SizedBox(height: 16),
               if (isZombieMode)

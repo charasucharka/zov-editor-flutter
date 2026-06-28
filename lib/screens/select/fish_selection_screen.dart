@@ -11,7 +11,7 @@ import 'package:c_editor/widgets/editor_components.dart';
 /// Fish selection for ZombieFishWaveEvent. Selects creature types (fish).
 ///
 /// Only fish listed in [FishInfo.iconAssetByAlias] (`fish_type_repository.dart`) appear
-/// here — each has `assets/images/fish/icon_*.webp`. Others (e.g. smalljellyfish) are omitted
+/// here — each has `assets/images/fishes/icon_*.webp`. Others (e.g. smalljellyfish) are omitted
 /// so levels cannot reference creatures without bundled icons (can crash the game).
 class FishSelectionScreen extends StatefulWidget {
   const FishSelectionScreen({

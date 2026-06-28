@@ -4,11 +4,11 @@ import 'package:c_editor/bloc/editor/editor_cubit.dart';
 import 'package:c_editor/data/pvz_models.dart';
 import 'package:c_editor/data/repository/plant_repository.dart';
 import 'package:c_editor/data/repository/zombie_repository.dart';
-import 'package:c_editor/data/rtid_parser.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
 import 'package:c_editor/screens/select/plant_selection_screen.dart';
 import 'package:c_editor/screens/select/zombie_selection_screen.dart';
+import 'package:c_editor/widgets/editor_object_alias.dart';
 import 'package:c_editor/theme/app_theme.dart' show pvzBrownDark, pvzBrownLight;
 import 'package:c_editor/widgets/asset_image.dart'
     show AssetImageWidget, imageAltCandidates;
@@ -43,6 +43,8 @@ class PVZ1CopycatsModuleScreen extends StatefulWidget {
 }
 
 class _PVZ1CopycatsModuleScreenState extends State<PVZ1CopycatsModuleScreen> {
+  static const _objClass = 'PVZ1CopycatsModuleProperties';
+  late String _alias;
   late PvzObject _moduleObj;
   late PVZ1CopycatsModulePropertiesData _data;
   late TextEditingController _zombieWeightCtrl;
@@ -53,6 +55,7 @@ class _PVZ1CopycatsModuleScreenState extends State<PVZ1CopycatsModuleScreen> {
   @override
   void initState() {
     super.initState();
+    _alias = aliasFromRtid(widget.rtid);
     PlantRepository().init();
     ZombieRepository().init();
     _loadData();
@@ -65,8 +68,7 @@ class _PVZ1CopycatsModuleScreenState extends State<PVZ1CopycatsModuleScreen> {
   }
 
   void _loadData() {
-    final info = RtidParser.parse(widget.rtid);
-    final alias = info?.alias ?? '';
+    final alias = _alias;
     final existing = widget.levelFile.objects.firstWhereOrNull(
       (o) => o.aliases?.contains(alias) == true,
     );
@@ -163,6 +165,17 @@ class _PVZ1CopycatsModuleScreenState extends State<PVZ1CopycatsModuleScreen> {
     super.dispose();
   }
 
+
+  void _handleAliasChanged(String newAlias) {
+    renameLevelObjectAlias(
+      levelFile: widget.levelFile,
+      oldAlias: _alias,
+      newAlias: newAlias,
+      onChanged: widget.onChanged,
+    );
+    setState(() => _alias = newAlias);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -179,7 +192,13 @@ class _PVZ1CopycatsModuleScreenState extends State<PVZ1CopycatsModuleScreen> {
         ),
         backgroundColor: accentColor,
         foregroundColor: Colors.white,
-        title: Text(l10n?.pvz1CopycatsModuleTitle ?? 'Guess who I am'),
+        title: buildEditorObjectAppBarTitle(
+          context: context,
+          localizedName: resolveModuleTitleByObjClass(context, _objClass),
+          isEvent: false,
+          objClass: _objClass,
+          foregroundColor: Colors.white,
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.help_outline),
@@ -218,6 +237,13 @@ class _PVZ1CopycatsModuleScreenState extends State<PVZ1CopycatsModuleScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+EditorAliasInputField(
+              alias: _alias,
+              levelFile: widget.levelFile,
+              onAliasChanged: _handleAliasChanged,
+              onChanged: widget.onChanged,
+            ),
+            const SizedBox(height: 16),
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(16),
