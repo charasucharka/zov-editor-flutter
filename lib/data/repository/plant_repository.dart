@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:c_editor/data/asset_loader.dart';
+import 'package:c_editor/data/tag_assets.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 
 enum PlantCategory { quality, role, attribute, world, other, collection }
@@ -171,7 +172,22 @@ extension PlantTagExtension on PlantTag {
     }
   }
 
-  String? get iconName {
+  String? get iconAssetPath {
+    final fileName = _iconFileName;
+    if (fileName == null) return null;
+    switch (category) {
+      case PlantCategory.quality:
+        return TagAssets.plantRarity(fileName);
+      case PlantCategory.role:
+        return TagAssets.plantRole(fileName);
+      case PlantCategory.attribute:
+        return TagAssets.attribute(fileName);
+      default:
+        return null;
+    }
+  }
+
+  String? get _iconFileName {
     switch (this) {
       case PlantTag.white:
         return 'Plant_White.webp';
@@ -198,17 +214,17 @@ extension PlantTagExtension on PlantTag {
       case PlantTag.trapper:
         return 'Plant_Trapper.webp';
       case PlantTag.fire:
-        return 'Plant_Fire.webp';
+        return 'Fire.webp';
       case PlantTag.ice:
-        return 'Plant_Ice.webp';
+        return 'Ice.webp';
       case PlantTag.magic:
-        return 'Plant_Magic.webp';
+        return 'Magic.webp';
       case PlantTag.poison:
-        return 'Plant_Poison.webp';
+        return 'Poison.webp';
       case PlantTag.electric:
-        return 'Plant_Electric.webp';
+        return 'Electric.webp';
       case PlantTag.physical:
-        return 'Plant_Physics.webp';
+        return 'Physics.webp';
       default:
         return null;
     }

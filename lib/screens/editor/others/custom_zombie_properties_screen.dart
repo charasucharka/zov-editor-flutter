@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:c_editor/data/tag_assets.dart';
 import 'package:c_editor/data/pvz_models.dart';
 import 'package:c_editor/data/resilience_shield_utils.dart';
 import 'package:c_editor/data/repository/resilience_config_repository.dart';
@@ -1325,15 +1326,7 @@ class _CustomZombiePropertiesScreenState
     }
   }
 
-  static const _resIcons = [
-    null,
-    'assets/images/tags/Plant_Physics.webp',
-    'assets/images/tags/Plant_Poison.webp',
-    'assets/images/tags/Plant_Electric.webp',
-    'assets/images/tags/Plant_Magic.webp',
-    'assets/images/tags/Plant_Ice.webp',
-    'assets/images/tags/Plant_Fire.webp',
-  ];
+  static const _resIcons = TagAssets.attributeIcons;
 
   Widget _resistanceInput({
     required BuildContext context,
