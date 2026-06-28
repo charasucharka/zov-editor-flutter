@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:c_editor/data/level_parser.dart';
 import 'package:c_editor/data/pvz_models.dart';
-import 'package:c_editor/data/rtid_parser.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/theme/app_theme.dart' show pvzPinkDark, pvzPinkLight;
 import 'package:c_editor/widgets/asset_image.dart'
     show AssetImageWidget, imageAltCandidates;
 import 'package:c_editor/widgets/editor_components.dart';
+import 'package:c_editor/widgets/editor_object_alias.dart';
 
 /// Gulliver tunnel placement module (`InitialGridItemGulliverTunnelProperties`).
 class GulliverTunnelModuleScreen extends StatefulWidget {
@@ -31,6 +31,8 @@ class GulliverTunnelModuleScreen extends StatefulWidget {
 
 class _GulliverTunnelModuleScreenState
     extends State<GulliverTunnelModuleScreen> {
+  static const _objClass = 'InitialGridItemGulliverTunnelProperties';
+  late String _alias;
   static const _orientationLeft = 'GULLIVERTUNNEL_ORIENTATION_BIG_ON_LEFT';
   static const _orientationRight = 'GULLIVERTUNNEL_ORIENTATION_BIG_ON_RIGHT';
 
@@ -60,12 +62,12 @@ class _GulliverTunnelModuleScreenState
   @override
   void initState() {
     super.initState();
+    _alias = aliasFromRtid(widget.rtid);
     _loadData();
   }
 
   void _loadData() {
-    final info = RtidParser.parse(widget.rtid);
-    final alias = info?.alias ?? 'TunnelPlacement';
+    final alias = _alias;
     _moduleObj = widget.levelFile.objects.firstWhere(
       (o) => o.aliases?.contains(alias) == true,
       orElse: () => PvzObject(
@@ -265,6 +267,17 @@ class _GulliverTunnelModuleScreenState
     setState(() {});
   }
 
+
+  void _handleAliasChanged(String newAlias) {
+    renameLevelObjectAlias(
+      levelFile: widget.levelFile,
+      oldAlias: _alias,
+      newAlias: newAlias,
+      onChanged: widget.onChanged,
+    );
+    setState(() => _alias = newAlias);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -282,7 +295,13 @@ class _GulliverTunnelModuleScreenState
         ),
         backgroundColor: accentColor,
         foregroundColor: Colors.white,
-        title: Text(l10n?.gulliverTunnelTitle ?? 'Gulliver tunnels'),
+        title: buildEditorObjectAppBarTitle(
+          context: context,
+          localizedName: resolveModuleTitleByObjClass(context, _objClass),
+          isEvent: false,
+          objClass: _objClass,
+          foregroundColor: Colors.white,
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.help_outline, color: Colors.white),
@@ -316,6 +335,14 @@ class _GulliverTunnelModuleScreenState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+EditorAliasInputField(
+              alias: _alias,
+              levelFile: widget.levelFile,
+              onAliasChanged: _handleAliasChanged,
+              onChanged: widget.onChanged,
+              accentColor: accentColor,
+            ),
+            const SizedBox(height: 16),
             scaleTableForDesktop(
               context: context,
               child: Container(

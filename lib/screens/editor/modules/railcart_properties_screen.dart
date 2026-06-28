@@ -2,9 +2,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:c_editor/data/level_parser.dart';
 import 'package:c_editor/data/pvz_models.dart';
-import 'package:c_editor/data/rtid_parser.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/widgets/editor_components.dart';
+import 'package:c_editor/widgets/editor_object_alias.dart';
 import 'package:c_editor/widgets/asset_image.dart'
     show AssetImageWidget, imageAltCandidates;
 
@@ -31,6 +31,8 @@ class RailcartPropertiesScreen extends StatefulWidget {
 }
 
 class _RailcartPropertiesScreenState extends State<RailcartPropertiesScreen> {
+  static const _objClass = 'RailcartProperties';
+  late String _alias;
   late PvzObject _moduleObj;
   late RailcartPropertiesData _data;
   _RailEditMode _editMode = _RailEditMode.rails;
@@ -68,12 +70,12 @@ class _RailcartPropertiesScreenState extends State<RailcartPropertiesScreen> {
   @override
   void initState() {
     super.initState();
+    _alias = aliasFromRtid(widget.rtid);
     _loadData();
   }
 
   void _loadData() {
-    final info = RtidParser.parse(widget.rtid);
-    final alias = info?.alias ?? '';
+    final alias = _alias;
     final existing = widget.levelFile.objects.firstWhereOrNull(
       (o) => o.aliases?.contains(alias) == true,
     );
@@ -202,6 +204,17 @@ class _RailcartPropertiesScreenState extends State<RailcartPropertiesScreen> {
     _sync();
   }
 
+
+  void _handleAliasChanged(String newAlias) {
+    renameLevelObjectAlias(
+      levelFile: widget.levelFile,
+      oldAlias: _alias,
+      newAlias: newAlias,
+      onChanged: widget.onChanged,
+    );
+    setState(() => _alias = newAlias);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -219,13 +232,25 @@ class _RailcartPropertiesScreenState extends State<RailcartPropertiesScreen> {
           tooltip: l10n?.back ?? 'Back',
           onPressed: widget.onBack,
         ),
-        title: Text(l10n?.railcartSettings ?? 'Railcart settings'),
+        title: buildEditorObjectAppBarTitle(
+          context: context,
+          localizedName: resolveModuleTitleByObjClass(context, _objClass),
+          isEvent: false,
+          objClass: _objClass,
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+EditorAliasInputField(
+              alias: _alias,
+              levelFile: widget.levelFile,
+              onAliasChanged: _handleAliasChanged,
+              onChanged: widget.onChanged,
+            ),
+            const SizedBox(height: 16),
             if (_hasOutOfAreaWarning())
               EditorWarningBanner(
                 margin: EdgeInsets.zero,

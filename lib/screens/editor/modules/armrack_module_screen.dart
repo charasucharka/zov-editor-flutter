@@ -3,13 +3,13 @@ import 'package:c_editor/data/armrack_type_catalog.dart';
 import 'package:c_editor/data/grid_override_module_utils.dart';
 import 'package:c_editor/data/level_parser.dart';
 import 'package:c_editor/data/pvz_models.dart';
-import 'package:c_editor/data/rtid_parser.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
 import 'package:c_editor/widgets/asset_image.dart';
 import 'package:c_editor/widgets/editor_components.dart';
 import 'package:c_editor/widgets/grid_override_placement_grid.dart';
 import 'package:c_editor/widgets/grid_override_wave_groups_bar.dart';
+import 'package:c_editor/widgets/editor_object_alias.dart';
 
 class ArmrackModuleScreen extends StatefulWidget {
   const ArmrackModuleScreen({
@@ -32,6 +32,8 @@ class ArmrackModuleScreen extends StatefulWidget {
 }
 
 class _ArmrackModuleScreenState extends State<ArmrackModuleScreen> {
+  static const _objClass = 'ArmrackProperties';
+  late String _alias;
   late PvzObject _moduleObj;
   late ArmrackPropertiesData _data;
   int _selectedIndex = -1;
@@ -60,6 +62,7 @@ class _ArmrackModuleScreenState extends State<ArmrackModuleScreen> {
   @override
   void initState() {
     super.initState();
+    _alias = aliasFromRtid(widget.rtid);
     _loadData();
     _selectedIndex = _resolveInitialIndex();
   }
@@ -75,8 +78,7 @@ class _ArmrackModuleScreenState extends State<ArmrackModuleScreen> {
   }
 
   void _loadData() {
-    final info = RtidParser.parse(widget.rtid);
-    final alias = info?.alias ?? 'Armrack';
+    final alias = _alias;
     _moduleObj = widget.levelFile.objects.firstWhere(
       (o) => o.aliases?.contains(alias) == true,
       orElse: () => PvzObject(
@@ -181,6 +183,17 @@ class _ArmrackModuleScreenState extends State<ArmrackModuleScreen> {
     _placeAt(col, row);
   }
 
+
+  void _handleAliasChanged(String newAlias) {
+    renameLevelObjectAlias(
+      levelFile: widget.levelFile,
+      oldAlias: _alias,
+      newAlias: newAlias,
+      onChanged: widget.onChanged,
+    );
+    setState(() => _alias = newAlias);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -196,7 +209,12 @@ class _ArmrackModuleScreenState extends State<ArmrackModuleScreen> {
           tooltip: l10n?.back ?? 'Back',
           onPressed: widget.onBack,
         ),
-        title: Text(title),
+        title: buildEditorObjectAppBarTitle(
+          context: context,
+          localizedName: resolveModuleTitleByObjClass(context, _objClass),
+          isEvent: false,
+          objClass: _objClass,
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.help_outline),
@@ -243,6 +261,13 @@ class _ArmrackModuleScreenState extends State<ArmrackModuleScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+EditorAliasInputField(
+              alias: _alias,
+              levelFile: widget.levelFile,
+              onAliasChanged: _handleAliasChanged,
+              onChanged: widget.onChanged,
+            ),
+            const SizedBox(height: 16),
                 Text(
                   l10n?.gridOverrideModuleAppearances ?? 'Wave groups',
                   style: theme.textTheme.titleMedium?.copyWith(

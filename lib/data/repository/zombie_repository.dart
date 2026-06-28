@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:c_editor/data/asset_loader.dart';
+import 'package:c_editor/data/tag_assets.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 
 enum ZombieCategory { main, size, other, collection }
@@ -156,7 +157,13 @@ extension ZombieTagExtension on ZombieTag {
     }
   }
 
-  String? get iconName {
+  String? get iconAssetPath {
+    final fileName = _iconFileName;
+    if (fileName == null) return null;
+    return TagAssets.zombieType(fileName);
+  }
+
+  String? get _iconFileName {
     switch (this) {
       case ZombieTag.pet:
         return "Zombie_Pet.webp";

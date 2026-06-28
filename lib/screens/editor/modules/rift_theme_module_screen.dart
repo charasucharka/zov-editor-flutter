@@ -2,13 +2,13 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:c_editor/data/pvz_models.dart';
 import 'package:c_editor/data/repository/rift_theme_repository.dart';
-import 'package:c_editor/data/rtid_parser.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
 import 'package:c_editor/screens/select/rift_theme_selection_screen.dart';
 import 'package:c_editor/theme/app_theme.dart'
     show pvzPurpleDark, pvzPurpleLight;
 import 'package:c_editor/widgets/editor_components.dart';
+import 'package:c_editor/widgets/editor_object_alias.dart';
 
 /// Custom rift theme list module (`RiftThemeDemoModuleProperties`).
 class RiftThemeModuleScreen extends StatefulWidget {
@@ -32,6 +32,7 @@ class RiftThemeModuleScreen extends StatefulWidget {
 class _RiftThemeModuleScreenState extends State<RiftThemeModuleScreen> {
   static const _defaultAlias = 'RiftTheme';
   static const _objClass = 'RiftThemeDemoModuleProperties';
+  late String _alias;
 
   late PvzObject _moduleObj;
   late RiftThemeDemoModulePropertiesData _data;
@@ -39,12 +40,12 @@ class _RiftThemeModuleScreenState extends State<RiftThemeModuleScreen> {
   @override
   void initState() {
     super.initState();
+    _alias = aliasFromRtid(widget.rtid);
     _loadData();
   }
 
   void _loadData() {
-    final info = RtidParser.parse(widget.rtid);
-    final alias = info?.alias ?? _defaultAlias;
+    final alias = _alias;
     final existing = widget.levelFile.objects.firstWhereOrNull(
       (o) => o.aliases?.contains(alias) == true,
     );
@@ -102,6 +103,17 @@ class _RiftThemeModuleScreenState extends State<RiftThemeModuleScreen> {
     }
   }
 
+
+  void _handleAliasChanged(String newAlias) {
+    renameLevelObjectAlias(
+      levelFile: widget.levelFile,
+      oldAlias: _alias,
+      newAlias: newAlias,
+      onChanged: widget.onChanged,
+    );
+    setState(() => _alias = newAlias);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -118,7 +130,13 @@ class _RiftThemeModuleScreenState extends State<RiftThemeModuleScreen> {
         ),
         backgroundColor: accentColor,
         foregroundColor: Colors.white,
-        title: Text(l10n?.riftThemeModuleTitle ?? 'Rift themes'),
+        title: buildEditorObjectAppBarTitle(
+          context: context,
+          localizedName: resolveModuleTitleByObjClass(context, _objClass),
+          isEvent: false,
+          objClass: _objClass,
+          foregroundColor: Colors.white,
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.help_outline, color: Colors.white),
@@ -145,7 +163,21 @@ class _RiftThemeModuleScreenState extends State<RiftThemeModuleScreen> {
           ),
         ],
       ),
-      body: _data.demoRiftThemeName.isEmpty
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: EditorAliasInputField(
+              alias: _alias,
+              levelFile: widget.levelFile,
+              onAliasChanged: _handleAliasChanged,
+              onChanged: widget.onChanged,
+              accentColor: accentColor,
+            ),
+          ),
+          Expanded(
+            child: _data.demoRiftThemeName.isEmpty
           ? Center(
               child: Padding(
                 padding: const EdgeInsets.all(24),
@@ -208,6 +240,9 @@ class _RiftThemeModuleScreenState extends State<RiftThemeModuleScreen> {
                 );
               },
             ),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _openThemeSelection(l10n),
         backgroundColor: accentColor,

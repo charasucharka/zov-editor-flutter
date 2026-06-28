@@ -441,7 +441,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get thanksNames =>
-      'Devourdoom、Evilhack28、Chara、KL12、Haruma、nineteendo、vi_i_guess';
+      'Devourdoom、Chara、Evilhack28、Rebus、KL12、vi_i_guess、Haruma、nineteendo';
 
   @override
   String get sourceLabel => '代码仓库：';
@@ -2576,6 +2576,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String editAlias(Object alias) {
     return '编辑 $alias';
   }
+
+  @override
+  String editNamedEvent(Object name) {
+    return '编辑$name事件';
+  }
+
+  @override
+  String editNamedModule(Object name) {
+    return '编辑$name模块';
+  }
+
+  @override
+  String get addEventAliasTitle => '添加事件';
+
+  @override
+  String get addModuleAliasTitle => '添加模块';
 
   @override
   String get aliasLabel => '代号';

@@ -1,3 +1,5 @@
+import 'package:c_editor/data/tag_assets.dart';
+
 /// Zombie condition ids for [ApplyZombieConditionsChallengeProps].
 abstract class ZombieConditions {
   ZombieConditions._();
@@ -113,7 +115,7 @@ abstract class StarChallengeProfessions {
   ];
 
   static String iconAsset(String id) =>
-      'assets/images/tags/Plant_${_iconSuffix[id] ?? id}.webp';
+      TagAssets.plantRole('Plant_${_iconSuffix[id] ?? id}.webp');
 
   static const _iconSuffix = {
     'warrior': 'Vanguard',

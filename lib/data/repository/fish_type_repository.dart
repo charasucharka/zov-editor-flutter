@@ -15,16 +15,16 @@ class FishInfo {
   final String creatureClass;
   final String? propertiesRtid;
 
-  /// Icons under assets/images/fish/. Only these creatures are safe to pick in the editor.
+  /// Icons under assets/images/fishes/. Only these creatures are safe to pick in the editor.
   /// Keys are lowercase; lookups must use [_normalizeFishAlias].
   static const Map<String, String> iconAssetByAlias = {
-    'hermitcrab': 'assets/images/fish/icon_hermitcrab.webp',
-    'inkfish': 'assets/images/fish/icon_cutterfish.webp',
-    'jellyfish': 'assets/images/fish/icon_jellyfish.webp',
-    'krill': 'assets/images/fish/icon_krill.webp',
-    'pufferfish': 'assets/images/fish/icon_pufferfish.webp',
-    'starfish': 'assets/images/fish/icon_starfish.webp',
-    'swordfish': 'assets/images/fish/icon_swordfish.webp',
+    'hermitcrab': 'assets/images/fishes/icon_hermitcrab.webp',
+    'inkfish': 'assets/images/fishes/icon_cutterfish.webp',
+    'jellyfish': 'assets/images/fishes/icon_jellyfish.webp',
+    'krill': 'assets/images/fishes/icon_krill.webp',
+    'pufferfish': 'assets/images/fishes/icon_pufferfish.webp',
+    'starfish': 'assets/images/fishes/icon_starfish.webp',
+    'swordfish': 'assets/images/fishes/icon_swordfish.webp',
   };
 
   /// RTIDs and JSON may use mixed case; icon map keys are lowercase.

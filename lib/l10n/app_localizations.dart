@@ -919,7 +919,7 @@ abstract class AppLocalizations {
   /// No description provided for @thanksNames.
   ///
   /// In en, this message translates to:
-  /// **'Devourdoom, Evilhack28, Chara, KL12, Haruma, nineteendo, vi_i_guess'**
+  /// **'Devourdoom, Chara, Evilhack28, Rebus, KL12, vi_i_guess, Haruma, nineteendo'**
   String get thanksNames;
 
   /// No description provided for @sourceLabel.
@@ -4989,6 +4989,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit {alias}'**
   String editAlias(Object alias);
+
+  /// No description provided for @editNamedEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit {name} event'**
+  String editNamedEvent(Object name);
+
+  /// No description provided for @editNamedModule.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit {name} module'**
+  String editNamedModule(Object name);
+
+  /// No description provided for @addEventAliasTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add event'**
+  String get addEventAliasTitle;
+
+  /// No description provided for @addModuleAliasTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add module'**
+  String get addModuleAliasTitle;
 
   /// No description provided for @aliasLabel.
   ///
