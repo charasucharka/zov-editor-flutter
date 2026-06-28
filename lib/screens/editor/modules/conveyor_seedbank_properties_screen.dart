@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:c_editor/data/repository/plant_repository.dart';
 import 'package:c_editor/data/pvz_models.dart';
-import 'package:c_editor/data/rtid_parser.dart';
 import 'package:c_editor/data/repository/tool_repository.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';

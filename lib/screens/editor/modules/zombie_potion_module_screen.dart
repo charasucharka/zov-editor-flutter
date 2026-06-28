@@ -3,7 +3,6 @@ import 'package:c_editor/data/repository/grid_item_repository.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
 import 'package:c_editor/data/pvz_models.dart';
-import 'package:c_editor/data/rtid_parser.dart';
 import 'package:c_editor/screens/select/grid_item_selection_screen.dart';
 import 'package:c_editor/widgets/editor_components.dart';
 import 'package:c_editor/widgets/editor_object_alias.dart';

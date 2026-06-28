@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:c_editor/data/grid_override_module_utils.dart';
 import 'package:c_editor/data/level_parser.dart';
 import 'package:c_editor/data/pvz_models.dart';
-import 'package:c_editor/data/rtid_parser.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/widgets/editor_components.dart';
 import 'package:c_editor/widgets/grid_override_placement_grid.dart';

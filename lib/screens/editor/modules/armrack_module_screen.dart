@@ -3,7 +3,6 @@ import 'package:c_editor/data/armrack_type_catalog.dart';
 import 'package:c_editor/data/grid_override_module_utils.dart';
 import 'package:c_editor/data/level_parser.dart';
 import 'package:c_editor/data/pvz_models.dart';
-import 'package:c_editor/data/rtid_parser.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
 import 'package:c_editor/l10n/resource_names.dart';
 import 'package:c_editor/widgets/asset_image.dart';
