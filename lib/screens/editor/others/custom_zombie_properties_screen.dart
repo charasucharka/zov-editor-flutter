@@ -642,6 +642,27 @@ class _CustomZombiePropertiesScreenState
     );
   }
 
+  Widget _cardSectionTitle(String title) {
+    final theme = Theme.of(context);
+    return Text(
+      title,
+      style: theme.textTheme.titleMedium?.copyWith(
+        fontWeight: FontWeight.bold,
+        color: _themeColor,
+      ),
+    );
+  }
+
+  Widget _sectionCard({required Widget child}) {
+    return SizedBox(
+      width: double.infinity,
+      child: Card(
+        margin: EdgeInsets.zero,
+        child: child,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -761,21 +782,16 @@ class _CustomZombiePropertiesScreenState
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  l10n?.baseStats ?? 'Base stats',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: themeColor,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Card(
+                _sectionCard(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        _cardSectionTitle(l10n?.baseStats ?? 'Base stats'),
+                        const SizedBox(height: 12),
                         TextFormField(
                           initialValue: _typeObj!.aliases?.isNotEmpty == true
                               ? _typeObj!.aliases!.first
@@ -842,17 +858,16 @@ class _CustomZombiePropertiesScreenState
                   ),
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  l10n?.hitPosition ?? 'Hit / position',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: themeColor,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Card(
+                _sectionCard(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                        child: _cardSectionTitle(
+                          l10n?.hitPosition ?? 'Hit / position',
+                        ),
+                      ),
                       _editRow(
                         title: l10n?.hitRect ?? 'HitRect',
                         subtitle: _formatRect(_propsData.hitRect),
@@ -955,15 +970,7 @@ class _CustomZombiePropertiesScreenState
                   ),
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  l10n?.appearanceBehavior ?? 'Appearance & behavior',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: themeColor,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Card(
+                _sectionCard(
                   child: Theme(
                     data: theme.copyWith(
                       switchTheme: SwitchThemeData(
@@ -984,7 +991,13 @@ class _CustomZombiePropertiesScreenState
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
+                          _cardSectionTitle(
+                            l10n?.appearanceBehavior ??
+                                'Appearance & behavior',
+                          ),
+                          const SizedBox(height: 12),
                           InkWell(
                             onTap: _showSizeTypeDialog,
                             child: Row(
@@ -1155,15 +1168,7 @@ class _CustomZombiePropertiesScreenState
                 ),
                 if (_supportsResilienceShield) ...[
                   const SizedBox(height: 16),
-                  Text(
-                    l10n?.resilienceArmor ?? 'Resilience (armor)',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: themeColor,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Card(
+                  _sectionCard(
                     child: Theme(
                       data: theme.copyWith(
                         switchTheme: SwitchThemeData(
@@ -1185,8 +1190,12 @@ class _CustomZombiePropertiesScreenState
                         padding: const EdgeInsets.all(16),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
+                            _cardSectionTitle(
+                              l10n?.resilienceArmor ?? 'Resilience (armor)',
+                            ),
+                            const SizedBox(height: 12),
                             _switchRow(
                               title:
                                   l10n?.enableResilience ?? 'Enable resilience',
@@ -1222,19 +1231,14 @@ class _CustomZombiePropertiesScreenState
                   ),
                 ],
                 const SizedBox(height: 16),
-                Text(
-                  l10n?.resilience ?? 'Resilience',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: themeColor,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Card(
+                _sectionCard(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        _cardSectionTitle(l10n?.resilience ?? 'Resilience'),
+                        const SizedBox(height: 12),
                         _resistanceInput(
                           context: context,
                           index: 0,
