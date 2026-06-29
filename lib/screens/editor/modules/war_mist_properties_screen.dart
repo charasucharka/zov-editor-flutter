@@ -101,8 +101,12 @@ class _WarMistPropertiesScreenState extends State<WarMistPropertiesScreen> {
   }
 
   Color _fogColor(bool isDark) {
-    final base = Color.lerp(Colors.white, Colors.grey, 0.45)!;
-    return base.withValues(alpha: isDark ? 0.72 : 0.78);
+    if (isDark) {
+      return Color.lerp(Colors.white, Colors.grey, 0.45)!
+          .withValues(alpha: 0.72);
+    }
+    return Color.lerp(const Color(0xFFBDBDBD), const Color(0xFF616161), 0.55)!
+        .withValues(alpha: 0.72);
   }
 
   @override
