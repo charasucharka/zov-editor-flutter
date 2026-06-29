@@ -181,6 +181,45 @@ class AppLocalizationsEn extends AppLocalizations {
       'You are about to leave the editor and open the official Advanced Creation Courtyard Creator Hub website. After signing in with your email account, you can upload JSON level files from the editor to the in-game Creative Courtyard for other players to enjoy. Do you want to continue?';
 
   @override
+  String get levelPreview => 'Level Preview';
+
+  @override
+  String get previewLevelSummary => 'Level Summary';
+
+  @override
+  String get previewStartingSun => 'Starting Sun';
+
+  @override
+  String get previewStartingPlantFood => 'Starting Plant Food';
+
+  @override
+  String get previewSeedBank => 'Seed Bank';
+
+  @override
+  String get previewPrePlaced => 'Pre-placed';
+
+  @override
+  String get previewTabPlants => 'Plants';
+
+  @override
+  String get previewTabZombies => 'Zombies';
+
+  @override
+  String get previewTabGridItems => 'Objects';
+
+  @override
+  String get previewRegularPlants => 'Regular';
+
+  @override
+  String get previewFrozenPlants => 'Frozen/Legacy';
+
+  @override
+  String get previewZombiesAndEvents => 'Zombies & Events';
+
+  @override
+  String get previewChallengesAndThemes => 'Challenges & Themes';
+
+  @override
   String get noLevelsFound => 'No levels found';
 
   @override

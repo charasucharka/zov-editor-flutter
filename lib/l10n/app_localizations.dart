@@ -424,6 +424,84 @@ abstract class AppLocalizations {
   /// **'You are about to leave the editor and open the official Advanced Creation Courtyard Creator Hub website. After signing in with your email account, you can upload JSON level files from the editor to the in-game Creative Courtyard for other players to enjoy. Do you want to continue?'**
   String get uploadLevelConfirm;
 
+  /// No description provided for @levelPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Level Preview'**
+  String get levelPreview;
+
+  /// No description provided for @previewLevelSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Level Summary'**
+  String get previewLevelSummary;
+
+  /// No description provided for @previewStartingSun.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting Sun'**
+  String get previewStartingSun;
+
+  /// No description provided for @previewStartingPlantFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting Plant Food'**
+  String get previewStartingPlantFood;
+
+  /// No description provided for @previewSeedBank.
+  ///
+  /// In en, this message translates to:
+  /// **'Seed Bank'**
+  String get previewSeedBank;
+
+  /// No description provided for @previewPrePlaced.
+  ///
+  /// In en, this message translates to:
+  /// **'Pre-placed'**
+  String get previewPrePlaced;
+
+  /// No description provided for @previewTabPlants.
+  ///
+  /// In en, this message translates to:
+  /// **'Plants'**
+  String get previewTabPlants;
+
+  /// No description provided for @previewTabZombies.
+  ///
+  /// In en, this message translates to:
+  /// **'Zombies'**
+  String get previewTabZombies;
+
+  /// No description provided for @previewTabGridItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Objects'**
+  String get previewTabGridItems;
+
+  /// No description provided for @previewRegularPlants.
+  ///
+  /// In en, this message translates to:
+  /// **'Regular'**
+  String get previewRegularPlants;
+
+  /// No description provided for @previewFrozenPlants.
+  ///
+  /// In en, this message translates to:
+  /// **'Frozen/Legacy'**
+  String get previewFrozenPlants;
+
+  /// No description provided for @previewZombiesAndEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Zombies & Events'**
+  String get previewZombiesAndEvents;
+
+  /// No description provided for @previewChallengesAndThemes.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenges & Themes'**
+  String get previewChallengesAndThemes;
+
   /// No description provided for @noLevelsFound.
   ///
   /// In en, this message translates to:
