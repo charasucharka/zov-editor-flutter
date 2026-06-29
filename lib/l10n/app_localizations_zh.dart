@@ -178,6 +178,45 @@ class AppLocalizationsZh extends AppLocalizations {
       '即将离开编辑器并打开官方的高级创作庭院作者中心网站。使用邮箱登录后，您可以将编辑器中的JSON关卡文件上传至游戏内的创意庭院供玩家游玩。是否继续？';
 
   @override
+  String get levelPreview => '关卡预览';
+
+  @override
+  String get previewLevelSummary => '关卡概览';
+
+  @override
+  String get previewStartingSun => '初始阳光';
+
+  @override
+  String get previewStartingPlantFood => '初始能量豆';
+
+  @override
+  String get previewSeedBank => '选卡/卡槽';
+
+  @override
+  String get previewPrePlaced => '初始布阵';
+
+  @override
+  String get previewTabPlants => '植物';
+
+  @override
+  String get previewTabZombies => '僵尸';
+
+  @override
+  String get previewTabGridItems => '物品';
+
+  @override
+  String get previewRegularPlants => '普通植物';
+
+  @override
+  String get previewFrozenPlants => '冰冻/旧版植物';
+
+  @override
+  String get previewZombiesAndEvents => '僵尸与事件';
+
+  @override
+  String get previewChallengesAndThemes => '挑战与主题';
+
+  @override
   String get noLevelsFound => '未找到关卡';
 
   @override

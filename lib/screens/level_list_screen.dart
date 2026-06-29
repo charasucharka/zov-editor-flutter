@@ -14,6 +14,8 @@ import 'package:c_editor/screens/level_list_platform.dart';
 import 'package:c_editor/widgets/app_message.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:c_editor/screens/common/level_preview_dialog.dart';
+import 'package:c_editor/data/level_parser.dart';
 
 enum LevelViewMode { all, favorites }
 
@@ -128,6 +130,31 @@ class _LevelListScreenState extends State<LevelListScreen> {
     if (kIsWeb) return;
     if (!mounted) return;
     await ensureStoragePermission(context);
+  }
+
+  Future<void> _handlePreview(FileItem item) async {
+    if (item.isDirectory) return;
+
+    final file = await LevelRepository.loadLevelFromPath(item.path);
+    if (file == null || !mounted) return;
+
+    final parsed = LevelParser.parseLevel(file);
+    if (!mounted) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (ctx) => LevelPreviewDialog(
+            levelFile: file,
+            parsed: parsed,
+            fileName: item.name,
+            onBack: () => Navigator.pop(ctx),
+          ),
+        ),
+      );
+    });
   }
 
   Future<void> _loadSavedPathAndList() async {
@@ -954,6 +981,7 @@ class _LevelListScreenState extends State<LevelListScreen> {
                                 item: item,
                                 l10n: l10n,
                                 rootFolderPath: _rootFolderPath,
+                                onPreview: () => _handlePreview(item),
                                 onTap: () async {
                                   if (isMovingMode) {
                                     if (item.isDirectory) {
@@ -1923,6 +1951,7 @@ class _FileItemRow extends StatelessWidget {
     required this.onCopy,
     required this.onMove,
     required this.showMove,
+    this.onPreview,
     this.rootFolderPath,
     this.onDownload,
     this.onConvert,
@@ -1933,6 +1962,7 @@ class _FileItemRow extends StatelessWidget {
   final FileItem item;
   final AppLocalizations l10n;
   final VoidCallback onTap;
+  final VoidCallback? onPreview;
   final VoidCallback onRename;
   final VoidCallback onDelete;
   final VoidCallback onCopy;
@@ -2004,6 +2034,10 @@ class _FileItemRow extends StatelessWidget {
             ),
           ),
         PopupMenuItem(
+          value: 'preview',
+          child: _popupMenuTile(icon: Icons.remove_red_eye, label: l10n.levelPreview),
+        ),
+        PopupMenuItem(
           value: 'rename',
           child: _popupMenuTile(icon: Icons.edit, label: l10n.rename),
         ),
@@ -2054,6 +2088,9 @@ class _FileItemRow extends StatelessWidget {
         switch (v) {
           case 'favorite':
             onToggleFavorite?.call();
+          case 'preview':
+            onPreview?.call();
+            break;
           case 'rename':
             onRename();
           case 'copy':

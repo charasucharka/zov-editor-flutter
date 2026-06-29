@@ -182,6 +182,45 @@ class AppLocalizationsRu extends AppLocalizations {
       'Сейчас вы покинете редактор и перейдёте на официальный сайт продвинутой Креаторской Площадки. После регистрации/входа через эл. почту, вы сможете загружать JSON файлы уровней из редактора прямо в игровую Креаторскую Площадку, чтобы другие люди могли сыграть в ваш уровень. Хотите продолжить?';
 
   @override
+  String get levelPreview => 'Предпросмотр уровня';
+
+  @override
+  String get previewLevelSummary => 'Сводка уровня';
+
+  @override
+  String get previewStartingSun => 'Стартовое солнце';
+
+  @override
+  String get previewStartingPlantFood => 'Стартовые удобрения';
+
+  @override
+  String get previewSeedBank => 'Банк семян';
+
+  @override
+  String get previewPrePlaced => 'Расстановка';
+
+  @override
+  String get previewTabPlants => 'Растения';
+
+  @override
+  String get previewTabZombies => 'Зомби';
+
+  @override
+  String get previewTabGridItems => 'Объекты';
+
+  @override
+  String get previewRegularPlants => 'Обычные';
+
+  @override
+  String get previewFrozenPlants => 'Замороженные';
+
+  @override
+  String get previewZombiesAndEvents => 'Зомби и события';
+
+  @override
+  String get previewChallengesAndThemes => 'Испытания и темы';
+
+  @override
   String get noLevelsFound => 'Уровни не найдены';
 
   @override
