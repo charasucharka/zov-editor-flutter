@@ -53,6 +53,7 @@ class LevelSettingsTab extends StatefulWidget {
     required this.onEditBasicInfo,
     required this.onEditModule,
     required this.onRemoveModule,
+    required this.onReorderModules,
     required this.onNavigateToAddModule,
   });
 
@@ -66,6 +67,12 @@ class LevelSettingsTab extends StatefulWidget {
   final VoidCallback onEditBasicInfo;
   final ValueChanged<String> onEditModule;
   final ValueChanged<String> onRemoveModule;
+  final void Function({
+    required bool isCoreSection,
+    required int oldIndex,
+    required int newIndex,
+  })
+  onReorderModules;
   final VoidCallback onNavigateToAddModule;
 
   @override
@@ -194,14 +201,20 @@ class _LevelSettingsTabState extends State<LevelSettingsTab> {
               ),
             ),
             const SizedBox(height: 8),
-            ...coreModules.map(
-              (item) => ModuleCard(
-                info: item,
+            if (coreModules.isNotEmpty)
+              _ReorderableModuleList(
+                modules: coreModules,
+                isCore: true,
                 removeTooltip: l10n?.removeModule ?? 'Remove module',
-                onClick: () => widget.onEditModule(item.rtid),
-                onDelete: () => setState(() => pendingDeleteRtid = item.rtid),
+                reorderHint: _moduleReorderHint(context, l10n),
+                onEditModule: widget.onEditModule,
+                onDelete: (rtid) => setState(() => pendingDeleteRtid = rtid),
+                onReorder: (oldIndex, newIndex) => widget.onReorderModules(
+                  isCoreSection: true,
+                  oldIndex: oldIndex,
+                  newIndex: newIndex,
+                ),
               ),
-            ),
             const SizedBox(height: 20),
             if (miscModules.isNotEmpty) ...[
               Text(
@@ -213,11 +226,17 @@ class _LevelSettingsTabState extends State<LevelSettingsTab> {
                 ),
               ),
               const SizedBox(height: 8),
-              ...miscModules.map(
-                (item) => MiscModuleRow(
-                  info: item,
-                  removeTooltip: l10n?.removeModule ?? 'Remove module',
-                  onDelete: () => setState(() => pendingDeleteRtid = item.rtid),
+              _ReorderableModuleList(
+                modules: miscModules,
+                isCore: false,
+                removeTooltip: l10n?.removeModule ?? 'Remove module',
+                reorderHint: _moduleReorderHint(context, l10n),
+                onEditModule: widget.onEditModule,
+                onDelete: (rtid) => setState(() => pendingDeleteRtid = rtid),
+                onReorder: (oldIndex, newIndex) => widget.onReorderModules(
+                  isCoreSection: false,
+                  oldIndex: oldIndex,
+                  newIndex: newIndex,
                 ),
               ),
               const SizedBox(height: 8),
@@ -434,6 +453,160 @@ class _LevelSettingsTabState extends State<LevelSettingsTab> {
       ],
     );
   }
+
+  static String _moduleReorderHint(
+    BuildContext context,
+    AppLocalizations? l10n,
+  ) {
+    final desktop = Theme.of(context).platform == TargetPlatform.windows ||
+        Theme.of(context).platform == TargetPlatform.macOS ||
+        Theme.of(context).platform == TargetPlatform.linux;
+    return desktop
+        ? (l10n?.presetPlantListReorderHintDesktop ??
+              'Drag the ⋮⋮ handle to reorder.')
+        : (l10n?.presetPlantListReorderHint ??
+              'Long press the ⋮⋮ handle and drag to reorder.');
+  }
+}
+
+class _ReorderableModuleList extends StatelessWidget {
+  const _ReorderableModuleList({
+    required this.modules,
+    required this.isCore,
+    required this.removeTooltip,
+    required this.reorderHint,
+    required this.onEditModule,
+    required this.onDelete,
+    required this.onReorder,
+  });
+
+  final List<ModuleUIInfo> modules;
+  final bool isCore;
+  final String removeTooltip;
+  final String reorderHint;
+  final ValueChanged<String> onEditModule;
+  final ValueChanged<String> onDelete;
+  final void Function(int oldIndex, int newIndex) onReorder;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          reorderHint,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 8),
+        ReorderableListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          buildDefaultDragHandles: false,
+          itemCount: modules.length,
+          onReorder: onReorder,
+          itemBuilder: (context, index) {
+            final item = modules[index];
+            return _ReorderableModuleTile(
+              key: ValueKey(item.rtid),
+              info: item,
+              isCore: isCore,
+              reorderIndex: index,
+              removeTooltip: removeTooltip,
+              onClick: () => onEditModule(item.rtid),
+              onDelete: () => onDelete(item.rtid),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _ReorderableModuleTile extends StatelessWidget {
+  const _ReorderableModuleTile({
+    super.key,
+    required this.info,
+    required this.isCore,
+    required this.reorderIndex,
+    required this.removeTooltip,
+    required this.onClick,
+    required this.onDelete,
+  });
+
+  final ModuleUIInfo info;
+  final bool isCore;
+  final int reorderIndex;
+  final String removeTooltip;
+  final VoidCallback onClick;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final handleColor = theme.colorScheme.onSurfaceVariant.withValues(
+      alpha: 0.85,
+    );
+    final iconColor = isCore ? theme.colorScheme.primary : Colors.grey;
+    final titleStyle = isCore
+        ? const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)
+        : const TextStyle(color: Colors.grey);
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onClick,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ReorderableDragStartListener(
+                index: reorderIndex,
+                child: SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: Center(
+                    child: Icon(Icons.drag_indicator, color: handleColor),
+                  ),
+                ),
+              ),
+              Icon(info.icon, color: iconColor, size: isCore ? 28 : 20),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      isCore
+                          ? info.friendlyName
+                          : '${info.friendlyName} (${info.alias})',
+                      style: titleStyle,
+                    ),
+                    if (isCore) ...[
+                      Text(
+                        info.description,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall,
+                      ),
+                      Text(info.alias, style: theme.textTheme.bodySmall),
+                    ],
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.close, size: isCore ? 24 : 16, color: iconColor),
+                tooltip: removeTooltip,
+                onPressed: onDelete,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _SettingEntryCard extends StatelessWidget {
@@ -481,110 +654,6 @@ class _SettingEntryCard extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class ModuleCard extends StatelessWidget {
-  final ModuleUIInfo info;
-  final String removeTooltip;
-  final VoidCallback onClick;
-  final VoidCallback onDelete;
-
-  const ModuleCard({
-    super.key,
-    required this.info,
-    required this.removeTooltip,
-    required this.onClick,
-    required this.onDelete,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.hardEdge,
-      child: InkWell(
-        onTap: onClick,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Icon(
-                info.icon,
-                color: Theme.of(context).colorScheme.primary,
-                size: 28,
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      info.friendlyName,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      info.description,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    Text(
-                      info.alias,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.close),
-                tooltip: removeTooltip,
-                onPressed: onDelete,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class MiscModuleRow extends StatelessWidget {
-  final ModuleUIInfo info;
-  final String removeTooltip;
-  final VoidCallback onDelete;
-
-  const MiscModuleRow({
-    super.key,
-    required this.info,
-    required this.removeTooltip,
-    required this.onDelete,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      child: Row(
-        children: [
-          Icon(info.icon, size: 20, color: Colors.grey),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              '${info.friendlyName} (${info.alias})',
-              style: const TextStyle(color: Colors.grey),
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.close, size: 16, color: Colors.grey),
-            tooltip: removeTooltip,
-            onPressed: onDelete,
-          ),
-        ],
       ),
     );
   }

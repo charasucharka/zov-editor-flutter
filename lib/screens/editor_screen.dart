@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:c_editor/widgets/app_message.dart';
+import 'package:c_editor/data/level_module_order_utils.dart';
 import 'package:c_editor/data/level_parser.dart';
 import 'package:c_editor/data/module_open_hint.dart';
 import 'package:c_editor/data/registry/module_registry.dart';
@@ -1022,6 +1023,28 @@ class _EditorScreenState extends State<EditorScreen> {
 
     _markDirty();
     _ec.recalculateTabs();
+  }
+
+  void _handleReorderModules({
+    required bool isCoreSection,
+    required int oldIndex,
+    required int newIndex,
+  }) {
+    final def = _ec.state.parsedData?.levelDef;
+    final file = _ec.state.levelFile;
+    final objectMap = _ec.state.parsedData?.objectMap;
+    if (def == null || file == null || objectMap == null) return;
+
+    LevelModuleOrderUtils.reorderModuleSection(
+      levelDef: def,
+      levelFile: file,
+      objectMap: objectMap,
+      isCoreSection: isCoreSection,
+      oldIndex: oldIndex,
+      newIndex: newIndex,
+    );
+    _markDirty();
+    setState(() {});
   }
 
   Future<void> _handleEditEvent(String rtid, int waveIndex) async {
@@ -3453,6 +3476,7 @@ class _EditorScreenState extends State<EditorScreen> {
                                       onEditBasicInfo: _handleEditBasicInfo,
                                       onEditModule: _handleEditModule,
                                       onRemoveModule: _handleRemoveModule,
+                                      onReorderModules: _handleReorderModules,
                                       onNavigateToAddModule:
                                           _handleNavigateToAddModule,
                                     );
