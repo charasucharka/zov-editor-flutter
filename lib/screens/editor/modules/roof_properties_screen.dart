@@ -1,5 +1,9 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:c_editor/data/pvz_models.dart';
+import 'package:c_editor/l10n/app_localizations.dart';
+import 'package:c_editor/widgets/asset_image.dart';
+import 'package:c_editor/widgets/editor_components.dart';
 import 'package:c_editor/widgets/editor_object_alias.dart';
 
 /// Roof properties. Ported from Z-Editor-master RoofPropertiesEP.kt
@@ -25,6 +29,11 @@ class RoofPropertiesScreen extends StatefulWidget {
 
 class _RoofPropertiesScreenState extends State<RoofPropertiesScreen> {
   static const _objClass = 'RoofProperties';
+  static const _flowerPotAsset = 'assets/images/griditems/flowerpot.webp';
+  static const _gridRows = 5;
+  static const _gridCols = 9;
+  static const _maxColumn = 8;
+
   late String _alias;
   late PvzObject _moduleObj;
   late RoofPropertiesData _data;
@@ -40,15 +49,17 @@ class _RoofPropertiesScreenState extends State<RoofPropertiesScreen> {
 
   void _loadData() {
     final alias = _alias;
-    _moduleObj = widget.levelFile.objects.firstWhere(
+    final existing = widget.levelFile.objects.firstWhereOrNull(
       (o) => o.aliases?.contains(alias) == true,
-      orElse: () => PvzObject(
+    );
+    if (existing != null) {
+      _moduleObj = existing;
+    } else {
+      _moduleObj = PvzObject(
         aliases: [alias],
         objClass: 'RoofProperties',
         objData: RoofPropertiesData().toJson(),
-      ),
-    );
-    if (!widget.levelFile.objects.contains(_moduleObj)) {
+      );
       widget.levelFile.objects.add(_moduleObj);
     }
     try {
@@ -72,13 +83,20 @@ class _RoofPropertiesScreenState extends State<RoofPropertiesScreen> {
     setState(() {});
   }
 
+  bool _hasFlowerPotInColumn(int col) {
+    final start = _data.flowerPotStartColumn;
+    final end = _data.flowerPotEndColumn;
+    final lo = start < end ? start : end;
+    final hi = start > end ? start : end;
+    return col >= lo && col <= hi;
+  }
+
   @override
   void dispose() {
     _startColController.dispose();
     _endColController.dispose();
     super.dispose();
   }
-
 
   void _handleAliasChanged(String newAlias) {
     renameLevelObjectAlias(
@@ -90,9 +108,79 @@ class _RoofPropertiesScreenState extends State<RoofPropertiesScreen> {
     setState(() => _alias = newAlias);
   }
 
+  Widget _buildPreviewGrid(ThemeData theme) {
+    final isDark = theme.brightness == Brightness.dark;
+    final lawnColor = isDark
+        ? const Color(0xFF2A2A2A)
+        : const Color(0xFFE8E8E8);
+
+    return scaleTableForDesktop(
+      context: context,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: EditorItemCardLayout.gridPreviewMaxWidth(context) * 0.7,
+        ),
+        child: AspectRatio(
+          aspectRatio: _gridCols / _gridRows,
+          child: Container(
+            decoration: BoxDecoration(
+              color: lawnColor,
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(color: theme.dividerColor),
+            ),
+            child: Column(
+              children: List.generate(_gridRows, (row) {
+                return Expanded(
+                  child: Row(
+                    children: List.generate(_gridCols, (col) {
+                      final hasPot = _hasFlowerPotInColumn(col);
+                      return Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.all(0.5),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: theme.dividerColor,
+                              width: 0.5,
+                            ),
+                          ),
+                          child: hasPot
+                              ? LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    final inset = 5.0;
+                                    final side =
+                                        (constraints.maxWidth <
+                                                    constraints.maxHeight
+                                                ? constraints.maxWidth
+                                                : constraints.maxHeight) -
+                                            inset * 2;
+                                    return Center(
+                                      child: AssetImageWidget(
+                                        assetPath: _flowerPotAsset,
+                                        width: side,
+                                        height: side,
+                                        fit: BoxFit.contain,
+                                      ),
+                                    );
+                                  },
+                                )
+                              : null,
+                        ),
+                      );
+                    }),
+                  ),
+                );
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         title: buildEditorObjectAppBarTitle(
@@ -111,7 +199,7 @@ class _RoofPropertiesScreenState extends State<RoofPropertiesScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-EditorAliasInputField(
+            EditorAliasInputField(
               alias: _alias,
               levelFile: widget.levelFile,
               onAliasChanged: _handleAliasChanged,
@@ -125,7 +213,8 @@ EditorAliasInputField(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Flower pot columns (0-8)',
+                      l10n?.roofFlowerPotColumns ??
+                          'Flower pot columns (0–8)',
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -137,13 +226,13 @@ EditorAliasInputField(
                           child: TextField(
                             controller: _startColController,
                             keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              labelText: 'Start column',
-                              border: OutlineInputBorder(),
+                            decoration: InputDecoration(
+                              labelText: l10n?.startColumn ?? 'Start column',
+                              border: const OutlineInputBorder(),
                             ),
                             onChanged: (v) {
                               final n = int.tryParse(v);
-                              if (n != null && n >= 0 && n <= 8) {
+                              if (n != null && n >= 0 && n <= _maxColumn) {
                                 _data.flowerPotStartColumn = n;
                                 _sync();
                               }
@@ -155,13 +244,13 @@ EditorAliasInputField(
                           child: TextField(
                             controller: _endColController,
                             keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              labelText: 'End column',
-                              border: OutlineInputBorder(),
+                            decoration: InputDecoration(
+                              labelText: l10n?.endColumn ?? 'End column',
+                              border: const OutlineInputBorder(),
                             ),
                             onChanged: (v) {
                               final n = int.tryParse(v);
-                              if (n != null && n >= 0 && n <= 8) {
+                              if (n != null && n >= 0 && n <= _maxColumn) {
                                 _data.flowerPotEndColumn = n;
                                 _sync();
                               }
@@ -170,13 +259,26 @@ EditorAliasInputField(
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Text(
-                      'Columns ${_data.flowerPotStartColumn} to ${_data.flowerPotEndColumn} will have flower pots.',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
+                      l10n?.roofFlowerPotPreview ?? 'Flower pot preview',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.primary,
                       ),
                     ),
+                    const SizedBox(height: 12),
+                    _buildPreviewGrid(theme),
                   ],
                 ),
               ),
