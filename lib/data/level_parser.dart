@@ -12,6 +12,8 @@ class LevelParser {
     'DeepseaStageLandProperties',
   };
 
+  static const pirateStageObjclasses = {'PirateStageProperties'};
+
   static const levelJamMusicStageObjclasses = {
     'EightiesStageProperties',
     'ModernStageProperties',
@@ -131,6 +133,29 @@ class LevelParser {
   static bool isDeepSeaStageObjclass(String? objclass) {
     if (objclass == null) return false;
     return deepSeaStageObjclasses.contains(objclass);
+  }
+
+  static bool isPirateStageObjclass(String? objclass) {
+    if (objclass == null) return false;
+    return pirateStageObjclasses.contains(objclass);
+  }
+
+  /// Returns true if the stage is a Pirate Seas lawn.
+  static bool isPirateLawn(
+    LevelDefinitionData? levelDef,
+    PvzLevelFile levelFile,
+  ) {
+    final objclass = resolveStagePropertiesObjclass(levelDef, levelFile);
+    if (isPirateStageObjclass(objclass)) return true;
+    if (objclass != 'StageModuleProperties') return false;
+    final objdata = resolveStageObjdata(levelDef, levelFile);
+    final world = objdata?['BelongsToWorld'];
+    return world is String && world.toLowerCase() == 'pirate';
+  }
+
+  static bool isPirateLawnFromFile(PvzLevelFile levelFile) {
+    final parsed = parseLevel(levelFile);
+    return isPirateLawn(parsed.levelDef, levelFile);
   }
 
   /// Returns true if the lawn uses DeepSea or DeepSeaLand grid (6x10).

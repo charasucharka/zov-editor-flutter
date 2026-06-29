@@ -2,9 +2,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:c_editor/data/level_parser.dart';
 import 'package:c_editor/data/pvz_models.dart';
-import 'package:c_editor/data/repository/reference_repository.dart';
-import 'package:c_editor/data/rtid_parser.dart';
 import 'package:c_editor/l10n/app_localizations.dart';
+import 'package:c_editor/widgets/asset_image.dart';
 import 'package:c_editor/widgets/editor_components.dart';
 import 'package:c_editor/widgets/editor_object_alias.dart';
 
@@ -33,14 +32,20 @@ class PiratePlankPropertiesScreen extends StatefulWidget {
 class _PiratePlankPropertiesScreenState
     extends State<PiratePlankPropertiesScreen> {
   static const _objClass = 'PiratePlankProperties';
+  static const _plankAsset = 'assets/images/others/Pirate_Seas_Planks.png';
+  static const _plankColSpan = 4;
+
   late String _alias;
   late PvzObject _moduleObj;
   late PiratePlankPropertiesData _data;
-  bool _isPirateStage = false;
 
   bool get _isDeepSeaLawn =>
-      LevelParser.isDeepSeaLawnFromFile(widget.levelFile);
+      LevelParser.isDeepSeaLawn(widget.levelDef, widget.levelFile);
+  bool get _isPirateLawn =>
+      LevelParser.isPirateLawn(widget.levelDef, widget.levelFile);
   int get _gridRows => _isDeepSeaLawn ? 6 : 5;
+  int get _gridCols => _isDeepSeaLawn ? 10 : 9;
+  int get _plankColumnStart => _gridCols - _plankColSpan;
 
   @override
   void initState() {
@@ -71,11 +76,6 @@ class _PiratePlankPropertiesScreenState
     } catch (_) {
       _data = PiratePlankPropertiesData();
     }
-    final stageInfo = RtidParser.parse(widget.levelDef.stageModule);
-    final stageObjClass = stageInfo?.alias != null
-        ? ReferenceRepository.instance.getObjClass(stageInfo!.alias)
-        : null;
-    _isPirateStage = stageObjClass == 'PirateStageProperties';
   }
 
   void _sync() {
@@ -100,7 +100,6 @@ class _PiratePlankPropertiesScreenState
     _sync();
   }
 
-
   void _handleAliasChanged(String newAlias) {
     renameLevelObjectAlias(
       levelFile: widget.levelFile,
@@ -109,6 +108,170 @@ class _PiratePlankPropertiesScreenState
       onChanged: widget.onChanged,
     );
     setState(() => _alias = newAlias);
+  }
+
+  Widget _gridCell(ThemeData theme) {
+    return Container(
+      margin: const EdgeInsets.all(0.5),
+      decoration: BoxDecoration(
+        border: Border.all(color: theme.dividerColor, width: 0.5),
+      ),
+    );
+  }
+
+  Widget _plankStripeCell(ThemeData theme, {required bool showPlank}) {
+    return Container(
+      margin: const EdgeInsets.all(0.5),
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(color: theme.dividerColor, width: 0.5),
+          bottom: BorderSide(color: theme.dividerColor, width: 0.5),
+          right: BorderSide(color: theme.dividerColor, width: 0.5),
+        ),
+      ),
+      child: showPlank
+          ? AssetImageWidget(
+              assetPath: _plankAsset,
+              fit: BoxFit.fill,
+            )
+          : null,
+    );
+  }
+
+  Widget _buildPreviewGrid(ThemeData theme) {
+    final isDark = theme.brightness == Brightness.dark;
+    final lawnColor = isDark
+        ? const Color(0xFF2A2A2A)
+        : const Color(0xFFE8E8E8);
+
+    return scaleTableForDesktop(
+      context: context,
+      child: AspectRatio(
+        aspectRatio: _gridCols / _gridRows,
+        child: Container(
+          decoration: BoxDecoration(
+            color: lawnColor,
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: theme.dividerColor),
+          ),
+          child: Column(
+            children: List.generate(_gridRows, (row) {
+              final hasPlank = _hasPlank(row);
+              return Expanded(
+                child: Row(
+                  children: [
+                    for (var col = 0; col < _plankColumnStart; col++)
+                      Expanded(child: _gridCell(theme)),
+                    Expanded(
+                      flex: _plankColSpan,
+                      child: hasPlank
+                          ? _plankStripeCell(theme, showPlank: true)
+                          : Row(
+                              children: List.generate(
+                                _plankColSpan,
+                                (_) => Expanded(child: _gridCell(theme)),
+                              ),
+                            ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPlankRowSelector(ThemeData theme, AppLocalizations? l10n) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: List.generate(_gridRows, (row) {
+        final hasDivider = row < _gridRows - 1;
+        return Column(
+          children: [
+            InkWell(
+              onTap: () => _setPlank(row, !_hasPlank(row)),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Checkbox(
+                      value: _hasPlank(row),
+                      onChanged: (v) => _setPlank(row, v ?? false),
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    Text(
+                      l10n?.rowN(row + 1) ?? 'Row ${row + 1}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            if (hasDivider)
+              Divider(
+                height: 1,
+                color: theme.colorScheme.surfaceContainerHighest,
+              ),
+          ],
+        );
+      }),
+    );
+  }
+
+  Widget _buildPlankRowsAndPreview(ThemeData theme, AppLocalizations? l10n) {
+    final rowsTitle = _isDeepSeaLawn
+        ? (l10n?.plankRowsDeepSea ?? 'Plank rows (0–5)')
+        : (l10n?.plankRows ?? 'Plank rows (0–4)');
+    final titleStyle = theme.textTheme.titleMedium?.copyWith(
+      fontWeight: FontWeight.bold,
+    );
+    final previewTitleStyle = titleStyle?.copyWith(
+      color: theme.colorScheme.primary,
+    );
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            IntrinsicWidth(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(rowsTitle, style: titleStyle),
+                  const SizedBox(height: 12),
+                  _buildPlankRowSelector(theme, l10n),
+                ],
+              ),
+            ),
+            const SizedBox(width: 24),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    l10n?.plankPreview ?? 'Plank preview',
+                    style: previewTitleStyle,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+                  _buildPreviewGrid(theme),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -133,14 +296,14 @@ class _PiratePlankPropertiesScreenState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-EditorAliasInputField(
+            EditorAliasInputField(
               alias: _alias,
               levelFile: widget.levelFile,
               onAliasChanged: _handleAliasChanged,
               onChanged: widget.onChanged,
             ),
             const SizedBox(height: 16),
-            if (!_isPirateStage) ...[
+            if (!_isPirateLawn) ...[
               Card(
                 color: theme.colorScheme.errorContainer,
                 child: Padding(
@@ -157,7 +320,7 @@ EditorAliasInputField(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              l10n?.stageMismatch ?? 'Stage mismatch',
+                              l10n?.stageMismatch ?? 'Lawn mismatch',
                               style: theme.textTheme.titleSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: theme.colorScheme.onErrorContainer,
@@ -166,7 +329,7 @@ EditorAliasInputField(
                             const SizedBox(height: 4),
                             Text(
                               l10n?.currentStageNotPirate ??
-                                  'Current stage is not Pirate. This module may not work correctly.',
+                                  'The current lawn is not Pirate Seas. This module may not work correctly and could cause a crash.',
                               style: theme.textTheme.bodySmall?.copyWith(
                                 color: theme.colorScheme.onErrorContainer,
                               ),
@@ -180,89 +343,7 @@ EditorAliasInputField(
               ),
               const SizedBox(height: 16),
             ],
-            Text(
-              _gridRows == 5
-                  ? (l10n?.plankRows ?? 'Plank rows (0–4)')
-                  : (l10n?.plankRowsDeepSea ?? 'Plank rows (0–5)'),
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Card(
-              child: Column(
-                children: List.generate(_gridRows, (row) {
-                  final hasDivider = row < _gridRows - 1;
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    l10n?.rowN(row + 1) ?? 'Row ${row + 1}',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15,
-                                    ),
-                                  ),
-                                  Text(
-                                    l10n?.indexN(row) ?? 'Index: $row',
-                                    style: theme.textTheme.bodySmall,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Switch(
-                              value: _hasPlank(row),
-                              onChanged: (v) => _setPlank(row, v),
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (hasDivider)
-                        Divider(
-                          height: 1,
-                          color: theme.colorScheme.surfaceContainerHighest,
-                        ),
-                    ],
-                  );
-                }),
-              ),
-            ),
-            if (_data.plankRows.isNotEmpty) ...[
-              const SizedBox(height: 16),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n?.selectedRowsLabel ?? 'Selected rows:',
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        _data.plankRows
-                            .map((r) => l10n?.rowN(r + 1) ?? 'Row ${r + 1}')
-                            .join(', '),
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+            _buildPlankRowsAndPreview(theme, l10n),
           ],
         ),
       ),
